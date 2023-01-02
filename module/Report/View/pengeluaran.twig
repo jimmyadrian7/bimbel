@@ -1,0 +1,37 @@
+<html>
+    
+    <head>
+        {% include "/Report/View/partial/style.twig" %}
+    </head>
+
+    <body style="background-image:url({{background}})">
+        
+        <div class="container">
+            {% include "Report/View/partial/header.twig" %}
+            
+            <div class="content">
+                <table class="table-content">
+                    <tr>
+                        <th>No</th>
+                        <th>Deskripsi</th>
+                        <th>Jumlah</th>
+                        <th>Total</th>
+                    </tr>
+                    {% for pengeluaran in pengeluarans %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ pengeluaran.nama }}</td>
+                            <td>{{ pengeluaran.jumlah|number_format(0, ',', '.') }}</td>
+                            <td>{{ pengeluaran.total|number_format(0, ',', '.') }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bold">
+                        <td class="bg-transparent" colspan="2"></td>
+                        <td class="bg-red">Total Pengeluaran</td>
+                        <td class="bg-red">{{ total_pengeluaran|number_format(0, ',', '.') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

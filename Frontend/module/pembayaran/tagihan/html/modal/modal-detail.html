@@ -1,0 +1,103 @@
+<app-modal data='vm.data'>
+    <app-modal-title>Tambah Pembiayaan</app-modal-title>
+
+    <app-modal-body>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-gradient text-primary">Data Pembiayaan</div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive p-0" ng-init="vm.fetchPembiayaan()">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kode</th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Harga</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                
+                                <tbody>
+                                    <tr ng-if="!vm.modal.pembiayaan.data || vm.modal.pembiayaan.data.length === 0">
+                                        <td colspan="3" class="text-center">
+                                            <span class="text-xs font-weight-bold">No data Available</span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="vm.modal.pembiayaan.data" ng-repeat="pembiayaan in vm.modal.pembiayaan.data">
+                                        <td class="text-xs font-weight-bold" ng-bind="pembiayaan.kode"></td>
+                                        <td class="text-xs font-weight-bold" ng-bind="pembiayaan.nama"></td>
+                                        <td class="text-xs font-weight-bold" app-number-format="pembiayaan.harga"></td>
+                                        <td>
+                                            <button
+                                                ng-if="!vm.isAdded(pembiayaan)"
+                                                class="btn btn-link text-primary text-gradient px-3 my-0" 
+                                                ng-click="vm.addPembiayaan(pembiayaan)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-gradient text-primary">Tagihan Detail</div>
+                    <div class="card-body px-3 py-0">
+                        <ul class="list-group">
+                            <li 
+                                class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg"
+                                ng-if="vm.data.tagihan_detail" ng-repeat="tagihan in vm.data.tagihan_detail track by $index">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-1 text-dark font-weight-bold text-sm">
+                                        <span class="me-2" ng-bind="tagihan.nama"></span>
+                                        <button class="btn btn-link text-primary text-gradient p-0" title="discount" ng-click="vm.tambahDiskon($index)">
+                                            <i class="fas fa-tag"></i>
+                                        </button>
+                                    </h6>
+                                    <span class="text-xs" app-number-format="tagihan.sub_total"></span>
+                                    <div class="text-xs my-2" ng-if="tagihan.diskon">
+                                        - <span app-number-format="tagihan.diskon.diskon"></span>
+                                        <span ng-if="tagihan.diskon.tipe_diskon == 'p'">%</span>
+                                        <button class="btn btn-link text-primary text-gradient px-2 py-0 my-0" ng-click="vm.removeDiskon($index)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <div class="text-xs my-2" ng-if="tagihan.pembiayaan.stok">
+                                        <input 
+                                            class="form-control form-control-sm" 
+                                            type="text"
+                                            ng-model="vm.data.tagihan_detail[$index].qty"
+                                            ng-keyup="vm.updateTotal($index)">
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center text-sm">
+                                    <button class="btn btn-link text-primary text-gradient p-0 my-0" ng-click="vm.removePembiayaan($index)" title="delete">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            <li 
+                                class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg"
+                                ng-if="!vm.data.tagihan_detail || vm.data.tagihan_detail.length == 0">
+                                <h6 class="mb-1 text-dark font-weight-bold text-sm">
+                                    No data Available
+                                </h6>
+                            </li>
+                        </ul>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </app-modal-body>
+
+    <app-modal-footer>
+        <button type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i> Close
+        </button>
+    </app-modal-footer>
+</app-modal>

@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-12 my-3 d-flex">
+        <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.saveData()">
+            <i class="fas fa-save text-primary me-2"></i> Simpan
+        </button>
+        <button class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.cancelEdit()">
+            <i class="fas fa-times"></i> Batal
+        </button>
+    </div>
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header text-gradient text-primary">
+                <h6 class="mb-0" ng-bind="vm.data.nama"></h6>
+            </div>
+
+            <div class="card-body pt-0 pb-2">
+                <div class="row">
+                    <div class="col-md-6" ng-repeat="fields in vm.fields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark py-2">
+                                    <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-12" ng-if="vm.isSiswa">
+                        <ul class="nav nav-tabs mt-5 text-xs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="list" href="#ortu">Orang Tua</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content text-justify">
+                            <div class="tab-pane fade show active" id="ortu">
+                                <div class="row mt-4">
+                                    <div class="col-md-6" ng-repeat="fields in vm.ortuFields">
+                                        <table>
+                                            <tr ng-repeat="field in fields track by $index">
+                                                <td class="text-xs" ng-bind="field.name"></td>                
+                                                <td class="px-3">:</td>
+                                                <td class="font-weight-bolder text-dark text-xs">
+                                                    <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

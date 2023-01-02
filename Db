@@ -1,0 +1,68 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+define("DATA_PATH", __DIR__."/data");
+
+/**
+ * Script for creating, destroying, and seeding the app's database
+ */
+class Db {
+
+    function __construct($args)
+    {
+        $this->args = $args;
+    }
+
+    function help()
+    {
+        echo "\n";
+        echo "syntaxis: php Db <command> [<args>]".PHP_EOL;
+        echo PHP_EOL;
+
+        echo "Commands: \n";
+        echo "php Db --help                  -->   Displays the help menu.".PHP_EOL;
+        echo "php Db seed                    -->   Seed the database tables.".PHP_EOL;
+        echo PHP_EOL;
+    }
+
+    function exec()
+    {
+        if (count($this->args) <= 1) {
+            $this->help();
+        } else {
+            switch ($this->args[1]) {
+                case "seed":
+                    $this->runSeed();
+                    break;
+                case "help":
+                case "--help":
+                    $this->help();
+                    break;
+            }
+        }
+    }
+
+    function runSeed()
+    {
+        $files = glob(DATA_PATH.'/*.php');
+
+        $this->run($files);
+    }
+    
+    private function run($files)
+    {
+        foreach ($files as $file) {
+            require_once($file);
+
+            $class = basename($file, '.php');
+
+            $obj = new $class;
+            $obj->run();
+        }
+    }
+}
+
+$db = new Db($argv);
+$db->exec();

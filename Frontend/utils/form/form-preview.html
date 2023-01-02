@@ -1,0 +1,36 @@
+<span
+    ng-if="type == 'number'"
+    class="text-xs font-weight-bold"
+    app-number-format="value"></span>
+
+<span
+    ng-if="type == 'date'"
+    class="text-xs font-weight-bold"
+    app-date-format="value"></span>
+
+<span
+    ng-if="type == 'selection'"
+    class="text-xs font-weight-bold"
+    ng-bind="value"></span>
+
+<span
+    ng-if="type == 'autocomplete'"
+    class="text-xs font-weight-bold"
+    ng-bind="value"></span>
+
+<span
+    ng-if="type == 'textarea'"
+    class="text-xs font-weight-bold"
+    ng-bind="value"></span>
+
+<button
+    ng-if="type == 'file'"
+    class="btn btn-link text-gradient text-info px-0 mb-0 text-xs font-weight-bold"
+    ng-bind="value.filename"
+    ng-click="preview()">
+</button>
+
+<span 
+    ng-if="!type"
+    class="text-xs font-weight-bold"
+    ng-bind="value"></span>

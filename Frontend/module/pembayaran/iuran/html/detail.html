@@ -1,0 +1,21 @@
+<app-detail table="iuran" id="vm.dataId" fields="vm.fields" list="pembayaran.iuran" edit="pembayaran.iuran_form">
+    <app-detail-additional>
+
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#pembiayaan">Pembiayaan</a>
+            </li>
+        </ul>
+
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="pembiayaan">                
+                <div class="my-3">
+                    <app-table-template
+                        data="vm.data.iuran_detail"
+                        fields="vm.iuranDetailFields"></app-table-template>
+                </div>
+            </div>
+        </div>
+
+    </app-detail-additional>
+</app-detail>

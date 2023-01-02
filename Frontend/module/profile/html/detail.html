@@ -1,0 +1,109 @@
+<div class="row">
+    <div class="col-md-8 mx-auto" ng-init="vm.fetchPengumuman()">
+        <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item" ng-repeat="pengumuman in vm.pengumuman track by $index" ng-class="$index === 0 ? 'active' : ''">
+                    <div class="page-header min-vh-25 m-3 border-radius-xl" style="background-image: url('data:{{pengumuman.gambar.filetype}}; base64,{{pengumuman.gambar.base64}}');">
+                        <span class="mask bg-gradient-dark"></span>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-6 my-auto">
+                                    <h4 class="text-white" ng-bind="pengumuman.judul"></h4>
+                                    <p class="text-xs text-white opacity-8" ng-bind="pengumuman.isi"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" data-bs-target="#carousel" type="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" data-bs-target="#carousel" type="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="col-12 my-3">
+        <div class="float-start d-flex">
+            <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.editData()">
+                <i class="fas fa-pencil-alt text-primary me-2"></i> Edit
+            </button>
+        </div>
+        <div class="float-end d-flex">
+            <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.gantiPass()">
+                <i class="fas fa-key text-primary me-2"></i> Ganti Password
+            </button>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0 text-gradient text-primary" ng-bind="vm.data.nama"></h6>
+            </div>
+
+            <div class="card-body pt-0 pb-4">
+                <div class="row">
+                    <div class="col-md-6" ng-repeat="fields in vm.fields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                
+                                <td class="font-weight-bolder text-dark text-xs">
+                                    <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-preview>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-12" ng-if="vm.isSiswa">
+                        <ul class="nav nav-tabs mt-5 text-xs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="list" href="#ortu">Orang Tua</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content text-justify">
+                            <div class="tab-pane fade show active" id="ortu">
+                                <div class="row mt-4">
+                                    <div class="col-md-6" ng-repeat="fields in vm.ortuFields">
+                                        <table>
+                                            <tr ng-repeat="field in fields track by $index">
+                                                <td class="text-xs" ng-bind="field.name"></td>                
+                                                <td class="px-3">:</td>
+                                                <td class="font-weight-bolder text-dark text-xs">
+                                                    <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-preview>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12" ng-if="vm.isGuru">
+                        <ul class="nav nav-tabs mt-5 text-xs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="list" href="#tunjangan">Tunjangan</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content text-justify">
+                            <div class="tab-pane fade show active" id="tunjangan">
+                                <app-table-template
+                                    data="vm.guru.tunjangan_guru"
+                                    fields="vm.tunjanganFields"></app-table-template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

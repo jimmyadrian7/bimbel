@@ -1,0 +1,100 @@
+<app-modal data='vm.data'>
+    <app-modal-title>Bayar Tagihan</app-modal-title>
+
+    <app-modal-body>
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header py-2">
+                        <h6 ng-bind="vm.data.siswa.orang.nama"></h6>
+                    </div>
+
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table>
+                                    <tr>
+                                        <td class="text-xs">Nama</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span ng-bind="vm.data.nama"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Keterangan</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span ng-bind="vm.data.keterangan"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Lama Cicil</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span app-number-format="vm.data.cicil"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                
+                            <div class="col-md-6">
+                                <table>
+                                    <tr>
+                                        <td class="text-xs">Jumlah</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span app-number-format="vm.data.jumlah"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Harga</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span app-number-format="vm.data.harga"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Total</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span app-number-format="vm.data.total"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Sisa</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span app-number-format="vm.data.sisa"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <table>
+                    <tr ng-repeat="field in vm.cicilanFields" ng-if="!field.hidden">
+                        <td class="text-xs" ng-bind="field.name"></td>
+                        <td class="px-3">:</td>
+                        <td>
+                            <app-form-input type="{{field.type}}" expr="vm.modal.form.{{field.value}}"></app-form-input>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </app-modal-body>
+
+    <app-modal-footer>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3" ng-click="vm.buatCicilan()">
+            <i class="fas fa-times me-2"></i> Save
+        </button>
+        <button type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i> Close
+        </button>
+    </app-modal-footer>
+</app-modal>

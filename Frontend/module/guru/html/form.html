@@ -1,0 +1,53 @@
+<app-form detail="guru_detail" list="guru" id="vm.dataId" table="guru" fields="vm.fields" additional="vm.additional">   
+    <div id="additional">
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#detail">Detail</a>
+            </li>
+        </ul>
+    
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="detail">
+                <div class="row mt-4">
+                    <div class="col-md-6" ng-repeat="fields in vm.additional.detailFields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark py-2">
+                                    <input
+                                        ng-if="field.type == 'number'" 
+                                        type="text" 
+                                        ng-model-dynamic="{{ 'vm.data.' + field.value }}"
+                                        input-number="true"
+                                        class="form-control form-control-sm">
+
+                                    <input
+                                        ng-if="field.type == 'date'" 
+                                        type="text" 
+                                        ng-model-dynamic="{{ 'vm.data.' + field.value }}"
+                                        input-date="true"
+                                        class="form-control form-control-sm">
+
+                                    <select
+                                        ng-if="field.type == 'selection'" 
+                                        type="text" 
+                                        ng-model-dynamic="{{ 'vm.data.' + field.value }}"
+                                        class="form-control form-control-sm"
+                                        option="true">
+                                    </select>
+                                    
+                                    <input
+                                        ng-if="!field.type" 
+                                        type="text" 
+                                        ng-model-dynamic="{{ 'vm.data.' + field.value }}"
+                                        class="form-control form-control-sm">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-form>

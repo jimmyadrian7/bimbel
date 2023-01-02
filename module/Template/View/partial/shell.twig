@@ -1,0 +1,16 @@
+<div ng-controller="ShellController as vm">
+    <div ng-show="!showSplash">
+        <div ng-if="!showLoginPage">
+            {% include "/Template/View/partial/sidebar.twig" %}
+
+            <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+                <div class="container-fluid">
+                    {# {% include "/Template/View/partial/breadcrumb.twig" %} #}
+                    <div ui-view class="shuffle-animation"></div>
+                </div>
+            </main>
+        </div>
+
+        {% include "/Template/View/partial/login.twig" %}
+    </div>
+</div>

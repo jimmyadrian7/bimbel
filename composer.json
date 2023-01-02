@@ -1,0 +1,32 @@
+{
+    "require": {
+        "dompdf/dompdf": "^2.0.1",
+        "illuminate/database": "^8.83",
+        "illuminate/pagination": "^8.83",
+        "monolog/monolog": "^2.8",
+        "php-di/php-di": "^6.4",
+        "selective/basepath": "^2.1",
+        "semhoun/slim-mailer": "^1.0",
+        "slim/psr7": "^1.6",
+        "slim/slim": "4.*",
+        "slim/twig-view": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bimbel\\": [
+                "core/default/",
+                "module/"
+            ]
+        }
+    },
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4.30"
+         }
+    },
+    "scripts": {
+        "start": "php -S localhost:8080 -t public"
+    }
+}

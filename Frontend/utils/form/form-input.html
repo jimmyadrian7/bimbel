@@ -1,0 +1,64 @@
+<input
+    ng-if="type == 'number'" 
+    type="text" 
+    ng-model-dynamic="{{ expr }}"
+    input-number="true"
+    class="form-control form-control-sm">
+
+<input
+    ng-if="type == 'date'" 
+    type="text" 
+    ng-model-dynamic="{{ expr }}"
+    input-date="true"
+    class="form-control form-control-sm">
+
+<input
+    ng-if="type == 'time'" 
+    type="text" 
+    ng-model-dynamic="{{ expr }}"
+    input-time="true"
+    class="form-control form-control-sm">
+
+<select
+    ng-if="type == 'selection'" 
+    type="text" 
+    ng-model-dynamic="{{ expr }}"
+    class="form-control form-control-sm"
+    option="true">
+</select>
+
+<input
+    ng-if="type == 'autocomplete'" 
+    type="text"
+    id="{{field.value}}"
+    ng-model-dynamic="{{ expr }}"
+    input-autocomplete="true"
+    url="{{field.url}}"
+    class="form-control form-control-sm">
+
+<input
+    ng-if="type == 'file'" 
+    type="file"
+    ng-model-dynamic="{{ expr }}"
+    input-file="true"
+    class="form-control form-control-sm">
+
+<textarea
+    ng-if="type == 'textarea'"
+    ng-model-dynamic="{{ expr }}"
+    class="form-control form-control-sm"></textarea>
+
+<div ng-if="type == 'boolean'" class="form-check">
+    <input 
+    type="checkbox"
+    class="form-check-input"
+    ng-model-dynamic="{{ expr }}"
+    ng-true-value="1"
+    ng-false-value="0">
+</div>
+
+<input
+    ng-if="!type"
+    type="text" 
+    ng-model-dynamic="{{ expr }}"
+    class="form-control form-control-sm">

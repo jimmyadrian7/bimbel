@@ -1,0 +1,89 @@
+<app-detail table="tagihan" id="vm.dataId" fields="vm.fields" list="{{vm.list}}" edit="{{ vm.data.status == 'p' ? vm.form : '' }}">
+    <app-detail-button>
+        <button 
+            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+            ng-click="vm.bayarTagihan()" 
+            ng-if="vm.data.status != 'l'">
+            <i class="fa fa-usd me-2"></i> Bayar
+        </button>
+
+        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()">
+            <i class="fa fa-print me-2"></i> Invoice
+        </button>
+    </app-detail-button>
+
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.siswa.orang.nama"></span>
+            <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getValue(vm.status_field)"></span>
+        </h6>
+    </app-detail-title>
+
+    <app-detail-additional>
+
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#detail">Detail</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#transaksi">Transaksi</a>
+            </li>
+        </ul>
+
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="detail">                
+                <div class="my-3">
+                    <app-table-template 
+                        data="vm.data.tagihan_detail" 
+                        fields="vm.tagihanDetailFields"></app-table-template>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="transaksi">
+                <div class="my-3">
+                    <div class="table-responsive mb-3">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Nominal
+                                    </th>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Bukti pembayaran
+                                    </th>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Tanggal
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="!vm.data.transaksi || vm.data.transaksi.length == 0">
+                                    <td colspan="3" class="text-center">
+                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    </td>
+                                </tr>
+                    
+                                <tr ng-repeat="data in vm.data.transaksi track by $index" ng-if="vm.data.transaksi.length > 0">
+                                    <td><app-form-preview type="number" value="data.nominal"></app-form-preview></td>
+                                    <td><app-form-preview type="file" value="data.bukti_pembayaran"></app-form-preview></td>
+                                    <td><app-form-preview type="date" value="data.tanggal"></app-form-preview></td>
+                                    <td>
+                                        <button 
+                                            ng-if="data.status != 'v' && !vm.isSiswa"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-click="vm.verif(data)">
+                                            <i class="fa fa-check me-2"></i> Verif
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </app-detail-additional>
+</app-detail>

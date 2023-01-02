@@ -1,0 +1,22 @@
+<app-modal data='vm.previewFile'>
+    <app-modal-title>{{vm.previewFile.filename}}</app-modal-title>
+
+    <app-modal-body>
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header p-0">
+                        <img class="border-radius-lg w-100" ng-src="data:{{vm.previewFile.filetype}};base64, {{vm.previewFile.base64}}" alt="{{vm.previewFile.filename}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-modal-body>
+
+    <app-modal-footer>
+        <button type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i> Close
+        </button>
+    </app-modal-footer>
+</app-modal>

@@ -1,0 +1,84 @@
+<div class="row">
+    <div class="col-12 my-3">
+        <div class="float-start d-flex">
+            <button class="btn btn-link text-dark text-gradient px-3 mb-0 mr-3" ng-click="vm.back()">
+                <i class="fas fa-chevron-left text-dark me-2"></i>
+            </button>
+            <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.editData()" ng-if="vm.edit">
+                <i class="fas fa-pencil-alt text-primary me-2"></i> Edit
+            </button>
+            <button class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.deleteData()" ng-if="vm.edit">
+                <i class="far fa-trash-alt me-2"></i> Delete
+            </button>
+        </div>
+
+        <div class="float-end" ng-transclude="button"></div>
+    </div>
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header" ng-transclude="title">
+                <h6 class="mb-0 text-gradient text-primary" ng-bind="vm.data.nama"></h6>
+            </div>
+
+            <div class="card-body pt-0 pb-4">
+                <div class="row">
+                    <div class="col-md-6" ng-repeat="fields in vm.fields">
+                        <table class="table-preview">
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                
+                                <td class="font-weight-bolder text-dark text-xs content">
+                                    <span
+                                        ng-if="field.type == 'number'"
+                                        app-number-format="vm.getValue(field)"></span>
+                                
+                                    <span
+                                        ng-if="field.type == 'date'"
+                                        app-date-format="vm.getValue(field)"></span>
+                                    
+                                    <span
+                                        ng-if="field.type == 'selection'"
+                                        ng-bind="vm.getValue(field)"></span>
+
+                                    <span
+                                        ng-if="field.type == 'autocomplete'"
+                                        ng-bind="vm.getValue(field)"></span>
+
+                                    <span
+                                        ng-if="field.type == 'textarea'"
+                                        ng-bind="vm.getValue(field)"></span>
+
+                                    <span>
+                                        <button
+                                            ng-if="field.type == 'file'"
+                                            class="btn btn-link text-gradient text-info p-0 mb-0"
+                                            ng-bind="vm.getValue(field)"
+                                            ng-click="vm.preview(field)">
+                                        </button>
+                                    </span>
+
+                                    <div ng-if="field.type == 'boolean'" class="form-check">
+                                        <input 
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        ng-model-dynamic="{{ 'vm.data.' + field.value }}"
+                                        ng-true-value="1"
+                                        ng-false-value="0"
+                                        disabled="true">
+                                    </div>
+
+                                    <span ng-if="!field.type"
+                                        ng-bind="vm.getValue(field)"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-12" ng-transclude="additional"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

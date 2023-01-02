@@ -1,0 +1,35 @@
+<html>
+    
+    <head>
+        {% include "/Report/View/partial/style.twig" %}
+    </head>
+
+    <body style="background-image:url({{background}})">
+        
+        <div class="container">
+            {% include "Report/View/partial/header.twig" %}
+            
+            <div class="content">
+                <table class="table-content">
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Nominal</th>
+                    </tr>
+                    {% for cicilan_aset in tabungan_aset.cicilan_aset %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ cicilan_aset.tanggal|date("m/d/Y") }}</td>
+                            <td>{{ cicilan_aset.nominal|number_format(0, ',', '.') }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bold">
+                        <td class="bg-transparent" colspan="1"></td>
+                        <td class="bg-red">Total Tagihan</td>
+                        <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

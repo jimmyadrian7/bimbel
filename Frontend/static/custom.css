@@ -1,0 +1,31 @@
+.navbar-vertical.navbar-expand-xs .navbar-collapse {
+    height: calc(100vh - 218px);
+}
+
+
+.autoComplete_wrapper > input {
+    width: inherit;
+    height: inherit;
+    font-size: 0.75rem;
+    color: #495057;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.75rem;
+}
+
+
+.table-preview .content {
+    position: relative;
+    width: 100%;
+}
+.table-preview .content:before {
+    content: '&nbsp;';
+    visibility: hidden;
+}
+.table-preview .content > span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

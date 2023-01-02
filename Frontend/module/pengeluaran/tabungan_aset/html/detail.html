@@ -1,0 +1,39 @@
+<app-detail table="tabungan_aset" id="vm.dataId" fields="vm.fields" list="pengeluaran.tabungan_aset" edit="{{ vm.data.status == 'a' ? 'pengeluaran.tabungan_aset_form': '' }}">
+    <app-detail-button>
+        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()" ng-if="vm.data.status != 'a'">
+            <i class="fa fa-print me-2"></i> Invoice
+        </button>
+        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahCicilan()" ng-if="vm.data.status != 'l'">
+            <i class="fa fa-usd me-2"></i> Bayar
+        </button>
+    </app-detail-button>
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.nama"></span>
+            <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getStatusLabel(vm.data.status)"></span>
+        </h6>
+    </app-detail-title>
+    
+    <app-detail-additional>
+
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#transaksi">Transaksi</a>
+            </li>
+        </ul>
+
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="transaksi">
+                <div class="my-3">
+                    <div class="my-3">
+                        <app-table-template
+                            data="vm.data.cicilan_aset" 
+                            fields="vm.cicilanFields"></app-table-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </app-detail-additional>
+</app-detail>

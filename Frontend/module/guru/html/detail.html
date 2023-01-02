@@ -1,0 +1,102 @@
+<app-detail table="guru" id="vm.dataId" fields="vm.fields" list="guru" edit="guru_form">
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.orang.nama"></span>
+            <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getLabel(vm.data.status, vm.statusOpt)"></span>
+        </h6>
+    </app-detail-title>
+
+    <app-detail-additional>
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#tunjangan">Tunjangan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#siswa">Siswa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#gaji">Gaji</a>
+            </li>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#detail">Detail</a>
+            </li>
+        </ul>
+
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="tunjangan" ng-init="vm.fetchDataSiswa()">
+                <div class="mt-3">
+                    <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahTunjangan()">
+                        <i class="fa fa-plus me-3"></i> Tambah
+                    </button>
+                </div>
+
+                <div class="my-3">
+                    <div class="table-responsive mb-3">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Nama
+                                    </th>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Nominal
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="!vm.data.tunjangan_guru || vm.data.tunjangan_guru.length == 0">
+                                    <td colspan="3" class="text-center">
+                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    </td>
+                                </tr>
+                    
+                                <tr ng-repeat="data in vm.data.tunjangan_guru track by $index" ng-if="vm.data.tunjangan_guru.length > 0">
+                                    <td><span class="text-xs font-weight-bold" ng-bind="data.nama"></span></td>
+                                    <td><span class="text-xs font-weight-bold" app-number-format="data.nominal"></span></td>
+                                    <td>
+                                        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.deleteTunjangan(data)">
+                                            <i class="far fa-trash-alt me-2"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="siswa" ng-init="vm.fetchDataSiswa()">
+                <app-table-template
+                    data="vm.siswa" 
+                    fields="vm.additional.siswaFields"></app-table-template>
+            </div>
+
+            <div class="tab-pane fade" id="gaji">
+                <div class="table-responsive p-0 mt-2">
+                    <app-table-template
+                        data="vm.data.gaji"
+                        fields="vm.additional.gajiFields"></app-table-template>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="detail">
+                <div class="row mt-4">
+                    <div class="col-md-6" ng-repeat="fields in vm.additional.detailFields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark text-xs">
+                                    <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-preview>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-detail-additional>
+</app-detail>

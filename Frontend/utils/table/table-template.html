@@ -1,0 +1,54 @@
+<div class="table-responsive">
+    <table class="table align-items-center mb-0">
+        <thead>
+            <tr>
+                <th 
+                    class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                    ng-repeat="field in vm.fields" ng-bind="field.name"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-if="vm.data.length == 0">
+                <td colspan="{{ vm.fields.length }}" class="text-center">
+                    <span class="text-xs font-weight-bold">No data Available</span>
+                </td>
+            </tr>
+
+            <tr ng-if="vm.data.length > 0" ng-repeat="data in vm.data track by $index" ng-click="vm.goDetail(data)">
+                <td ng-repeat="field in vm.fields" ng-switch="field.type">
+                    <span
+                        ng-switch-when="number"
+                        class="text-xs font-weight-bold" 
+                        app-number-format="vm.getValue(data, field)"></span>
+
+                    <span
+                        ng-switch-when="date"
+                        class="text-xs font-weight-bold" 
+                        app-date-format="vm.getValue(data, field)"></span>
+
+                    <div ng-switch-when="boolean" class="form-check">
+                        <input 
+                        type="checkbox"
+                        class="form-check-input"
+                        ng-model-dynamic="{{ 'data.' + field.value }}"
+                        ng-true-value="1"
+                        ng-false-value="0"
+                        disabled="true">
+                    </div>
+
+                    <button
+                        ng-switch-when="file"
+                        class="btn btn-link text-gradient text-info px-0 mb-0"
+                        ng-bind="vm.getValue(data, field)"
+                        ng-click="vm.preview(data, field)">
+                    </button>
+
+                    <span
+                        ng-switch-default
+                        class="text-xs font-weight-bold" 
+                        ng-bind="vm.getValue(data, field)"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

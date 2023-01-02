@@ -1,0 +1,35 @@
+<html>
+    
+    <head>
+        {% include "/Report/View/partial/style.twig" %}
+    </head>
+
+    <body style="background-image:url({{background}})">
+        
+        <div class="container">
+            {% include "Report/View/partial/header.twig" %}
+            
+            <div class="content">
+                <table class="table-content">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Guru</th>
+                        <th>Jumlah</th>
+                    </tr>
+                    {% for gaji in gajis %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ gaji.guru.orang.nama }}</td>
+                            <td>{{ gaji.komisi|number_format(0, ',', '.') }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bold">
+                        <td class="bg-transparent" colspan="1"></td>
+                        <td class="bg-red">Total</td>
+                        <td class="bg-red">{{ total_gaji|number_format(0, ',', '.') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

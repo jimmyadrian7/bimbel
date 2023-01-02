@@ -1,0 +1,147 @@
+<app-detail table="siswa" id="vm.dataId" fields="vm.fields" list="siswa.siswa" edit="siswa.siswa_form">
+    <app-detail-button>
+        <button 
+            ng-if="vm.data.status == 'a'"
+            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+            ng-click="vm.updateStatus()">
+            <i class="fa fa-times me-2"></i> Berhentikan
+        </button>
+    </app-detail-button>
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.orang.nama"></span>
+            <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getValue(vm.status_field)"></span>
+        </h6>
+    </app-detail-title>
+
+    <app-detail-additional>
+
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#detail">Detail</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#ortu">Orang Tua</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#iuran">Iuran</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#jadwal">Jadwal</a>
+            </li>
+        </ul>
+
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="detail">
+                <div class="row mt-4">
+                    <div class="col-md-6" ng-repeat="fields in vm.additional.detailFields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+
+                                <td class="px-3">:</td>
+
+                                <td class="font-weight-bolder text-dark text-xs">
+                                    <span
+                                        ng-if="field.type == 'number'"
+                                        app-number-format="vm.getValue(field)"></span>
+                                
+                                    <span
+                                        ng-if="field.type == 'date'"
+                                        app-date-format="vm.getValue(field)"></span>
+                                    
+                                    <span
+                                        ng-if="field.type == 'selection'"
+                                        ng-bind="vm.getValue(field)"></span>
+
+                                    <span ng-if="!field.type"
+                                        ng-bind="vm.getValue(field)"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="ortu">
+                <div class="row mt-4">
+                    <div class="col-md-6" ng-repeat="fields in vm.additional.ortuFields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+
+                                <td class="px-3">:</td>
+                                
+                                <td class="font-weight-bolder text-dark text-xs">
+                                    <span
+                                        ng-if="field.type == 'number'"
+                                        app-number-format="vm.getValue(field)"></span>
+                                
+                                    <span
+                                        ng-if="field.type == 'date'"
+                                        app-date-format="vm.getValue(field)"></span>
+                                    
+                                    <span
+                                        ng-if="field.type == 'selection'"
+                                        ng-bind="vm.getValue(field)"></span>
+
+                                    <span ng-if="!field.type"
+                                        ng-bind="vm.getValue(field)"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="iuran">
+                <div class="my-3">
+                    <div class="table-responsive mb-3">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Nama
+                                    </th>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Bulan
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="!vm.data.iuran || vm.data.iuran.length == 0">
+                                    <td colspan="3" class="text-center">
+                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    </td>
+                                </tr>
+                    
+                                <tr ng-repeat="data in vm.data.iuran track by $index" ng-if="vm.data.iuran.length > 0">
+                                    <td><span class="text-xs font-weight-bold" ng-bind="data.nama"></span></td>
+                                    <td><span class="text-xs font-weight-bold" app-number-format="data.bulan"></span></td>
+                                    <td>
+                                        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.editIuran($index)">
+                                            <i class="fa fa-pencil me-2"></i> Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="jadwal">
+                <div class="my-3">
+                    <div class="table-responsive mb-3">
+                        <app-table-template
+                            data="vm.data.jadwal"
+                            fields="vm.jadwalFields"></app-table-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </app-detail-additional>
+</app-detail>
