@@ -8,9 +8,12 @@ import jadwal from "./html/modal/jadwal.html";
     angular.module('app.module.siswa.siswa')
         .controller('SiswaController', SiswaController);
 
-    SiswaController.$inject = ['$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session'];
+    SiswaController.$inject = [
+        '$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session',
+        'referalOptions'
+    ];
 
-    function SiswaController(stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session)
+    function SiswaController(stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session, referalOptions)
     {
         let vm = this;
         let jenisKelamin = [
@@ -34,11 +37,12 @@ import jadwal from "./html/modal/jadwal.html";
         ];
 
         vm.myModal = false;
-        vm.data = {iuran: [], jadwal: []};
+        vm.data = {iuran: [], jadwal: [], ref: {}};
         vm.modal = {};
         vm.dataId = stateParams.dataId;
         vm.activeIndex = -1;
         vm.isSuperUser = session.isSuperUser();
+        vm.referalOptions = referalOptions;
 
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [
@@ -56,6 +60,8 @@ import jadwal from "./html/modal/jadwal.html";
             {name: "Nama", value: "orang.nama", table: true},
             {name: "Nama Mandarin", value: "orang.nama_mandarin", table: true},
             {name: "Komisi", value: "komisi", type: 'number', table: true},
+            {name: "Program", value: "program"},
+            {name: "Paket Belajar", value: "paket_belajar"},
             vm.status_field
         ];
 
@@ -95,6 +101,12 @@ import jadwal from "./html/modal/jadwal.html";
                 {name: "Membaca", value: "membaca"},
                 {name: "Menulis", value: "menulis"},
                 {name: "Kondisi Siswa", value: "kondisi"}
+            ]
+        ];
+        vm.additional.responFields = [
+            [
+                {name: "Respon & Tanggapan", value: "respon"},
+                {name: "Tanggapan guru", value: "tanggapan"}
             ]
         ];
         vm.iuranFields = [

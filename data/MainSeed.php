@@ -72,6 +72,7 @@ class MainSeed {
         $this->importData('menu');
         $this->importData('role');
         $this->importData('konfigurasi_web');
+        $this->importData('referal');
 
         // Create super admin user
         echo "Create super admin user.... \r\n";

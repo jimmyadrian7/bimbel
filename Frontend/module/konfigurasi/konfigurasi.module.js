@@ -6,5 +6,6 @@
         'app.module.konfigurasi.user',
         'app.module.konfigurasi.menu',
         'app.module.konfigurasi.sequance',
+        'app.module.konfigurasi.referal',
     ]);
 })()

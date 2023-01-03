@@ -2,21 +2,26 @@
 namespace Bimbel\Siswa\Model;
 
 use Bimbel\Core\Model\BaseModel;
+
 use Bimbel\Master\Model\Orang;
 use Bimbel\Guru\Model\Guru;
+
 use Bimbel\Siswa\Model\Deposit;
 use Bimbel\Siswa\Model\IuranTerbuat;
+use Bimbel\Siswa\Model\Jadwal;
+use Bimbel\Siswa\Model\Referal;
+
 use Bimbel\Pembayaran\Model\Iuran;
 use Bimbel\Pembayaran\Model\Tagihan;
-use Bimbel\Siswa\Model\Jadwal;
 
 class Siswa extends BaseModel
 {
     protected $fillable = [
         'no_formulir', 'status', 'tanggal_pendaftaran', 'guru_id', 'komisi',
         'orang_id', 'orang',
-        'iuran',
-        'jadwal'
+        'iuran', 'jadwal', 'ref',
+        'pinyin', 'dengar', 'bicara', 'membaca', 'menulis', 'kondisi', 'respon', 'tanggapan',
+        'program', 'paket_belajar', 'referal_other'
     ];
     protected $table = 'siswa';
     protected $with = ['orang', 'iuran', 'jadwal'];
@@ -28,8 +33,9 @@ class Siswa extends BaseModel
         ["value" => "n", "label" => "Berhenti"]
     ];
 
-    protected $appends = ['guru_data'];
-    public function getGuruDataAttribute() {
+    protected $appends = ['guru_data', 'ref'];
+    public function getGuruDataAttribute()
+    {
 		$guru_id = [
             "id" => $this->guru_id,
             "nama" => $this->guru->orang->nama
@@ -37,6 +43,18 @@ class Siswa extends BaseModel
 
 		return $guru_id;
 	}
+
+    public function getRefAttribute()
+    {
+        $ref = [];
+
+        foreach($this->referal as $value)
+        {
+            $ref[$value->id] = true;
+        }
+
+        return $ref;
+    }
 
 
     public function orang()
@@ -66,6 +84,10 @@ class Siswa extends BaseModel
     public function jadwal()
     {
         return $this->hasMany(Jadwal::class, 'siswa_id', 'id');
+    }
+    public function referal()
+    {
+        return $this->belongsToMany(Referal::class, 'siswa_referal', 'siswa_id', 'referal_id');
     }
 
 
@@ -186,6 +208,39 @@ class Siswa extends BaseModel
         $jadwal = $jadwal->where('siswa_id', $this->id)->whereNotIn('id', $jadwal_ids);
         $jadwal->delete();
     }
+    public function handleRef($refs)
+    {
+        $siswa = $this;
+        $ref_ids = [];
+        $inst_ids = [];
+
+        if (empty($refs))
+        {
+            return;
+        }
+
+        foreach($refs as $key => $value)
+        {
+            if ($value)
+            {
+                $hasRef = $siswa->referal()->where('referal.id', $key)->exists();
+
+                if (!$hasRef)
+                {
+                    array_push($inst_ids, $key);
+                }
+                array_push($ref_ids, $key);
+            }
+        }
+
+        if (count($inst_ids) > 0)
+        {
+            $siswa->referal()->attach($inst_ids);
+        }
+
+        $ref_unids = $siswa->referal()->whereNotIn('referal.id', $ref_ids)->get()->pluck('id');
+        $siswa->referal()->detach($ref_unids);
+    }
 
 
     public function createUser()
@@ -271,12 +326,14 @@ class Siswa extends BaseModel
     {
         $iurans = self::getValue($attributes, 'iuran');
         $jadwals = self::getValue($attributes, 'jadwal');
+        $refs = self::getValue($attributes, 'ref');
 
         self::handleOrang($attributes);
         self::getSequance($attributes);
 
 		$siswa = parent::create($attributes);
         $siswa->handleJadwal($jadwals);
+        $siswa->handleRef($refs);
         $siswa->handleIuran($iurans);
         $siswa->triggerIuran(true);
 
@@ -287,6 +344,7 @@ class Siswa extends BaseModel
     {
         $iurans = self::getValue($attributes, 'iuran');
         $jadwals = self::getValue($attributes, 'jadwal');
+        $refs = self::getValue($attributes, 'ref');
         
         $this->handleOrang($attributes);
         $this->handleStatus($attributes);
@@ -294,6 +352,7 @@ class Siswa extends BaseModel
         $result = parent::update($attributes, $options);
 
         $this->handleJadwal($jadwals);
+        $this->handleRef($refs);
         $this->handleIuran($iurans);
 
         return $result;

@@ -25,10 +25,16 @@
                 <a class="nav-link" data-bs-toggle="list" href="#ortu">Orang Tua</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#test">Test</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="list" href="#iuran">Iuran</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="list" href="#jadwal">Jadwal</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#referal">Referal</a>
             </li>
         </ul>
 
@@ -95,6 +101,36 @@
                 </div>
             </div>
 
+            <div class="tab-pane fade show" id="test">
+                <div class="row mt-4">
+                    <div class="col-md-6" ng-repeat="fields in vm.additional.testFields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark text-xs">
+                                    <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-preview>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <hr class="horizontal dark mt-4">
+
+                    <div class="col-md-6" ng-repeat="fields in vm.additional.responFields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark py-2">
+                                    <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-input>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div class="tab-pane fade show" id="iuran">
                 <div class="my-3">
                     <div class="table-responsive mb-3">
@@ -138,6 +174,44 @@
                         <app-table-template
                             data="vm.data.jadwal"
                             fields="vm.jadwalFields"></app-table-template>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="referal">
+                <div class="row my-4">
+                    <div class="col-md-6">
+                        <table>
+                            <tr>
+                                <td class="text-xs">Mengetahui kursus ini dari : </td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bolder text-dark py-2">
+                                    <div class="form-check" ng-repeat="opt in vm.referalOptions">
+                                        <label class="custom-control-label">
+                                            <input 
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            ng-model="vm.data.ref[opt.value]"
+                                            disabled="true">
+                                            {{opt.label}}
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+                        <table>
+                            <tr>
+                                <td class="text-xs">Sebutkan referensi dari</td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark py-2">
+                                    <app-form-preview type="" value="vm.data.referal_other"></app-form-input>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

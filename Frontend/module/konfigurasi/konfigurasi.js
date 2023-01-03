@@ -7,3 +7,4 @@ import "./agama/agama";
 import "./user/user";
 import "./menu/menu";
 import "./sequance/sequance";
+import "./referal/referal";

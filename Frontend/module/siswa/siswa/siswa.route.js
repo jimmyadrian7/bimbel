@@ -23,7 +23,14 @@ import form from "./html/form.html";
                     return {value: value.id, label: value.nama}
                 });
             });
-        }
+        };
+        let getRefOptions = (req) => {
+            return req.get('referals').then(response => {
+                return response.data.map((value) => {
+                    return {value: value.id, label: value.nama}
+                });
+            });
+        };
 
         return [
             {
@@ -37,7 +44,8 @@ import form from "./html/form.html";
                     menu: 'siswa',
                     nav: 'siswa',
                     resolve: {
-                        agamaOptions: getAgaOptions
+                        agamaOptions: getAgaOptions,
+                        referalOptions: getRefOptions
                     }
                 }
             },
@@ -52,7 +60,8 @@ import form from "./html/form.html";
                     menu: 'siswa',
                     nav: 'siswa',
                     resolve: {
-                        agamaOptions: getAgaOptions
+                        agamaOptions: getAgaOptions,
+                        referalOptions: getRefOptions
                     }
                 }
             },
@@ -67,7 +76,8 @@ import form from "./html/form.html";
                     menu: 'siswa',
                     nav: 'siswa',
                     resolve: {
-                        agamaOptions: getAgaOptions
+                        agamaOptions: getAgaOptions,
+                        referalOptions: getRefOptions
                     }
                 }
             }

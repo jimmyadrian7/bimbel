@@ -18,6 +18,7 @@
             {name: "User", list: 'konfigurasi.user', nav: 'user'},
             {name: "Menu", list: 'konfigurasi.menu', nav: 'menu'},
             {name: "Sequance", list: 'konfigurasi.sequance', nav: 'sequance'},
+            {name: "Referal", list: 'konfigurasi.referal', nav: 'referal'},
         ];
 
         vm.goState = goState;

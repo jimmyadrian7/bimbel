@@ -51,7 +51,18 @@ CREATE TABLE `siswa` (
   `orang_id` int,
   `status` ENUM ('b', 'a', 'p', 'n') DEFAULT "b",
   `tanggal_pendaftaran` date DEFAULT (now()),
-  `komisi` int
+  `komisi` int,
+  `pinyin` varchar(255),
+  `dengar` varchar(255),
+  `bicara` varchar(255),
+  `membaca` varchar(255),
+  `menulis` varchar(255),
+  `kondisi` varchar(255),
+  `respon` varchar(255),
+  `tanggapan` varchar(255),
+  `program` varchar(255),
+  `paket_belajar` varchar(255),
+  `referal_other` varchar(255)
 );
 
 CREATE TABLE `deposit` (
@@ -81,7 +92,18 @@ CREATE TABLE `jadwal` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `siswa_id` int,
   `hari` ENUM ('1', '2', '3', '4', '5', '6', '7'),
-  `jam` varchar(255)
+  `waktu` varchar(255)
+);
+
+CREATE TABLE `referal` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `nama` varchar(255)
+);
+
+CREATE TABLE `siswa_referal` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `siswa_id` int,
+  `referal_id` int
 );
 
 CREATE TABLE `guru` (
@@ -314,6 +336,10 @@ ALTER TABLE `iuran_terbuat` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id
 ALTER TABLE `iuran_terbuat` ADD FOREIGN KEY (`iuran_id`) REFERENCES `iuran` (`id`);
 
 ALTER TABLE `jadwal` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`);
+
+ALTER TABLE `siswa_referal` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`);
+
+ALTER TABLE `siswa_referal` ADD FOREIGN KEY (`referal_id`) REFERENCES `referal` (`id`);
 
 ALTER TABLE `guru` ADD FOREIGN KEY (`orang_id`) REFERENCES `orang` (`id`);
 
