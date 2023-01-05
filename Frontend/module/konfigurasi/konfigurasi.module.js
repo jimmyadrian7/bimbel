@@ -7,5 +7,6 @@
         'app.module.konfigurasi.menu',
         'app.module.konfigurasi.sequance',
         'app.module.konfigurasi.referal',
+        'app.module.konfigurasi.kursus',
     ]);
 })()

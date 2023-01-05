@@ -4,6 +4,7 @@ namespace Bimbel\Siswa\Model;
 use Bimbel\Core\Model\BaseModel;
 
 use Bimbel\Master\Model\Orang;
+use Bimbel\Master\Model\Kursus;
 use Bimbel\Guru\Model\Guru;
 
 use Bimbel\Siswa\Model\Deposit;
@@ -21,7 +22,8 @@ class Siswa extends BaseModel
         'orang_id', 'orang',
         'iuran', 'jadwal', 'ref',
         'pinyin', 'dengar', 'bicara', 'membaca', 'menulis', 'kondisi', 'respon', 'tanggapan',
-        'program', 'paket_belajar', 'referal_other'
+        'program', 'paket_belajar', 'referal_other',
+        'kursus_id', 'sekolah', 'kelas'
     ];
     protected $table = 'siswa';
     protected $with = ['orang', 'iuran', 'jadwal'];
@@ -88,6 +90,10 @@ class Siswa extends BaseModel
     public function referal()
     {
         return $this->belongsToMany(Referal::class, 'siswa_referal', 'siswa_id', 'referal_id');
+    }
+    public function kursus()
+    {
+        return $this->hasOne(Kursus::class, 'id', 'kursus_id');
     }
 
 

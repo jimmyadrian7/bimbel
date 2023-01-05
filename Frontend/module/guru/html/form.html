@@ -4,6 +4,9 @@
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="list" href="#detail">Detail</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#kuesioner">Kuesioner</a>
+            </li>
         </ul>
     
         <div class="tab-content text-justify">
@@ -45,6 +48,19 @@
                                 </td>
                             </tr>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="kuesioner">
+                <div class="row my-4">
+                    <div class="col-12">
+                        <div class="my-3" ng-repeat="field in vm.additional.surveyFields">
+                            <div class="text-xs" ng-bind="field.name"></div>
+                            <div class="font-weight-bolder text-dark py-2">
+                                <app-form-input type="{{field.type}}" expr="vm.data.{{field.value}}"></app-form-input>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

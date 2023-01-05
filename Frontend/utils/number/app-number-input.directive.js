@@ -32,7 +32,7 @@
             {
                 var valStr, displayValue;
         
-                if (typeof val === 'undefined') {
+                if (typeof val === 'undefined' || val === null) {
                   return 0;
                 }
         

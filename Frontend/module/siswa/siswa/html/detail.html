@@ -1,4 +1,4 @@
-<app-detail table="siswa" id="vm.dataId" fields="vm.fields" list="siswa.siswa" edit="siswa.siswa_form">
+<app-detail table="siswa" id="vm.dataId" fields="vm.fields" list="siswa.siswa" edit="{{vm.edit_form}}">
     <app-detail-button>
         <button 
             ng-if="vm.data.status == 'a'"
@@ -157,7 +157,7 @@
                                     <td><span class="text-xs font-weight-bold" ng-bind="data.nama"></span></td>
                                     <td><span class="text-xs font-weight-bold" app-number-format="data.bulan"></span></td>
                                     <td>
-                                        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.editIuran($index)">
+                                        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.editIuran($index)" ng-if="vm.isSuperUser">
                                             <i class="fa fa-pencil me-2"></i> Edit
                                         </button>
                                     </td>

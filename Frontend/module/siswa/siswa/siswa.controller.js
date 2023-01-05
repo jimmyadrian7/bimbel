@@ -10,10 +10,13 @@ import jadwal from "./html/modal/jadwal.html";
 
     SiswaController.$inject = [
         '$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session',
-        'referalOptions'
+        'referalOptions', 'kursusOptions'
     ];
 
-    function SiswaController(stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session, referalOptions)
+    function SiswaController(
+        stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session, 
+        referalOptions, kursusOptions
+    )
     {
         let vm = this;
         let jenisKelamin = [
@@ -43,6 +46,7 @@ import jadwal from "./html/modal/jadwal.html";
         vm.activeIndex = -1;
         vm.isSuperUser = session.isSuperUser();
         vm.referalOptions = referalOptions;
+        vm.edit_form = vm.isSuperUser ? 'siswa.siswa_form' : '';
 
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [
@@ -62,6 +66,7 @@ import jadwal from "./html/modal/jadwal.html";
             {name: "Komisi", value: "komisi", type: 'number', table: true},
             {name: "Program", value: "program"},
             {name: "Paket Belajar", value: "paket_belajar"},
+            {name: "Tempat Kursus", value: "kursus_id", table: true, type: "selection", selection: kursusOptions},
             vm.status_field
         ];
 
@@ -70,14 +75,15 @@ import jadwal from "./html/modal/jadwal.html";
             [
                 {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin},
                 {name: "Agama", value: "orang.agama_id", type: 'selection', selection: agamaOptions},
-                {name: "No. HP", value: "orang.no_hp", table: true},
-                {name: "Email", value: "orang.email"}
-            ],
-            [
-                {name: "Alamat", value: "orang.alamat"},
                 {name: "Tempat Lahir", value: "orang.tempat_lahir"},
                 {name: "Tanggal Lahir", value: "orang.tanggal_lahir", type: 'date'},
-                {name: "Hobi", value: "orang.hobi"}
+            ],
+            [
+                {name: "No. HP", value: "orang.no_hp", table: true},
+                {name: "Email", value: "orang.email"},
+                {name: "Alamat", value: "orang.alamat"},
+                {name: "Sekolah", value: "sekolah"},
+                {name: "Kelas", value: "kelas"}
             ]
         ];
         vm.additional.ortuFields = [
@@ -143,9 +149,13 @@ import jadwal from "./html/modal/jadwal.html";
             {
                 let guru = session.getSession().guru;
                 vm.data.guru_data = {id: guru.id, nama: guru.orang.nama};
-                vm.data.guru_id = guru.id;
                 let getter = $parse('guru_id');
                 getter.assign(vm.data, vm.data.guru_data);
+
+                if (!session.isSuperUser())
+                {
+                    vm.data.guru_id = guru.id;
+                }
             }
         }
 

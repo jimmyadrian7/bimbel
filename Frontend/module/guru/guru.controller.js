@@ -1,5 +1,7 @@
 import modalGaji from "./html/modal/modal-gaji.html";
 import tunjangan from "./html/modal/tunjangan.html";
+import pilihHari from "./html/modal/pilih-hari.html";
+import showGuru from "./html/modal/show-guru.html";
 
 (() => {
     "use strict";
@@ -16,8 +18,17 @@ import tunjangan from "./html/modal/tunjangan.html";
             {label: "Laki laki", value: "l"},
             {label: "Perempuan", value: "p"}
         ];
+        let hariOpt = [
+            {value: "1", label: "Senin"},
+            {value: "2", label: "Selasa"},
+            {value: "3", label: "Rabu"},
+            {value: "4", label: "Kamis"},
+            {value: "5", label: "Jumat"},
+            {value: "6", label: "Sabtu"},
+            {value: "7", label: "Minggu"}
+        ];
 
-        vm.modal = {siswa: {}, added: []};
+        vm.modal = {siswa: {}, added: [], listGuru: []};
         vm.siswa = [];
         vm.modalElement = false;
         vm.data = {};
@@ -62,6 +73,24 @@ import tunjangan from "./html/modal/tunjangan.html";
                 {name: "Hobi", value: "orang.hobi"}
             ]
         ];
+        vm.additional.surveyFields = [
+            {name: "Mengapa Anda memilih berhenti dari perusahaan sebelumnya?", value: "berhenti", type: "textarea"},
+            {name: "Mengapa Anda memilih Students of One Family Learning Centre?", value: "memilih", type: "textarea"},
+            {name: "Deskripsikan secara detail, apa saja kelebihan Anda? Bagaimana cara meningkatkan kelebihan tersebut?", value: "kelebihan", type: "textarea"},
+            {name: "Deskripsikan secara detail, apa saja kekurangan Anda? Bagaimana cara meningkatkan kekurangan tersebut?", value: "kekurangan", type: "textarea"},
+            {name: "Silahkan deskripsikan kondisi Kesehatan Anda?", value: "kesehatan", type: "textarea"},
+            {name: "Silahkan deskripsikan lingkungan kerja yang Anda inginkan! Mengapa?", value: "lingkungan", type: "textarea"},
+            {name: "Jika Anda diterima, apakah Anda dapat mengikuti aturan yang diatur oleh SOOF? Mengapa?", value: "aturan", type: "textarea"},
+            {name: "Jika Anda diterima, apakah Anda bersedia mengikuti sistem pelatihan yang diatur oleh SOOF? Mengapa?", value: "pelatihan", type: "textarea"},
+            {name: "Jika Anda diterima, kapan rencana Anda mulai mengajar di SOOF?", value: "kapan", type: "textarea"},
+            {name: "Silahkan tuliskan gaji Anda sebelumnya", value: "gaji_sebelumnya", type: "number"},
+            {name: "Gaji yang Anda  minta", value: "gaji_diminta", type: "number"},
+            {name: "Pengenalan diri", value: "rekaman", type: "file"},
+            {name: "Menurut Anda, bagaimana baru dapat dikategorikan sebagai guru yang ideal?", value: "ideal", type: "textarea"},
+        ];
+        vm.jadwalFields = [
+            {name: "Hari", value: "hari", type: "selection", selection: hariOpt}
+        ];
 
         vm.getValue = getValue;
         vm.getLabel = getLabel;
@@ -74,6 +103,9 @@ import tunjangan from "./html/modal/tunjangan.html";
         vm.tambahTunjangan = tambahTunjangan;
         vm.addTunjangan = addTunjangan;
         vm.deleteTunjangan = deleteTunjangan;
+
+        vm.liatGuru = liatGuru;
+        vm.previewGuru = previewGuru;
 
         function getValue(field)
         {
@@ -147,6 +179,21 @@ import tunjangan from "./html/modal/tunjangan.html";
             }
             req.del('tunjangan_guru', data).then(response => {
                 state.reload();
+            });
+        }
+
+        function liatGuru()
+        {
+            vm.modalElement = $compile(pilihHari)(scope);
+        }
+
+        function previewGuru()
+        {
+            let url = `guru/available/${vm.modal.hari}`;
+            req.get(url).then(data => {
+                Modal.getInstance(vm.modalElement[0]).hide();
+                vm.modal.listGuru = data;
+                vm.modalElement = $compile(showGuru)(scope);
             });
         }
     }

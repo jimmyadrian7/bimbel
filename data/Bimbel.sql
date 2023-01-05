@@ -36,12 +36,17 @@ CREATE TABLE `orang` (
   `tanggal_lahir` datetime,
   `hobi` varchar(255),
   `no_hp` varchar(255),
-  `asal_sekolah` varchar(255),
   `nama_ayah` varchar(255),
   `nama_ibu` varchar(255),
   `no_hp_ortu` varchar(255),
   `pekerjaan_ayah` varchar(255),
   `pekerjaan_ibu` varchar(255)
+);
+
+CREATE TABLE `kursus` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `kode` varchar(255),
+  `nama` varchar(255)
 );
 
 CREATE TABLE `siswa` (
@@ -62,7 +67,10 @@ CREATE TABLE `siswa` (
   `tanggapan` varchar(255),
   `program` varchar(255),
   `paket_belajar` varchar(255),
-  `referal_other` varchar(255)
+  `referal_other` varchar(255),
+  `kursus_id` int,
+  `sekolah` varchar(255),
+  `kelas` varchar(255)
 );
 
 CREATE TABLE `deposit` (
@@ -109,7 +117,20 @@ CREATE TABLE `siswa_referal` (
 CREATE TABLE `guru` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `orang_id` int,
-  `status` ENUM ('a', 'n') DEFAULT "a"
+  `status` ENUM ('a', 'n') DEFAULT "a",
+  `berhenti` text,
+  `memilih` text,
+  `kelebihan` text,
+  `kekurangan` text,
+  `kesehatan` text,
+  `lingkungan` text,
+  `aturan` text,
+  `pelatihan` text,
+  `kapan` text,
+  `gaji_sebelumnya` int,
+  `gaji_diminta` int,
+  `rekaman_id` int,
+  `ideal` text
 );
 
 CREATE TABLE `tunjangan_guru` (
@@ -323,6 +344,8 @@ ALTER TABLE `siswa` ADD FOREIGN KEY (`guru_id`) REFERENCES `guru` (`id`);
 
 ALTER TABLE `siswa` ADD FOREIGN KEY (`orang_id`) REFERENCES `orang` (`id`);
 
+ALTER TABLE `siswa` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
+
 ALTER TABLE `deposit` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`);
 
 ALTER TABLE `deposit` ADD FOREIGN KEY (`bukti_pembayaran_id`) REFERENCES `file` (`id`);
@@ -342,6 +365,8 @@ ALTER TABLE `siswa_referal` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id
 ALTER TABLE `siswa_referal` ADD FOREIGN KEY (`referal_id`) REFERENCES `referal` (`id`);
 
 ALTER TABLE `guru` ADD FOREIGN KEY (`orang_id`) REFERENCES `orang` (`id`);
+
+ALTER TABLE `guru` ADD FOREIGN KEY (`rekaman_id`) REFERENCES `file` (`id`);
 
 ALTER TABLE `tunjangan_guru` ADD FOREIGN KEY (`guru_id`) REFERENCES `guru` (`id`);
 

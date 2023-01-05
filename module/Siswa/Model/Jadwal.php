@@ -23,4 +23,39 @@ class Jadwal extends BaseModel
     {
         return $this->hasOne(Siswa::class, 'id', 'siswa_id');
     }
+
+
+    public function checkHari($attributes)
+    {
+        if (!array_key_exists('hari', $attributes) || !array_key_exists('siswa_id', $attributes))
+        {
+            return;
+        }
+
+        $siswa = new Siswa();
+        $siswa = $siswa->find($attributes['siswa_id']);
+        $guru_id = $siswa->guru_id;
+        $jadwal = new Jadwal();
+        $jadwal = $jadwal->where('hari', $attributes['hari'])->whereHas('siswa', function($q) use ($guru_id) {
+            $q->where('guru_id', $guru_id);
+        })->where('siswa_id', '<>', $attributes['siswa_id'])->get()->count();
+
+        if ($jadwal > 7)
+        {
+            throw new \Error("This guru already reach the limit");
+        }
+    }
+
+
+    public function create(array $attributes = [])
+    {
+        $this->checkHari($attributes);
+        return parent::create($attributes);
+    }
+
+    public function update(array $attributes = [], array $options = [])
+    {
+        $this->checkHari($attributes);
+        return parent::update($attributes, $options);
+    }
 }

@@ -31,6 +31,13 @@ import form from "./html/form.html";
                 });
             });
         };
+        let getKursusOptions = (req) => {
+            return req.get('kursuss').then(response => {
+                return response.data.map((value) => {
+                    return {value: value.id, label: value.nama}
+                });
+            });
+        };
 
         return [
             {
@@ -45,7 +52,8 @@ import form from "./html/form.html";
                     nav: 'siswa',
                     resolve: {
                         agamaOptions: getAgaOptions,
-                        referalOptions: getRefOptions
+                        referalOptions: getRefOptions,
+                        kursusOptions: getKursusOptions
                     }
                 }
             },
@@ -61,7 +69,8 @@ import form from "./html/form.html";
                     nav: 'siswa',
                     resolve: {
                         agamaOptions: getAgaOptions,
-                        referalOptions: getRefOptions
+                        referalOptions: getRefOptions,
+                        kursusOptions: getKursusOptions
                     }
                 }
             },
@@ -77,7 +86,8 @@ import form from "./html/form.html";
                     nav: 'siswa',
                     resolve: {
                         agamaOptions: getAgaOptions,
-                        referalOptions: getRefOptions
+                        referalOptions: getRefOptions,
+                        kursusOptions: getKursusOptions
                     }
                 }
             }
