@@ -2,15 +2,13 @@
 namespace Bimbel\Report\Controller;
 
 use \Bimbel\Master\Controller\Controller;
-use \Bimbel\Pembayaran\Model\TagihanDetail;
-use \Bimbel\Pengeluaran\Model\Pengeluaran;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class PendapatanController extends Controller
 {
     public function getReport($request, $args)
     {
         $postData = $request->getParsedBody();
-        $tanggal_between = [$postData['start_date'], $postData['end_date']];
         $pdf = $this->container->get("pdf");
         $twig = $this->container->get("twig");
 
@@ -28,36 +26,44 @@ class PendapatanController extends Controller
 
         $data['logo'] = $logo;
         $data['background'] = $background;
-        $data['judul'] = "Laba Rugi";
+        $data['judul'] = "Pendapatan";
         $data['periode'] = (new \Datetime($postData['start_date']))->format('d/m/Y');
         $data['periode'] = $data['periode']. " ~ " .(new \Datetime($postData['end_date']))->format('d/m/Y');
 
-        $tagihan = new TagihanDetail();
-        $pengeluaran = new Pengeluaran();
+        $params = [
+            'start_date' => $postData['start_date'],
+            'end_date' => $postData['end_date']
+        ];
 
-        $tagihan = $tagihan->whereHas('tagihan', function($q) use ($tanggal_between) {
-            $q->whereBetween('tanggal', $tanggal_between);
-        })->get();
+        $query = "
+            SELECT 
+                nama AS deskripsi, SUM(qty) AS qty, 
+                sum(tagihan_detail.total - tagihan_detail.komisi) AS total
+            FROM tagihan_detail
+            LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
+            LEFT JOIN siswa ON siswa.id = tagihan.siswa_id
+            WHERE 
+                tagihan.tanggal >= :start_date AND 
+                tagihan.tanggal <= :end_date AND
+                %s
+            GROUP BY tagihan_detail.nama
+        ";
+        $where_condition = "1=1";
 
-        if ($tagihan->count() > 0)
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
-            $tagihan = $tagihan->groupBy('nama');
-            $tagihan = $tagihan->map(function($group) {
-                return [
-                    'deskripsi' => $group->first()['nama'],
-                    'jumlah' => $group->sum('qty'),
-                    'total' => $group->sum('total') - $group->first()['komisi']
-                ];
-            });
+            $where_condition = "siswa.kursus_id = :tempat_kursus";
+            $params['tempat_kursus'] = $postData['tempat_kursus'];
         }
+
+        $query = sprintf($query, $where_condition);
+        $tagihan = DB::select(DB::raw($query), $params);
+
         $data['pendapatans']  = $tagihan;
-        $data['total_pendapatan']  = $tagihan->sum('total');
-
-        $pengeluaran = $pengeluaran->whereBetween('tanggal', $tanggal_between)->get();
-        $data['pengeluarans']  = $pengeluaran;
-        $data['total_pengeluaran'] = $pengeluaran->sum('total');
-
-        $data['total_laba']  = $data['total_pendapatan'] - $data['total_pengeluaran'];
+        $data['total_pendapatan']  = array_reduce($tagihan, function($result, $value) {
+            $result += $value->total;
+            return $result;
+        }, 0);
 
         $html = $twig->fetch("Report/View/pendapatan.twig", $data);
         

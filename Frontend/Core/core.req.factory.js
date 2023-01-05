@@ -4,10 +4,12 @@
     angular.module('app.core')
         .factory('req', req);
 
-    req.$inject = ['$http', 'exception', 'config'];
+    req.$inject = ['$http', 'exception', '$window'];
 
-    function req($http, exception, config)
+    function req($http, exception, $window)
     {
+        let baseUrl = "/" + $window.location.pathname.split('/')[1] + "/api";
+
         return {
             get: get,
             post: post,
@@ -18,24 +20,24 @@
 
         function get(url)
         {
-            return $http.get(`${config.baseUrl}/${url}`).then(success).catch(fail);
+            return $http.get(`${baseUrl}/${url}`).then(success).catch(fail);
         }
 
         function post(url, data)
         {
-            return $http.post(`${config.baseUrl}/${url}`, data).then(success).catch(fail);
+            return $http.post(`${baseUrl}/${url}`, data).then(success).catch(fail);
         }
         
         function put(url, data)
         {
-            return $http.put(`${config.baseUrl}/${url}`, data).then(success).catch(fail);
+            return $http.put(`${baseUrl}/${url}`, data).then(success).catch(fail);
         }
         
         function del(url, data)
         {
             return $http({
                 method: "DELETE",
-                url: `${config.baseUrl}/${url}`,
+                url: `${baseUrl}/${url}`,
                 data: data,
                 headers: {
                     'Content-type': 'application/json;charset=utf-8'

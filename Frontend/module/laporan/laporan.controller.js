@@ -15,6 +15,7 @@
             {name: "Gaji Guru", list: 'laporan.gaji_guru', nav: 'gaji_guru'},
             {name: "Pengeluaran", list: 'laporan.pengeluaran', nav: 'pengeluaran'},
             {name: "Deposit", list: 'laporan.deposit', nav: 'deposit'},
+            {name: "Pendapatan", list: 'laporan.pendapatan', nav: 'pendapatan'},
         ];
 
         vm.goState = goState;

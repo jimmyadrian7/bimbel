@@ -12,7 +12,7 @@ class ViewController extends Controller
     public function homeView($response)
     {
         $data = [
-            "base_url" => "/bimbel"
+            "base_url" => $this->container->get('base_url')
         ];
 
         $konfigurasi = new KonfigurasiWeb();

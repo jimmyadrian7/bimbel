@@ -1,8 +1,8 @@
 <?php
 
-$app->post("/api/generate/report/pendapatan", function ($request, $response, $args) {
+$app->post("/api/generate/report/labarugi", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\Report\Controller\PendapatanController");
+    $controller = $this->get("Bimbel\Report\Controller\LabaRugiController");
     $result = $controller->getReport($request, $args);
 
     $response = $response->withHeader("Content-Type", "application/json");
@@ -33,6 +33,16 @@ $app->post("/api/generate/report/pengeluaran", function ($request, $response, $a
 $app->post("/api/generate/report/deposit", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\Report\Controller\DepositController");
+    $result = $controller->getReport($request, $args);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write($result);
+    return $response;
+});
+
+$app->post("/api/generate/report/pendapatan", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Report\Controller\PendapatanController");
     $result = $controller->getReport($request, $args);
 
     $response = $response->withHeader("Content-Type", "application/json");

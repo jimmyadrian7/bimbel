@@ -9,7 +9,7 @@ class ViewController extends Controller
     {
         $twig = $this->container->get("twig");
         $data = [
-            "base_url" => "/bimbel"
+            "base_url" => $this->container->get('base_url')
         ];
         $rendered = $twig->fetch("Template/View/home.twig", $data);
 

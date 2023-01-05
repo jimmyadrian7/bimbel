@@ -24,7 +24,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ pendapatan.deskripsi }}</td>
-                            <td>{{ pendapatan.jumlah|number_format(0, ',', '.') }}</td>
+                            <td>{{ pendapatan.qty|number_format(0, ',', '.') }}</td>
                             <td>{{ pendapatan.total|number_format(0, ',', '.') }}</td>
                         </tr>
                     {% endfor %}
@@ -34,37 +34,6 @@
                         <td class="bg-red">{{ total_pendapatan|number_format(0, ',', '.') }}</td>
                     </tr>
                 </table>
-    
-                <div class="mb-10 mt-20">
-                    <span class="table-title">Pengeluaran</span>
-                </div>
-                <table class="table-content">
-                    <tr>
-                        <th>No</th>
-                        <th>Deskripsi</th>
-                        <th>Jumlah</th>
-                        <th>Total</th>
-                    </tr>
-                    {% for pengeluaran in pengeluarans %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ pengeluaran.nama }}</td>
-                            <td>{{ pengeluaran.jumlah|number_format(0, ',', '.') }}</td>
-                            <td>{{ pengeluaran.total|number_format(0, ',', '.') }}</td>
-                        </tr>
-                    {% endfor %}
-                    <tr class="bold">
-                        <td class="bg-transparent" colspan="2"></td>
-                        <td class="bg-red">Total Pengeluaran</td>
-                        <td class="bg-red">{{ total_pengeluaran|number_format(0, ',', '.') }}</td>
-                    </tr>
-                </table>
-    
-                <div class="border-black my-30"></div>
-    
-                <div class="report-footer">
-                    <span>Total Laba Bersih</span><span>{{ total_laba|number_format(0, ',', '.') }}</span>
-                </div>
             </div>
         </div>
     </body>

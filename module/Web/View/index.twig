@@ -322,10 +322,10 @@
                 <div class="swiper-slide">
                     <div class="testimonial-wrap">
                         <div class="testimonial-item">
-                            {% if testimoni.tipe == 'link' %}
+                            {% if testimoni.tipe == 'l' %}
                                 <iframe width="350px" height="300px" src="{{testimoni.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                             {% endif %}
-                            {% if testimoni.tipe == 'gambar' %}
+                            {% if testimoni.tipe == 'g' %}
                                 <iframe width="350px" height="300px" src="data:{{testimoni.gambar.filetype}};base64, {{testimoni.gambar.base64}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                             {% endif %}
                         </div>

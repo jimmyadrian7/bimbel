@@ -6,3 +6,4 @@ import "./laba_rugi/laba_rugi";
 import "./gaji_guru/gaji_guru";
 import "./pengeluaran/pengeluaran";
 import "./deposit/deposit";
+import "./pendapatan/pendapatan";

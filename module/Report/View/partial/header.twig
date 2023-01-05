@@ -23,10 +23,12 @@
                     <td class="pr-50">Laporan</td>
                     <td>{{judul}}</td>
                 </tr>
-                <tr>
-                    <td class="pr-50">Periode</td>
-                    <td>{{periode}}</td>
-                </tr>
+                {% if periode %}
+                    <tr>
+                        <td class="pr-50">Periode</td>
+                        <td>{{periode}}</td>
+                    </tr>
+                {% endif %}
             </table>
         </td>
     </tr>

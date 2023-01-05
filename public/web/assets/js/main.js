@@ -277,8 +277,6 @@ function submitPertanyaan(e)
     message: message.value
   };
 
-  console.log(data);
-
   document.querySelector('.sent-message').style = 'display: block';
 
   setTimeout(() => {

@@ -5,8 +5,7 @@
 
     let config = {
         appErrorPrefix: '[Bimbel Error] ',
-        appTitle: '学生一家',
-        baseUrl: '/bimbel/api'
+        appTitle: '学生一家'
     };
     configure.$inject = ['$logProvider', 'routerHelperProvider', 'exceptionHandlerProvider'];
     core.value('config', config);

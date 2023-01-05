@@ -10,8 +10,8 @@
     {
         let vm = this;
         let tipeOpt = [
-            {label: "Gambar", value: "gambar"},
-            {label: "Link", value: "link"}
+            {label: "Gambar", value: "g"},
+            {label: "Link", value: "l"}
         ];
 
         vm.dataId = stateParams.dataId;
