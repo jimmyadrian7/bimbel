@@ -1,8 +1,8 @@
 <?php
 // Database.
-$name = 'bimbel';
-$username = 'root';
-$password = '';
+$name = '488625';
+$username = '488625';
+$password = 'Yehova123';
 $host = 'localhost';
 
 return [
