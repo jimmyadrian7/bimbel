@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Slim Framework (http://slimframework.com)
  *
