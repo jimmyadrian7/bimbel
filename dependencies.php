@@ -12,7 +12,7 @@ $base_url = [
         // $path = explode("/", dirname(__FILE__));
         // $path = "/" . array_pop($path);
 
-        return "/";
+        return "";
     }
 ];
 
