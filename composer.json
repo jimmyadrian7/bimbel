@@ -22,9 +22,7 @@
     "config": {
         "process-timeout": 0,
         "sort-packages": true,
-        "platform": {
-            "php": "7.3.33"
-         }
+        "config": { "platform-check": false }
     },
     "scripts": {
         "start": "php -S localhost:8080 -t public"
