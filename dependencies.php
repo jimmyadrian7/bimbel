@@ -9,10 +9,10 @@ $containerBuilder = new ContainerBuilder();
 $base_url = [
     'base_url' => function () {
         $base_url = "/bimbel";
-        $path = explode("/", dirname(__FILE__));
-        $path = "/" . array_pop($path);
+        // $path = explode("/", dirname(__FILE__));
+        // $path = "/" . array_pop($path);
 
-        return $path ?? $base_url;
+        return "/";
     }
 ];
 
