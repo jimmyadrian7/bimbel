@@ -1,0 +1,9 @@
+# Logs #
+######################
+*.log
+
+# Folder #
+######################
+node_modules/
+vendor/
+.vscode/
