@@ -8,7 +8,7 @@
 
     function req($http, exception, $window)
     {
-        let baseUrl = "/" + $window.location.pathname.split('/')[1] + "/api";
+        let baseUrl = $window.location.pathname.split('/admin')[0] + "/api";
 
         return {
             get: get,
