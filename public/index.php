@@ -11,7 +11,6 @@ $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
 // Configure the Slim app.
-$settings = require 'config/application.php';
 $container = require "dependencies.php";
 
 // Create App instance
