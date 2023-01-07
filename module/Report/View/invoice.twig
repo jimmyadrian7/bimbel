@@ -23,7 +23,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ tagihan.nama }}</td>
-                            <td>{{ tagihan.jumlah|number_format(0, ',', '.') }}</td>
+                            <td>{{ tagihan.qty|number_format(0, ',', '.') }}</td>
                             <td>{{ tagihan.nominal|number_format(0, ',', '.') }}</td>
                             <td>{{ tagihan.potongan|number_format(0, ',', '.') }}</td>
                             <td>{{ tagihan.total|number_format(0, ',', '.') }}</td>

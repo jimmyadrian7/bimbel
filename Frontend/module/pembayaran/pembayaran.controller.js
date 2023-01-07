@@ -34,6 +34,11 @@
                 vm.menus = [
                     {name: "Tagihan", list: 'pembayaran.tagihan', nav: 'tagihan'}
                 ];
+
+                if (session.isGuru())
+                {
+                    vm.menus.push({name: "Pembiayaan", list: 'pembayaran.pembiayaan', nav: 'pembiayaan'});
+                }
             }
         }
 

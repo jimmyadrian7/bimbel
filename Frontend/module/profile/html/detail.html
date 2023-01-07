@@ -92,6 +92,9 @@
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="list" href="#tunjangan">Tunjangan</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="list" href="#gaji">Gaji</a>
+                            </li>
                         </ul>
 
                         <div class="tab-content text-justify">
@@ -99,6 +102,14 @@
                                 <app-table-template
                                     data="vm.guru.tunjangan_guru"
                                     fields="vm.tunjanganFields"></app-table-template>
+                            </div>
+
+                            <div class="tab-pane fade" id="gaji">
+                                <div class="table-responsive p-0 mt-2">
+                                    <app-table-template
+                                        data="vm.guru.gaji"
+                                        fields="vm.gajiFields"></app-table-template>
+                                </div>
                             </div>
                         </div>
                     </div>

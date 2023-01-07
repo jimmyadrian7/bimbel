@@ -255,6 +255,10 @@ import jadwal from "./html/modal/jadwal.html";
             {
                 vm.data.iuran[idx].action = 'delete';
             }
+            else
+            {
+                vm.data.iuran.splice(idx, 1);
+            }
         }
 
         function editIuran(idx)
