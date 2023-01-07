@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'host' => 'smtp.gmail.com',
-    'port' => '465',
-    'username' => 'email.no.reply.testing@gmail.com',
-    'password' => 'gisogqukcxtatnnc',
-    'protocol' => 'SSL'
+    'host' => $_ENV['mail_host'],
+    'port' => $_ENV['mail_port'],
+    'username' => $_ENV['mail_user'],
+    'password' => $_ENV['mail_pass'],
+    'protocol' => $_ENV['mail_protocol']
 ];

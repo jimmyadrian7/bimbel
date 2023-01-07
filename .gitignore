@@ -1,9 +1,10 @@
 # Logs #
 ######################
 *.log
+*.env
 
 # Folder #
 ######################
 node_modules/
-# vendor/
+vendor/
 .vscode/
