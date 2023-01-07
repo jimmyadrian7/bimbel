@@ -34,7 +34,7 @@
                 <a class="nav-link" data-bs-toggle="list" href="#jadwal">Jadwal</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="list" href="#referal">Referal</a>
+                <a class="nav-link" data-bs-toggle="list" href="#referal">Referensi</a>
             </li>
         </ul>
 
@@ -117,7 +117,18 @@
 
                     <hr class="horizontal dark mt-4">
 
-                    <div class="col-md-6" ng-repeat="fields in vm.additional.responFields">
+                    <div class="col-md-12">
+                        <div class="row my-4">
+                            <div class="col-12">
+                                <div class="my-3" ng-repeat="field in vm.additional.responFields">
+                                    <div class="text-xs" ng-bind="field.name"></div>
+                                    <div class="font-weight-bolder text-dark py-2">
+                                        <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <table>
                             <tr ng-repeat="field in fields track by $index">
                                 <td class="text-xs" ng-bind="field.name"></td>

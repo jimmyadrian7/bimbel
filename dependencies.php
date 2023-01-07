@@ -12,7 +12,6 @@ $containerBuilder->addDefinitions('./dependencies/BasePathMiddleware.php');
 $containerBuilder->addDefinitions('./dependencies/db.php');
 $containerBuilder->addDefinitions('./dependencies/ErrorMiddleware.php');
 $containerBuilder->addDefinitions('./dependencies/logger.php');
-$containerBuilder->addDefinitions('./dependencies/settings.php');
 $containerBuilder->addDefinitions('./dependencies/ModelList.php');
 $containerBuilder->addDefinitions('./dependencies/session.php');
 $containerBuilder->addDefinitions('./dependencies/twig.php');

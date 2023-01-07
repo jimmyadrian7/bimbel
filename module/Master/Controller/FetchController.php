@@ -17,10 +17,7 @@ class FetchController extends Controller
             }
             $model_name = substr($model_name, 0, (strlen($model_name) - 1));
             $model = $this->getModel($model_name);
-            $settings = $this->container->get("settings");
             
-            // $data = $model->paginate($settings["settings"]["row_per_page"]);
-
             $session = $this->container->get('Session');
             $user = $session->get('user');
             $isGuru = count($user->role->where('kode', 'G')) === 1 ? true : false;

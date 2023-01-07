@@ -110,10 +110,8 @@ import jadwal from "./html/modal/jadwal.html";
             ]
         ];
         vm.additional.responFields = [
-            [
-                {name: "Respon & Tanggapan", value: "respon"},
-                {name: "Tanggapan guru", value: "tanggapan"}
-            ]
+            {name: "Respon & Tanggapan Orang Tua", value: "respon", type: 'textarea'},
+            {name: "Tanggapan guru", value: "tanggapan", type: 'textarea'}
         ];
         vm.iuranFields = [
             {name: "Nama", value: "nama"},

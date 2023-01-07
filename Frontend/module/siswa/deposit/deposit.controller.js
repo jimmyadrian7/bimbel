@@ -87,7 +87,7 @@ import modal from "./html/modal.html";
         {
             let data = {
                 id: vm.data.id,
-                status: 'terima'
+                status: 't'
             };
 
             req.put('deposit', data).then(response => state.reload());
