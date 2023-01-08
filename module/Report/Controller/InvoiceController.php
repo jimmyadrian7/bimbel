@@ -1,45 +1,38 @@
 <?php
 namespace Bimbel\Report\Controller;
 
-use \Bimbel\Master\Controller\Controller;
-use \Bimbel\Pembayaran\Model\Tagihan;
+use \Bimbel\Report\Controller\BaseReportController;
 
-class InvoiceController extends Controller
+class InvoiceController extends BaseReportController
 {
-    public function getReport($request, $args)
+    public function getTagihan($request, $args)
     {
-        $pdf = $this->container->get("pdf");
-        $twig = $this->container->get("twig");
-
-        $data = [];
-        
-        $path = dirname(__DIR__) . "/View/images/";
-
-        $logo = $path . "logo.png";
-        $logo = file_get_contents($logo);
-        $logo = 'data:image/png;base64, ' . base64_encode($logo);
-
-        $background = $path . "coba.jpg";
-        $background = file_get_contents($background);
-        $background = 'data:image/png;base64, ' . base64_encode($background);
-
-        $data['logo'] = $logo;
-        $data['background'] = $background;
-        $data['judul'] = "Invoice";
-
-        $tagihan = new Tagihan();
-
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
         $tagihan = $tagihan->find($args['tagihan_id']);
-        $data['tagihan']  = $tagihan;
+        $data = [
+            'title' => true,
+            'judul' => 'Invoice',
+            'tagihan' => $tagihan,
+            'nomor' => $tagihan->code
+        ];
 
-        $html = $twig->fetch("Report/View/invoice.twig", $data);
-        
-        $pdf->loadHtml($html);
-        $pdf->render();
-        $result = $pdf->output();
-        $result = ["data" => base64_encode($result)];
-        $result = json_encode($result);
+        $result = $this->toPdf("Report/View/tagihan.twig", $data);
+        return $result;
+    }
 
+    public function getTabunganAset($request, $args)
+    {
+        $tabungan_aset = new \Bimbel\Pengeluaran\Model\TabunganAset();
+        $tabungan_aset = $tabungan_aset->find($args['tabungan_aset_id']);
+        $data = [
+            'title' => true,
+            'judul' => 'Invoice',
+            'nomor' => $tabungan_aset->code,
+            'tabungan_aset' => $tabungan_aset,
+            'total' => $tabungan_aset->cicilan_aset->sum('nominal')
+        ];
+
+        $result = $this->toPdf("Report/View/tabungan_aset.twig", $data);
         return $result;
     }
 }

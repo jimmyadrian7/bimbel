@@ -18,7 +18,8 @@
             {name: "No. HP", value: "no_hp"},
             {name: "Facebook", value: "facebook"},
             {name: "Whatsapp", value: "whatsapp"},
-            {name: "Instagram", value: "instagram"}
+            {name: "Instagram", value: "instagram"},
+            {name: "Tiktok", value: "tiktok"}
         ];
     }
 })()

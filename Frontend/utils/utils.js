@@ -22,3 +22,4 @@ import "./model/ng-model-dynamic.directive";
 
 import "./modal/app-modal.directive";
 import "./preview/file-preview.directive";
+import "./preview/download-preview.directive";

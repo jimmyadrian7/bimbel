@@ -16,6 +16,7 @@ $containerBuilder->addDefinitions('./dependencies/ModelList.php');
 $containerBuilder->addDefinitions('./dependencies/session.php');
 $containerBuilder->addDefinitions('./dependencies/twig.php');
 $containerBuilder->addDefinitions('./dependencies/pdf.php');
+$containerBuilder->addDefinitions('./dependencies/excel.php');
 $containerBuilder->addDefinitions('./dependencies/mailer.php');
 
 

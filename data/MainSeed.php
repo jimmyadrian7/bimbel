@@ -6,6 +6,9 @@ class MainSeed {
     {
         require_once 'vendor/autoload.php';
 
+        $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+        $dotenv->load();
+
         $this->container = require "dependencies.php";
         $this->container->get('Illuminate\Database\Capsule\Manager');
 
@@ -27,7 +30,7 @@ class MainSeed {
                 if ($row) {
                     $col_data = [];
                     foreach ($row as $key => $col) {
-                        $col_data[$header[$key]] = $col;
+                        $col_data[$header[$key]] = $col ? $col : NULL;
                     }
                     array_push($data, $col_data);
                 }
@@ -45,15 +48,26 @@ class MainSeed {
         $object = $this->modelList->getModel($model_name);
 
         $data = $this->extract_csv_data($data_name.'.csv');
-        $object->insert($data);
+
+        if ($data_name != 'file')
+        {
+            $object->insert($data);
+        }
+        else
+        {
+            foreach ($data as $value)
+            {
+                $object = $this->modelList->getModel($model_name);
+                $object->create($value);
+            }
+        }
     }
 
     function run()
     {
         chdir(dirname(__DIR__));
         
-        $db_settings = require "config/database.php";
-        $db_name = $db_settings['name'];
+        $db_name = $_ENV['db_name'];
 
         // Drop if exist then create database
         echo "Drop if exist then create database.... \r\n";
@@ -73,6 +87,15 @@ class MainSeed {
         $this->importData('role');
         $this->importData('konfigurasi_web');
         $this->importData('referal');
+
+        // Sample Data
+        echo "Import sample data.... \r\n";
+        $this->importData('file');
+        $this->importData('pengumuman');
+        $this->importData('promo');
+        $this->importData('testimoni');
+        $this->importData('iuran');
+        $this->importData('iuran_detail');
 
         // Create super admin user
         echo "Create super admin user.... \r\n";

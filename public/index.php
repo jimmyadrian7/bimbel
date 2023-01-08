@@ -6,10 +6,6 @@ use Slim\App;
 chdir(dirname(__DIR__));
 require 'bootstrap.php';
 
-// set .env
-$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
-
 // Configure the Slim app.
 $container = require "dependencies.php";
 

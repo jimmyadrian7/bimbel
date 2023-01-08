@@ -12,25 +12,40 @@
         </td>
 
         <td style="width: 50%;">
-            <div class="title">Report</div>
-            <div class="sub-title">{{judul}}</div>
-            <table class="report-table">
-                <tr>
-                    <td class="pr-50">Tanggal</td>
-                    <td>{{ "now"|date("m/d/Y") }}</td>
-                </tr>
-                <tr>
-                    <td class="pr-50">Laporan</td>
-                    <td>{{judul}}</td>
-                </tr>
-                {% if periode %}
+            {% if not title %}
+                    <div class="title">Report</div>
+                    <div class="sub-title">{{judul}}</div>
+                    <table class="report-table">
+                        <tr>
+                            <td class="pr-50">Tanggal</td>
+                            <td>{{ "now"|date("m/d/Y") }}</td>
+                        </tr>
+                        <tr>
+                            <td class="pr-50">Laporan</td>
+                            <td>{{judul}}</td>
+                        </tr>
+                        {% if periode %}
+                            <tr>
+                                <td class="pr-50">Periode</td>
+                                <td>{{periode}}</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+            {% else %}
+                <div class="title">{{judul}}</div>
+                <table class="report-table">
                     <tr>
-                        <td class="pr-50">Periode</td>
-                        <td>{{periode}}</td>
+                        <td class="pr-50">Tanggal</td>
+                        <td>{{ "now"|date("m/d/Y") }}</td>
                     </tr>
-                {% endif %}
-            </table>
+                    <tr>
+                        <td class="pr-50">Nomor</td>
+                        <td>{{nomor}}</td>
+                    </tr>
+                </table>
+            {% endif %}
         </td>
+            
     </tr>
 </table>
 

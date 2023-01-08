@@ -19,29 +19,11 @@ class FetchController extends Controller
                 $q->where('nama', 'like', '%' . $getData['query'] . '%');
             });
 
-            $session = $this->container->get('Session');
-            $user = $session->get('user');
-            $isGuru = count($user->role->where('kode', 'G')) === 1 ? true : false;
-            $isSiswa = count($user->role->where('kode', 'S')) === 1 ? true : false;
+            $session = new \Bimbel\Master\Model\Session();
+            $siswa_ids = $session->getSiswaIds();
 
-            if (($isGuru || $isSiswa) && !$user->super_user)
+            if ($siswa_ids !== false)
             {
-                $siswa_ids = [];
-                
-                if ($isGuru)
-                {
-                    $guru = $this->getModel('Guru');
-                    $guru = $guru->where('orang_id', $user->orang_id)->first();
-                    $siswa_ids = $guru->siswa->pluck('id');
-                }
-
-                if ($isSiswa)
-                {
-                    $siswa = $this->getModel('Siswa');
-                    $siswa = $siswa->where('orang_id', $user->orang_id)->first();
-                    $siswa_ids = [$siswa->id];
-                }
-
                 $data = $data->whereIn('id', $siswa_ids);
             }
 

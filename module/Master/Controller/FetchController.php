@@ -17,33 +17,15 @@ class FetchController extends Controller
             }
             $model_name = substr($model_name, 0, (strlen($model_name) - 1));
             $model = $this->getModel($model_name);
+            $filtered_data = ['siswa', 'deposit', 'tagihan'];
             
-            $session = $this->container->get('Session');
-            $user = $session->get('user');
-            $isGuru = count($user->role->where('kode', 'G')) === 1 ? true : false;
-            $isSiswa = count($user->role->where('kode', 'S')) === 1 ? true : false;
-
-            if (($isGuru || $isSiswa) && !$user->super_user)
+            if (in_array($model_name, $filtered_data))
             {
-                $filtered_data = ['siswa', 'deposit', 'tagihan'];
-                if (in_array($model_name, $filtered_data))
+                $session = new \Bimbel\Master\Model\Session();
+                $siswa_ids = $session->getSiswaIds();
+
+                if ($siswa_ids !== false)
                 {
-                    $siswa_ids = [];
-                    
-                    if ($isGuru)
-                    {
-                        $guru = $this->getModel('Guru');
-                        $guru = $guru->where('orang_id', $user->orang_id)->first();
-                        $siswa_ids = $guru->siswa->pluck('id');
-                    }
-
-                    if ($isSiswa)
-                    {
-                        $siswa = $this->getModel('Siswa');
-                        $siswa = $siswa->where('orang_id', $user->orang_id)->first();
-                        $siswa_ids = [$siswa->id];
-                    }
-
                     if ($model_name == 'siswa')
                     {
                         $model = $model->whereIn('id', $siswa_ids);

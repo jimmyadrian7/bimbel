@@ -12,15 +12,19 @@ class QuestionController extends Controller
         try 
         {
             $dataPost = $request->getParsedBody();
+            $config = new \Bimbel\Web\Model\KonfigurasiWeb();
+            $config = $config->first();
+
             $data = [
                 "name" => $dataPost['name'],
                 "email" => $dataPost['email'],
                 "subject" => $dataPost['subject'],
-                "message" => $dataPost['message']
+                "message" => $dataPost['message'],
+                "config" => $config
             ];
             $mailer = $this->container->get('mailer');
             $mailer->sendMessage('Web/View/mail.twig', $data, function($message) use($data) {
-                $message->setTo("jimmyadrian27799@gmail.com", "Jimmy");
+                $message->setTo($data['config']->email, "Admin");
                 $message->setSubject($data["subject"]);
             });
         }

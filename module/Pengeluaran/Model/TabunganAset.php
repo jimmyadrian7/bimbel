@@ -38,6 +38,9 @@ class TabunganAset extends BaseModel
 
     public function create(array $attributes = [])
     {
+        $seq = new \Bimbel\Master\Model\Sequance();
+        $attributes['code'] = $seq->getnextCode('tabungan_aset');
+
         self::hitungTotal($attributes);
         return parent::create($attributes);
     }

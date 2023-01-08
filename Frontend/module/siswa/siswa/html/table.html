@@ -1,1 +1,10 @@
-<app-table table="siswas" fields="vm.fields" detail="siswa.siswa_detail" form="siswa.siswa_form"></app-table>
+<app-table table="siswas" fields="vm.fields" detail="siswa.siswa_detail" form="siswa.siswa_form">
+    <app-table-button>
+        <button class="btn btn-link text-gradient text-primary py-0 mb-0" ng-click="vm.getReportSiswa()">
+            <i class="fa fa-file-excel-o me-2"></i> Siswa
+        </button>
+        <button class="btn btn-link text-gradient text-primary py-0 mb-0" ng-click="vm.getReportJadwal()">
+            <i class="fa fa-file-excel-o me-2"></i> Jadwal
+        </button>
+    </app-table-button>
+</app-table>

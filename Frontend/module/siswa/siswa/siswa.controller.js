@@ -111,7 +111,7 @@ import jadwal from "./html/modal/jadwal.html";
         ];
         vm.additional.responFields = [
             {name: "Respon & Tanggapan Orang Tua", value: "respon", type: 'textarea'},
-            {name: "Tanggapan guru", value: "tanggapan", type: 'textarea'}
+            {name: "Tanggapan Guru", value: "tanggapan", type: 'textarea'}
         ];
         vm.iuranFields = [
             {name: "Nama", value: "nama"},
@@ -138,6 +138,9 @@ import jadwal from "./html/modal/jadwal.html";
         vm.formJadwal = formJadwal;
         vm.addJadwal = addJadwal;
         vm.removeJadwal = removeJadwal;
+
+        vm.getReportSiswa = getReportSiswa;
+        vm.getReportJadwal = getReportJadwal;
 
         activate();
 
@@ -323,6 +326,24 @@ import jadwal from "./html/modal/jadwal.html";
         function removeJadwal(idx)
         {
             vm.data.jadwal.splice(idx, 1);
+        }
+
+        function getReportSiswa()
+        {
+            req.get(`generate/report/siswa`).then(response => {
+                vm.activeExcel = {filename: "siswa.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data};
+                let element = `<app-download-preview value='vm.activeExcel'></app-download-preview>`;
+                element = $compile(element)($scope);
+            });
+        }
+
+        function getReportJadwal()
+        {
+            req.get(`generate/report/jadwal`).then(response => {
+                vm.activeExcel = {filename: "jadwal.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data};
+                let element = `<app-download-preview value='vm.activeExcel'></app-download-preview>`;
+                element = $compile(element)($scope);
+            });
         }
     }
 })()

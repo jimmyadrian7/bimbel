@@ -13,9 +13,9 @@
         vm.menus = [
             {name: "Laba Rugi", list: 'laporan.laba_rugi', nav: 'laba_rugi'},
             {name: "Gaji Guru", list: 'laporan.gaji_guru', nav: 'gaji_guru'},
+            {name: "Pendapatan", list: 'laporan.pendapatan', nav: 'pendapatan'},
             {name: "Pengeluaran", list: 'laporan.pengeluaran', nav: 'pengeluaran'},
             {name: "Deposit", list: 'laporan.deposit', nav: 'deposit'},
-            {name: "Pendapatan", list: 'laporan.pendapatan', nav: 'pendapatan'},
         ];
 
         vm.goState = goState;

@@ -12,13 +12,13 @@ class Orang extends BaseModel
     ];
     protected $table = 'orang';
 
-    protected $status_enum = [
+    protected $jenis_kelamin_enum = [
         ["value" => "l", "label" => "Laki-laki"],
         ["value" => "p", "label" => "Perempuan"]
     ];
 
     public function agama()
     {
-        return $this->hasOne(Agama::class, 'agama_id', 'id');
+        return $this->hasOne(Agama::class, 'id', 'agama_id');
     }
 }

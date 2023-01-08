@@ -214,6 +214,7 @@ CREATE TABLE `diskon` (
 CREATE TABLE `tagihan` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `siswa_id` int,
+  `code` varchar(255),
   `sub_total` int,
   `potongan` int,
   `total` int,
@@ -329,13 +330,27 @@ CREATE TABLE `konfigurasi_web` (
   `no_hp` varchar(255),
   `facebook` text,
   `whatsapp` text,
-  `instagram` text
+  `instagram` text,
+  `tiktok` text
 );
 
 CREATE TABLE `message` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `siswa_id` int,
-  `message` varchar(255)
+  `message_type` ENUM ('e', 'w'),
+  `from` varchar(255),
+  `from_name` varchar(255),
+  `to` varchar(255),
+  `to_name` varchar(255),
+  `subject` varchar(255),
+  `message` text
+);
+
+CREATE TABLE `log` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `target_id` int,
+  `target_table` varchar(255),
+  `operation` varchar(255),
+  `data` text
 );
 
 ALTER TABLE `orang` ADD FOREIGN KEY (`agama_id`) REFERENCES `agama` (`id`);
@@ -411,5 +426,3 @@ ALTER TABLE `pengumuman` ADD FOREIGN KEY (`gambar_id`) REFERENCES `file` (`id`);
 ALTER TABLE `promo` ADD FOREIGN KEY (`gambar_id`) REFERENCES `file` (`id`);
 
 ALTER TABLE `testimoni` ADD FOREIGN KEY (`gambar_id`) REFERENCES `file` (`id`);
-
-ALTER TABLE `message` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`);

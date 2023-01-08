@@ -37,6 +37,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         vm.activeDetail = -1;
         vm.fields = [
             {name: "Tanggal", value: "tanggal", type: 'date', table: true, hidden: true},
+            {name: "Kode", value: "code", table: true, hidden: true},
             {
                 name: "Siswa", 
                 value: "siswa_id",
@@ -48,7 +49,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
             {name: "Sub Total", value: "sub_total", type: 'number', table: true, hidden: true},
             {name: "Potongan", value: "potongan", type: 'number', table: true, hidden: true},
             {name: "Total", value: "total", type: 'number', table: true, hidden: true},
-            {name: "Hutang", value: "hutang", type: 'number', table: true, hidden: true},
+            {name: "Hutang", value: "hutang", type: 'number', hidden: true},
             vm.status_field
         ];
 

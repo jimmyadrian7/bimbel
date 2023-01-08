@@ -27,4 +27,18 @@ class BaseModel extends Model
 
         return $output;
     }
+
+    public function getLabel($name)
+    {
+        $result = "";
+
+        foreach ($this->{$name. "_enum"} as $val) {
+            if ($val['value'] == $this->{$name})
+            {
+                return $val['label'];
+            }
+        }
+
+        return $result;
+    }
 }

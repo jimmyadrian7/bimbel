@@ -9,7 +9,8 @@ use Bimbel\Pembayaran\Model\Transaksi;
 class Tagihan extends BaseModel
 {
     protected $fillable = [
-        'siswa_id', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal', 'tagihan_detail'
+        'code', 'siswa_id', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal',
+        'tagihan_detail'
     ];
     protected $table = 'tagihan';
     protected $with = ['tagihan_detail', 'transaksi'];
@@ -122,6 +123,9 @@ class Tagihan extends BaseModel
     public function create(array $attributes = [])
     {
         $tagihan_details = self::getValue($attributes, 'tagihan_detail');
+
+        $seq = new \Bimbel\Master\Model\Sequance();
+        $attributes['code'] = $seq->getnextCode('pembiayaan');
 		$tagihan = parent::create($attributes);
         
         $tagihan->handleTagihanDetail($tagihan_details);
