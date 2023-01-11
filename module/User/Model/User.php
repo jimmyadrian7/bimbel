@@ -8,7 +8,7 @@ use Bimbel\User\Model\Role;
 
 class User extends BaseModel
 {
-    protected $fillable = ['username', 'password', 'unenpass', 'super_user', 'is_public', 'orang_id', 'orang'];
+    protected $fillable = ['username', 'password', 'unenpass', 'super_user', 'is_public', 'orang_id', 'orang', 'status'];
 	protected $table = 'user';
 	protected $with  = ['role', 'orang'];
 
@@ -67,6 +67,11 @@ class User extends BaseModel
 			$attributes['password'] = $created_pass;
 		}
 
+		if (!array_key_exists('username', $attributes)) {
+			$username = bin2hex(random_bytes(3));
+			$attributes['username'] = $username;
+		}
+
 		if (!array_key_exists('orang', $attributes) && !array_key_exists('orang_id', $attributes)) {
 			$attributes['orang'] = [
 				'nama' => $attributes['username']
@@ -74,12 +79,7 @@ class User extends BaseModel
 		}
 
 		$attributes['unenpass'] = $attributes['password'];
-		$attributes['password'] = self::encrypt($attributes['password']);
-
-		if (!array_key_exists('username', $attributes)) {
-			$username = bin2hex(random_bytes(3));
-			$attributes['username'] = $username;
-		}
+		$attributes['password'] = self::encrypt($attributes['password']);		
 
         self::handleOrang($attributes);
 		return parent::create($attributes);
@@ -100,5 +100,12 @@ class User extends BaseModel
 
         $this->handleOrang($attributes);
 		return parent::update($attributes, $options);
+	}
+
+
+	public function delete()
+	{
+		$this->role()->detach();
+		return parent::delete();
 	}
 }

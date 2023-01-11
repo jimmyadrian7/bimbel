@@ -15,9 +15,9 @@ class FetchController extends Controller
             $getData = $request->getQueryParams();
             
             $siswa = new Siswa();
-            $data = $siswa->without(['tagihan'])->whereHas('orang', function($q) use ($getData) {
+            $data = $siswa->whereHas('orang', function($q) use ($getData) {
                 $q->where('nama', 'like', '%' . $getData['query'] . '%');
-            });
+            })->where('status', 'a');
 
             $session = new \Bimbel\Master\Model\Session();
             $siswa_ids = $session->getSiswaIds();

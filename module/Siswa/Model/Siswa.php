@@ -26,7 +26,7 @@ class Siswa extends BaseModel
         'kursus_id', 'sekolah', 'kelas'
     ];
     protected $table = 'siswa';
-    protected $with = ['orang', 'iuran', 'jadwal'];
+    // protected $with = ['orang', 'iuran', 'jadwal'];
 
     protected $status_enum = [
         ["value" => "b", "label" => "Baru"],
@@ -42,6 +42,8 @@ class Siswa extends BaseModel
             "id" => $this->guru_id,
             "nama" => $this->guru->orang->nama
         ];
+
+        
 
 		return $guru_id;
 	}
@@ -253,7 +255,7 @@ class Siswa extends BaseModel
     {
         $user = new \Bimbel\User\Model\User();
         $user = $user->create([
-            "username" => $this->orang->nama,
+            // "username" => $this->orang->nama,
             "orang_id" => $this->orang_id
         ]);
 
@@ -362,5 +364,43 @@ class Siswa extends BaseModel
         $this->handleIuran($iurans);
 
         return $result;
+    }
+
+    public function delete()
+    {
+        if ($this->status != 'b')
+        {
+            throw new \Error("Siswa cannot be deleted");
+        }
+
+        $this->iuran_terbuat()->delete();
+        $this->jadwal()->delete();
+        $this->iuran()->detach();
+        $this->referal()->detach();
+
+        $result = parent::delete();
+        $this->orang()->delete();
+
+        return $result;
+    }
+
+
+    public function fetchAllData($condition, $obj)
+    {
+        $obj = $this->with('orang');
+        return parent::fetchAllData($condition, $obj);
+    }
+
+    public function fetchDetail($id, $obj)
+    {
+        $obj = $obj->with('orang', 'iuran', 'jadwal');
+        $data = parent::fetchDetail($id, $obj);
+
+        if ($data->status != 'b')
+        {
+            $data->deleteable = false;
+        }
+
+        return $data;
     }
 }

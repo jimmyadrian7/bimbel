@@ -29,4 +29,17 @@ class Pengeluaran extends BaseModel
         $this->hitungTotal($attributes);
         return parent::update($attributes, $options);
     }
+
+    public function fetchDetail($id, $obj)
+    {
+        $data = parent::fetchDetail($id, $obj);
+        
+        if ($data->aset || $data->gaji)
+        {
+            $data->editable = false;
+            $data->deleteable = false;
+        }
+
+        return $data;
+    }
 }

@@ -11,7 +11,7 @@ import formInput from "./form-input.html";
         let directive = {
             restrict: 'E',
             template: formInput,
-            scope: false,
+            scope: true,
             link: link
         };
 

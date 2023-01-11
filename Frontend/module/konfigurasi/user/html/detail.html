@@ -1,7 +1,14 @@
-<app-detail table="user" id="vm.dataId" fields="vm.fields" list="konfigurasi.user" edit="konfigurasi.user_form">
+<app-detail table="user" id="vm.dataId" fields="vm.fields" list="konfigurasi.user">
     <app-detail-button>
-        <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.gantiPass()">
+        <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.gantiPass()" ng-if="vm.data.status == 'a'">
             <i class="fas fa-plus me-2"></i> Ganti password
         </button>
     </app-detail-button>
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.orang.nama"></span>
+            <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getLabel(vm.data.status)"></span>
+        </h6>
+    </app-detail-title>    
 </app-detail>

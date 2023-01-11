@@ -118,6 +118,7 @@ CREATE TABLE `guru` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `orang_id` int,
   `status` ENUM ('a', 'n') DEFAULT "a",
+  `pp_id` int,
   `berhenti` text,
   `memilih` text,
   `kelebihan` text,
@@ -164,6 +165,7 @@ CREATE TABLE `gaji` (
 
 CREATE TABLE `tabungan_aset` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
+  `code` varchar(255),
   `nama` varchar(255),
   `jumlah` int,
   `harga` int,
@@ -202,7 +204,8 @@ CREATE TABLE `pembiayaan` (
   `harga` int,
   `stok` boolean,
   `jumlah_stok` int,
-  `komisi` boolean
+  `jenis_komisi` ENUM ('s', 'p', 'n'),
+  `nominal` int
 );
 
 CREATE TABLE `diskon` (
@@ -230,7 +233,6 @@ CREATE TABLE `tagihan_detail` (
   `diskon_id` int,
   `kode` varchar(255),
   `nama` varchar(255),
-  `komisi_guru` int,
   `nominal` varchar(255),
   `qty` int,
   `potongan` int,
@@ -277,7 +279,8 @@ CREATE TABLE `user` (
   `unenpass` varchar(255),
   `super_user` boolean DEFAULT 0,
   `is_public` boolean DEFAULT 0,
-  `orang_id` int
+  `orang_id` int,
+  `status` ENUM ('a', 'n') DEFAULT "a"
 );
 
 CREATE TABLE `user_role` (
@@ -380,6 +383,8 @@ ALTER TABLE `siswa_referal` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id
 ALTER TABLE `siswa_referal` ADD FOREIGN KEY (`referal_id`) REFERENCES `referal` (`id`);
 
 ALTER TABLE `guru` ADD FOREIGN KEY (`orang_id`) REFERENCES `orang` (`id`);
+
+ALTER TABLE `guru` ADD FOREIGN KEY (`pp_id`) REFERENCES `file` (`id`);
 
 ALTER TABLE `guru` ADD FOREIGN KEY (`rekaman_id`) REFERENCES `file` (`id`);
 

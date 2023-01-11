@@ -9,7 +9,7 @@ class TabunganAset extends BaseModel
 {
     protected $fillable = ['nama', 'jumlah', 'harga', 'total', 'sisa', 'keterangan', 'cicil', 'status'];
     protected $table = 'tabungan_aset';
-    protected $with = ['cicilan_aset'];
+    // protected $with = ['cicilan_aset'];
 
     protected $status_enum = [
         ["value" => "a", "label" => "Aktif"],
@@ -49,5 +49,19 @@ class TabunganAset extends BaseModel
     {
         $this->hitungTotal($attributes);
         return parent::update($attributes, $options);
+    }
+
+    public function fetchDetail($id, $obj)
+    {
+        $obj = $obj->with('cicilan_aset');
+        $data = parent::fetchDetail($id, $obj);
+        
+        if ($data->status == 'c')
+        {
+            $data->editable = false;
+            $data->deleteable = false;
+        }
+
+        return $data;
     }
 }

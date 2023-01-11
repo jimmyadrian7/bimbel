@@ -13,7 +13,7 @@ class Tagihan extends BaseModel
         'tagihan_detail'
     ];
     protected $table = 'tagihan';
-    protected $with = ['tagihan_detail', 'transaksi'];
+    // protected $with = ['tagihan_detail', 'transaksi'];
     protected $appends = ['siswa_data'];
 
     protected $status_enum = [
@@ -141,5 +141,32 @@ class Tagihan extends BaseModel
         $this->handleTagihanDetail($tagihan_details);
 
         return $result;
+    }
+
+    public function delete()
+    {
+        if ($this->status != 'p')
+        {
+            throw new \Error("Tagihan cannot be deleted");
+        }
+
+        $this->tagihan_detail()->delete();
+
+        return parent::delete();
+    }
+
+    
+    public function fetchDetail($id, $obj)
+    {
+        $obj = $obj->with('tagihan_detail', 'transaksi');
+        $data = parent::fetchDetail($id, $obj);
+
+        if ($data->status != 'p')
+        {
+            $data->editable = false;
+            $data->deleteable = false;
+        }
+
+        return $data;
     }
 }

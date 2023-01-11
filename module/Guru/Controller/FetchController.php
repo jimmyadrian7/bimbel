@@ -19,7 +19,7 @@ class FetchController extends Controller
             $guru = new Guru();
             $data = $guru->without(['siswa', 'gaji'])->whereHas('orang', function($q) use ($getData) {
                 $q->where('nama', 'like', '%' . $getData['query'] . '%');
-            })->get();
+            })->where('status', 'a')->get();
 
             foreach ($data as &$value) {
                 $value["nama"] = $value["orang"]["nama"];

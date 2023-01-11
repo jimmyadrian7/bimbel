@@ -41,4 +41,24 @@ class BaseModel extends Model
 
         return $result;
     }
+
+    public function fetchAllData($condition, $obj)
+    {
+        if (!empty($condition))
+        {
+            $obj = $obj->where($condition);
+        }
+
+        $data = $obj->get();
+        return $data;
+    }
+
+    public function fetchDetail($id, $obj)
+    {
+        $data = $obj->find($id);
+        $data->editable = true;
+        $data->deleteable = true;
+
+        return $data;
+    }
 }

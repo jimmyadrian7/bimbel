@@ -80,26 +80,40 @@ class TagihanDetail extends BaseModel
 
     public function getKomisi($attributes)
     {
-        $result = $attributes['total'] * $attributes['komisi_guru'] / 100;
+        $pembiayaan = new Pembiayaan();
+        $tagihan = new Tagihan();
+        $tagihan = $tagihan->find($attributes['tagihan_id']);
+        $pembiayaan = $pembiayaan->find($attributes['pembiayaan_id']);
+        $komisi = false;
+
+        if ($pembiayaan->jenis_komisi == 's')
+        {
+            $komisi = $tagihan->siswa->komisi;
+        }
+        else if ($pembiayaan->jenis_komisi == 'p')
+        {
+            $komisi = $pembiayaan->nominal;
+        }
+        else
+        {
+            $komisi = false;
+        }
+
+        if ($komisi !== false)
+        {
+            $result = $attributes['total'] * $komisi / 100;
+        }
+        else
+        {
+            $result = $pembiayaan->nominal * $attributes['qty'];
+        }
+
         return $result;
     }
 
     public function autoFill(&$attributes)
     {
-        $tagihan = new Tagihan();
-        $pembiayaan = new Pembiayaan();
-        $tagihan = $tagihan->find($attributes['tagihan_id']);
-        $pembiayaan = $pembiayaan->find($attributes['pembiayaan_id']);
-
-
         $attributes['sub_total'] = $attributes['qty'] * $attributes['nominal'];
-        $attributes['komisi_guru'] = 0;
-
-        if ($pembiayaan->komisi)
-        {
-            $attributes['komisi_guru'] = $tagihan->siswa->komisi;
-        }
-
         $attributes['potongan'] = $this->getPotongan($attributes);
         $attributes['total'] = $this->getTotal($attributes);
         $attributes['komisi'] = $this->getKomisi($attributes);

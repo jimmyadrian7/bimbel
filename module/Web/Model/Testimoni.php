@@ -80,4 +80,11 @@ class Testimoni extends BaseModel
         $this->handleFile($attributes);
         return parent::update($attributes, $options);
     }
+
+    public function delete()
+    {
+        $result = parent::delete();
+        $this->gambar()->delete();
+        return $result;
+    }
 }

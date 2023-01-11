@@ -16,15 +16,23 @@ import modal from "./html/modal.html";
         vm.data = {};
         vm.form = {};
         vm.dataId = stateParams.dataId;
+        let statusOpt = [
+            {value: 'a', label: 'Aktif'},
+            {value: 'n', label: 'Nonaktif'}
+        ];
+
         vm.fields = [
             {name: "Username", value: "username", table: true},
-            {name: "Nama", value: "orang.nama", table: true},
-            {name: "Password", value: "unenpass", hidden: true}
+            {name: "Nama", value: "orang.nama", table: true, hideDetail: true},
+            {name: "Password", value: "unenpass", hidden: true},
+            {name: "Status", value: "status", type: 'selection', selection: statusOpt, hidden: true, table: true, hideDetail: true}
         ];
         
         vm.myModal = false;
         vm.gantiPass = gantiPass;
         vm.saveUser = saveUser;
+
+        vm.getLabel = getLabel;
 
         function gantiPass()
         {
@@ -48,6 +56,16 @@ import modal from "./html/modal.html";
                 Modal.getInstance(vm.myModal[0]).hide();
                 state.reload();
             });
+        }
+
+        function getLabel(val)
+        {
+            for (let index = 0; index < statusOpt.length; index++) {
+                if (statusOpt[index].value == val)
+                {
+                    return statusOpt[index].label;
+                }
+            }
         }
     }
 })()

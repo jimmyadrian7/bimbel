@@ -1,1 +1,25 @@
-<app-form detail="pembayaran.pembiayaan_detail" list="pembayaran.pembiayaan" id="vm.dataId" table="pembiayaan" fields="vm.fields"></app-form>
+<app-form detail="pembayaran.pembiayaan_detail" list="pembayaran.pembiayaan" id="vm.dataId" table="pembiayaan" fields="vm.fields" data="vm.data">
+    <app-form-body>
+
+        <hr class="horizontal dark mt-3">
+
+        <div class="col-md-6">
+            <table>
+                <tr ng-show="vm.data.stok">
+                    <td class="text-xs">Jumlah Stok</td>
+                    <td class="px-3">:</td>
+                    <td class="font-weight-bolder text-dark py-2">
+                        <app-form-input type="number" expr="vm.data.jumlah_stok"></app-form-input>
+                    </td>
+                </tr>
+                <tr ng-show="vm.data.jenis_komisi && vm.data.jenis_komisi != 's'">
+                    <td class="text-xs">Jumlah Pembagian</td>
+                    <td class="px-3">:</td>
+                    <td class="font-weight-bolder text-dark py-2">
+                        <app-form-input type="number" expr="vm.data.nominal"></app-form-input>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </app-form-body>
+</app-form>

@@ -4,10 +4,10 @@
             <button class="btn btn-link text-dark text-gradient px-3 mb-0 mr-3" ng-click="vm.back()">
                 <i class="fas fa-chevron-left text-dark me-2"></i>
             </button>
-            <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.editData()" ng-if="vm.edit">
+            <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.editData()" ng-if="vm.edit && vm.data.editable">
                 <i class="fas fa-pencil-alt text-primary me-2"></i> Edit
             </button>
-            <button class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.deleteData()" ng-if="vm.edit">
+            <button class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.deleteData()" ng-if="vm.edit && vm.data.deleteable">
                 <i class="far fa-trash-alt me-2"></i> Delete
             </button>
         </div>

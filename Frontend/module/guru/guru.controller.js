@@ -39,9 +39,11 @@ import showGuru from "./html/modal/show-guru.html";
             {value: 'n', label: 'Nonaktif'}
         ];
         vm.fields = [
-            {name: "Nama", value: "orang.nama", table: true},
+            {name: "Nama", value: "orang.nama", table: true, hideDetail: true},
             {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, table: true, hidden: true, hideDetail: true},
-            {name: "No. HP", value: "orang.no_hp", table: true, hidden: true, hideDetail: true}
+            {name: "No. HP", value: "orang.no_hp", table: true, hidden: true, hideDetail: true},
+            {name: "Status", value: "status", type: 'selection', selection: vm.statusOpt, table: true, hidden: true, hideDetail: true},
+            {name: "Profile Picture", value: "pp", type: "file", hideDetail: true}
         ];
 
         vm.additional = {};
@@ -106,6 +108,8 @@ import showGuru from "./html/modal/show-guru.html";
 
         vm.liatGuru = liatGuru;
         vm.previewGuru = previewGuru;
+
+        vm.nonaktif = nonaktif;
 
         function getValue(field)
         {
@@ -194,6 +198,17 @@ import showGuru from "./html/modal/show-guru.html";
                 Modal.getInstance(vm.modalElement[0]).hide();
                 vm.modal.listGuru = data;
                 vm.modalElement = $compile(showGuru)(scope);
+            });
+        }
+
+        function nonaktif()
+        {
+            let data = {
+                id: vm.dataId,
+                status: 'n'
+            };
+            req.put('guru', data).then(response => {
+                state.reload();
             });
         }
     }

@@ -30,7 +30,7 @@ class UserController extends Controller
             }
 
             $user = new user();
-            $user = $user->where('username', $data['username'])->first();
+            $user = $user->where('username', $data['username'])->where('status', 'a')->first();
 
             if (!$user)
             {
@@ -93,10 +93,10 @@ class UserController extends Controller
         }
 
         $guru = new Guru();
-        $guru = $guru->where('orang_id', $user->orang_id)->first();
+        $guru = $guru->with('orang')->where('orang_id', $user->orang_id)->first();
 
         $siswa = new Siswa();
-        $siswa = $siswa->where('orang_id', $user->orang_id)->first();
+        $siswa = $siswa->with('orang')->where('orang_id', $user->orang_id)->first();
 
         $user->{'menu'} = $menu;
         $user->{'guru'} = $guru;

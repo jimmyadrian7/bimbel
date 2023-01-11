@@ -29,3 +29,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.img-container {
+    position: absolute;
+    right: 30px;
+    top: 20px;
+}
+
+.img-container img {
+    height: 100px;
+    width: 100px;
+}
