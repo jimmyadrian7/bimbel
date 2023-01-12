@@ -26,7 +26,6 @@ class Siswa extends BaseModel
         'kursus_id', 'sekolah', 'kelas'
     ];
     protected $table = 'siswa';
-    // protected $with = ['orang', 'iuran', 'jadwal'];
 
     protected $status_enum = [
         ["value" => "b", "label" => "Baru"],
@@ -377,6 +376,14 @@ class Siswa extends BaseModel
         $this->jadwal()->delete();
         $this->iuran()->detach();
         $this->referal()->detach();
+        
+        $tagihan = new Tagihan();
+        $tagihans = $tagihan->where('siswa_id', $this->id)->get();
+
+        foreach ($tagihans as $tagihan)
+        {
+            $tagihan->delete();
+        }
 
         $result = parent::delete();
         $this->orang()->delete();

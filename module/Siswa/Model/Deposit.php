@@ -81,4 +81,15 @@ class Deposit extends BaseModel
 
         return parent::update($attributes, $options);
     }
+
+
+    public function fetchDetail($id, $obj)
+    {
+        $data = parent::fetchDetail($id, $obj);
+
+        $data->editable = false;
+        $data->deleteable = false;
+
+        return $data;
+    }
 }

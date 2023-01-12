@@ -17,6 +17,14 @@ import form from './html/form.html';
 
     function getStates()
     {
+        let getKursusOptions = (req) => {
+            return req.get('kursuss').then(response => {
+                return response.data.map((value) => {
+                    return {value: value.id, label: value.nama}
+                });
+            });
+        };
+
         return [
             {
                 state: 'pengeluaran.pengeluaran',
@@ -26,6 +34,9 @@ import form from './html/form.html';
                     controller: 'PengeluaranController',
                     controllerAs: 'vm',
                     title: 'Pengeluaran',
+                    resolve: {
+                        kursusOptions: getKursusOptions
+                    },
                     menu: 'pengeluaran',
                     nav: 'pengeluaran'
                 }
@@ -38,6 +49,9 @@ import form from './html/form.html';
                     controller: 'PengeluaranController',
                     controllerAs: 'vm',
                     title: 'Detail Pengeluaran',
+                    resolve: {
+                        kursusOptions: getKursusOptions
+                    },
                     menu: 'pengeluaran',
                     nav: 'pengeluaran'
                 }
@@ -50,6 +64,9 @@ import form from './html/form.html';
                     controller: 'PengeluaranController',
                     controllerAs: 'vm',
                     title: 'Form Pengeluaran',
+                    resolve: {
+                        kursusOptions: getKursusOptions
+                    },
                     menu: 'pengeluaran',
                     nav: 'pengeluaran'
                 }

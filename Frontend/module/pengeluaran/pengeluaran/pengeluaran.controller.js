@@ -4,14 +4,15 @@
     angular.module('app.module.pengeluaran.pengeluaran')
         .controller('PengeluaranController', PengeluaranController);
 
-    PengeluaranController.$inject = ['$stateParams'];
+    PengeluaranController.$inject = ['$stateParams', 'kursusOptions'];
 
-    function PengeluaranController(stateParams)
+    function PengeluaranController(stateParams, kursusOptions)
     {
         let vm = this;
 
         vm.dataId = stateParams.dataId;
         vm.fields = [
+            {name: "Tempat Kursus", value: "kursus_id", type: 'selection', selection: kursusOptions, table: true},
             {name: "Nama", value: "nama", table: true},
             {name: "Jumlah", value: "jumlah", type: 'number', table: true},
             {name: "Harga", value: "harga", type: 'number', table: true},

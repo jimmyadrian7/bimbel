@@ -4,18 +4,13 @@
     angular.module('app.module.pengeluaran')
         .controller('BasePengeluaranController', BasePengeluaranController);
 
-    BasePengeluaranController.$inject = ['$state'];
+    BasePengeluaranController.$inject = ['$state', 'session'];
 
-    function BasePengeluaranController(state)
+    function BasePengeluaranController(state, session)
     {
         let vm = this;
 
-        vm.menus = [
-            {name: "Aset", list: 'pengeluaran.aset', nav: 'aset'},
-            {name: "Tabungan Aset", list: 'pengeluaran.tabungan_aset', nav: 'tabungan_aset'},
-            // {name: "Gaji", list: 'pengeluaran.gaji', nav: 'gaji'},
-            {name: "Pengeluaran", list: 'pengeluaran.pengeluaran', nav: 'pengeluaran'}
-        ];
+        vm.menus = [];
 
         vm.goState = goState;
         vm.isCurrent = isCurrent;
@@ -24,7 +19,10 @@
 
         function activate()
         {
-            
+            let menu = session.getGroupMenu('pengeluaran');
+            vm.menus = menu.map(value => {
+                return {name: value.nama, list: 'pengeluaran.' + value.kode, nav: value.kode};
+            });
         }
 
         function goState(menu)

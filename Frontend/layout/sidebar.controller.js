@@ -29,7 +29,7 @@
         function getNavRoutes()
         {
             let userSession = session.getSession();
-            vm.navRoutes = userSession.menu;
+            vm.navRoutes = userSession.menu.filter(value => !value.parent);
         }
 
         function isCurrent(menu)

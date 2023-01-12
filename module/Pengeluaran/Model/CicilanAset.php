@@ -52,15 +52,16 @@ class CicilanAset extends BaseModel
         $attributes['bukti_pembayaran_id'] = $file->id;
     }
 
-    public function createPengeluaran($attributes, $nama)
+    public function createPengeluaran($attributes, $tabungan_aset)
     {
-        $nominal = $attributes['nominal'];
+        $nominal = $attributes['nominal'];        
         $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
         $pengeluaran = $pengeluaran->create([
-            "nama" => sprintf("Cicilan %s", $nama),
+            "nama" => sprintf("Cicilan %s", $tabungan_aset->nama),
             "jumlah" => 1,
             "harga" => $nominal,
-            "aset" => true
+            "aset" => true,
+            "kursus_id" => $tabungan_aset->kursus_id
         ]);
 
         return $pengeluaran;
@@ -93,7 +94,7 @@ class CicilanAset extends BaseModel
             'status' => $status
         ]);
 
-        $attributes['pengeluaran_id'] = $this->createPengeluaran($attributes, $tabungan_aset->nama)->id;
+        $attributes['pengeluaran_id'] = $this->createPengeluaran($attributes, $tabungan_aset)->id;
     }
 
     public function create(array $attributes = [])

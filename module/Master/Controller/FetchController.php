@@ -27,15 +27,13 @@ class FetchController extends Controller
 
                 if ($siswa_ids !== false)
                 {
-                    if ($model_name == 'siswa')
+                    if ($model_name != 'siswa')
                     {
-                        // $model = $model->whereIn('id', $siswa_ids);
-                        arrray_push($condition, ['id', 'in', $siswa_ids]);
+                        $model->whereIn('id', $siswa_ids);
                     }
                     else
                     {
-                        arrray_push($condition, ['siswa_id', 'in', $siswa_ids]);
-                        // $model = $model->whereIn('siswa_id', $siswa_ids);
+                        $model->whereIn('siswa_id', $siswa_ids);
                     }
                 }
             }

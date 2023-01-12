@@ -102,10 +102,17 @@ class User extends BaseModel
 		return parent::update($attributes, $options);
 	}
 
-
 	public function delete()
 	{
 		$this->role()->detach();
 		return parent::delete();
 	}
+
+	public function fetchDetail($id, $obj)
+    {
+        $data = parent::fetchDetail($id, $obj);
+        $data->deleteable = false;
+
+        return $data;
+    }
 }

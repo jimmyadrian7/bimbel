@@ -15,6 +15,14 @@ import laporan from "./html/laporan.html";
 
     function getStates()
     {
+        let getKursusOptions = (req) => {
+            return req.get('kursuss').then(response => {
+                return response.data.map((value) => {
+                    return {value: value.id, label: value.nama}
+                });
+            });
+        };
+        
         return [
             {
                 state: 'laporan.deposit',
@@ -24,6 +32,9 @@ import laporan from "./html/laporan.html";
                     controller: 'LaporanDepositController',
                     controllerAs: 'vm',
                     title: 'Deposit',
+                    resolve: {
+                        kursusOpt: getKursusOptions
+                    },
                     menu: 'laporan',
                     nav: 'deposit'
                 }

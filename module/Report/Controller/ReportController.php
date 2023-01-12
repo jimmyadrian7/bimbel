@@ -6,40 +6,68 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class ReportController extends BaseReportController
 {
+    public function queryPendapatan($postData)
+    {
+        $params = [
+            'start_date' => $postData['start_date'],
+            'end_date' => $postData['end_date']
+        ];
+        $query = "
+            SELECT 
+                tagihan_detail.nama AS deskripsi,
+                SUM(tagihan_detail.qty) AS qty,
+                sum(tagihan_detail.total - tagihan_detail.komisi) AS total
+            FROM tagihan_detail
+            LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
+            WHERE 
+                DATE(tagihan.tanggal) >= :start_date AND 
+                DATE(tagihan.tanggal) <= :end_date AND
+                %s
+            GROUP BY tagihan_detail.nama
+        ";
+        $where_condition = "1=1";
+
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+        {
+            $where_condition = "tagihan.kursus_id = :tempat_kursus";
+            $params['tempat_kursus'] = $postData['tempat_kursus'];
+        }
+
+        $query = sprintf($query, $where_condition);
+        $tagihan = DB::select(DB::raw($query), $params);
+
+        return $tagihan;
+    }
+
+    public function queryPengeluaran($postData)
+    {
+        $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
+        $pengeluaran = $pengeluaran
+            ->whereDate('tanggal', '>=', $postData['start_date'])
+            ->whereDate('tanggal', '<=', $postData['end_date']);
+
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+        {
+            $pengeluaran = $pengeluaran->where('kursus_id', $postData['tempat_kursus']);
+        }
+
+        $pengeluaran = $pengeluaran->get();
+
+        return $pengeluaran;
+    }
+
     public function getLabaRugi($request, $args)
     {
         $postData = $request->getParsedBody();
         $tagihan = new \Bimbel\Pembayaran\Model\TagihanDetail();
 
-        $query = "
-            SELECT 
-                tagihan_detail.nama AS nama,
-                SUM(tagihan_detail.qty) AS qty, 
-                SUM(tagihan_detail.total - tagihan_detail.komisi) AS total
-            FROM tagihan_detail
-            LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
-            WHERE 
-                DATE(tagihan.tanggal) >= :start_date AND
-                DATE(tagihan.tanggal) <= :end_date
-            GROUP BY tagihan_detail.nama
-        ";
-        $tagihan = DB::select(
-            DB::raw($query), 
-            [
-                'start_date' => $postData['start_date'],
-                'end_date' => $postData['end_date']
-            ]
-        );
+        $tagihan = $this->queryPendapatan($postData);
         $total_pendapatan = array_reduce($tagihan, function($result, $array) {
             $result += $array->total;
             return $result;
         }, 0);
 
-        $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
-        $pengeluaran = $pengeluaran
-            ->whereDate('tanggal', '>=', $postData['start_date'])
-            ->whereDate('tanggal', '<=', $postData['end_date'])
-            ->get();
+        $pengeluaran = $this->queryPengeluaran($postData);
 
         $data = [
             'judul' => "Laba Rugi",
@@ -61,8 +89,16 @@ class ReportController extends BaseReportController
         $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
         $gaji = $gaji
             ->whereDate('tanggal', '>=', $postData['start_date'])
-            ->whereDate('tanggal', '<=', $postData['end_date'])
-            ->get();
+            ->whereDate('tanggal', '<=', $postData['end_date']);
+
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+        {
+            $gaji = $gaji->whereHas('guru', function($q) use ($postData) {
+                $q->where('kursus_id', $postData['tempat_kursus']);
+            });
+        }
+
+        $gaji = $gaji->get();
 
         $data = [
             'judul' => "Gaji Guru",
@@ -78,35 +114,7 @@ class ReportController extends BaseReportController
     public function getPendapatan($request, $args)
     {
         $postData = $request->getParsedBody();
-        $params = [
-            'start_date' => $postData['start_date'],
-            'end_date' => $postData['end_date']
-        ];
-        $query = "
-            SELECT 
-                tagihan_detail.nama AS deskripsi,
-                SUM(tagihan_detail.qty) AS qty,
-                sum(tagihan_detail.total - tagihan_detail.komisi) AS total
-            FROM tagihan_detail
-            LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
-            LEFT JOIN siswa ON siswa.id = tagihan.siswa_id
-            WHERE 
-                DATE(tagihan.tanggal) >= :start_date AND 
-                DATE(tagihan.tanggal) <= :end_date AND
-                %s
-            GROUP BY tagihan_detail.nama
-        ";
-        $where_condition = "1=1";
-
-        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
-        {
-            $where_condition = "siswa.kursus_id = :tempat_kursus";
-            $params['tempat_kursus'] = $postData['tempat_kursus'];
-        }
-
-        $query = sprintf($query, $where_condition);
-        $tagihan = DB::select(DB::raw($query), $params);
-
+        $tagihan = $this->queryPendapatan($postData);
         $total_pendapatan = array_reduce($tagihan, function($result, $value) {
             $result += $value->total;
             return $result;
@@ -126,11 +134,7 @@ class ReportController extends BaseReportController
     public function getPengeluaran($request, $args)
     {
         $postData = $request->getParsedBody();
-        $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
-        $pengeluaran = $pengeluaran
-            ->whereDate('tanggal', '>=', $postData['start_date'])
-            ->whereDate('tanggal', '<=', $postData['end_date'])
-            ->get();
+        $pengeluaran = $this->queryPengeluaran($postData);
 
         $data = [
             'judul' => "Pengeluaran",
@@ -150,8 +154,16 @@ class ReportController extends BaseReportController
         $deposit = $deposit
             ->whereDate('tanggal', '>=', $postData['start_date'])
             ->whereDate('tanggal', '<=', $postData['end_date'])
-            ->where('status', 'a')
-            ->get();
+            ->where('status', 'a');
+
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+        {
+            $deposit = $deposit->whereHas('siswa', function($q) use ($postData) {
+                $q->where('kursus_id', $postData['tempat_kursus']);
+            });
+        }
+
+        $deposit = $deposit->get();
 
         $data = [
             'judul' => "Deposit",

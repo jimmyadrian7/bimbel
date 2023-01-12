@@ -6,6 +6,7 @@ use \Bimbel\User\Model\User;
 use \Bimbel\Master\Model\Menu;
 use \Bimbel\Guru\Model\Guru;
 use \Bimbel\Siswa\Model\Siswa;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class UserController extends Controller
 {
@@ -72,25 +73,33 @@ class UserController extends Controller
         }
 
         $user = $user->refresh();
+        $user->offsetUnset('password');
+        $user->offsetUnset('unenpass');
 
         $menu = new Menu();
         if ($user->super_user)
         {
-            $menu = $menu->get();
+            $query = "
+                SELECT 
+                    menu.id, menu.kode, menu.nama, menu.parent,
+                    1 AS 'create', 1 AS 'update', 1 AS 'delete'
+                FROM menu
+            ";
         }
         else
         {
-            $menu_ids = [];
-            $current_user = new User();
-            $current_user = $current_user->find($user->id);
-
-            foreach($user->role as $role)
-            {
-                $menu_ids = array_merge($menu_ids, $role->menu->pluck('id')->toArray());
-            }
-
-            $menu = $menu->whereIn('id', $menu_ids)->get();
+            $query = "
+                SELECT 
+                    menu.id, menu.kode, menu.nama, menu.parent,
+                    role_menu.create, role_menu.update, role_menu.delete
+                FROM role_menu
+                LEFT JOIN menu ON menu.id = role_menu.menu_id
+                WHERE role_id = (:role_id)
+            ";
         }
+
+        $role_ids = $user->role->pluck('id')->toArray();
+        $menu = DB::select(DB::raw($query), ['role_id' => join(", ", $role_ids)]);
 
         $guru = new Guru();
         $guru = $guru->with('orang')->where('orang_id', $user->orang_id)->first();

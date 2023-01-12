@@ -23,7 +23,8 @@ import previewHtml from "./preview.html";
                 list: '@',
                 edit: '@',
                 id: '=',
-                fields: '='
+                fields: '=',
+                noback: '='
             },
             transclude: {
                 title: '?appDetailTitle',
@@ -32,11 +33,11 @@ import previewHtml from "./preview.html";
             }
         };
 
-        controllerFunc.$inject = ['$scope', '$parse', '$compile'];
+        controllerFunc.$inject = ['$scope', '$parse', '$compile', 'session'];
 
         return directive;
 
-        function controllerFunc(scope, $parse, $compile)
+        function controllerFunc(scope, $parse, $compile, session)
         {
             let vm = this;
             
@@ -48,6 +49,9 @@ import previewHtml from "./preview.html";
             vm.back = back;
             vm.getValue = getValue;
             vm.preview = preview;
+
+            vm.editable = false;
+            vm.deleteable = false;
 
             scope.$watch(() => vm.table, watchTable);
 
@@ -63,6 +67,22 @@ import previewHtml from "./preview.html";
             {
                 vm.fields = vm.fields.filter(value => !value.hideDetail);
                 vm.fields = chunkArr();
+
+                let parent = false;
+                let menuKode = state.current.menu;
+                if (state.current.nav)
+                {
+                    menuKode = state.current.nav;
+                    parent = state.current.menu;
+                }
+
+                let activeMenu = session.getMenu(menuKode, parent);
+                if (activeMenu)
+                {
+                    vm.editable = activeMenu.update;
+                    vm.deleteable = activeMenu.delete;
+                }
+
                 getDataDetail();
             }
 

@@ -85,6 +85,7 @@ class MainSeed {
         $this->importData('sequance');
         $this->importData('menu');
         $this->importData('role');
+        $this->importData('role_menu');
         $this->importData('konfigurasi_web');
         $this->importData('referal');
 
@@ -102,9 +103,5 @@ class MainSeed {
         $guru = $this->modelList->getModel('Guru')->create(['orang' => ['nama' => 'Admin']]);
         $user = $this->modelList->getModel('User')->where(['orang_id' => $guru->orang_id])->first();
         $user->update(['username' => 'admin', 'pass' => 'admin', 'super_user' => true]);
-
-        // Attach menu to role
-        $this->modelList->getModel('Role')->find(2)->menu()->attach([1, 3, 5]);
-        $this->modelList->getModel('Role')->find(3)->menu()->attach([1, 3, 5]);
     }
 }

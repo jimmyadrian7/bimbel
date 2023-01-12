@@ -49,7 +49,7 @@ class Session extends SessionMaster
         {
             $guru = new \Bimbel\Guru\Model\Guru();
             $guru = $guru->where('orang_id', $this->data->orang_id)->first();
-            $siswa_ids = $guru->siswa->pluck('id');
+            $siswa_ids = $guru->siswa->pluck('id')->toArray();
         }
         else if ($this->isRole('S'))
         {

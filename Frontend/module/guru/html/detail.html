@@ -40,7 +40,7 @@
         </ul>
 
         <div class="tab-content text-justify">
-            <div class="tab-pane fade show active" id="tunjangan" ng-init="vm.fetchDataSiswa()">
+            <div class="tab-pane fade show active" id="tunjangan">
                 <div class="mt-3">
                     <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahTunjangan()">
                         <i class="fa fa-plus me-3"></i> Tambah
@@ -83,9 +83,9 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade show" id="siswa" ng-init="vm.fetchDataSiswa()">
+            <div class="tab-pane fade show" id="siswa">
                 <app-table-template
-                    data="vm.siswa" 
+                    data="vm.data.siswa" 
                     fields="vm.additional.siswaFields"></app-table-template>
             </div>
 

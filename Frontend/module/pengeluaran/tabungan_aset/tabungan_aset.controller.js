@@ -6,9 +6,9 @@ import transaksi from "./html/modal/transaksi.html";
     angular.module('app.module.pengeluaran.tabungan_aset')
         .controller('TabunganAsetController', TabunganAsetController);
 
-    TabunganAsetController.$inject = ['$stateParams', 'Modal', '$compile', '$scope', 'req', '$state'];
+    TabunganAsetController.$inject = ['$stateParams', 'Modal', '$compile', '$scope', 'req', '$state', 'kursusOptions'];
 
-    function TabunganAsetController(stateParams, Modal, $compile, $scope, req, state)
+    function TabunganAsetController(stateParams, Modal, $compile, $scope, req, state, kursusOptions)
     {
         let vm = this;
         let statusOpt = [
@@ -23,6 +23,7 @@ import transaksi from "./html/modal/transaksi.html";
         
 
         vm.fields = [
+            {name: "Tempat Kursus", value: "kursus_id", type: 'selection', selection: kursusOptions, table: true},
             {name: "Nama", value: "nama", table: true},
             {name: "Keterangan", value: "keterangan"},
             {name: "Jumlah", value: "jumlah", type: 'number', table: true},

@@ -4,9 +4,9 @@
     angular.module('app.module.laporan.laba_rugi')
         .controller('LabaRugiController', LabaRugiController);
 
-    LabaRugiController.$inject = ['req', '$element', 'moment'];
+    LabaRugiController.$inject = ['req', '$element', 'moment', 'kursusOpt'];
 
-    function LabaRugiController(req, $element, moment)
+    function LabaRugiController(req, $element, moment, kursusOpt)
     {
         let vm = this;
 
@@ -19,7 +19,8 @@
 
         vm.fields = [
             {type: 'date', value: 'start_date'},
-            {type: 'date', value: 'end_date'}
+            {type: 'date', value: 'end_date'},
+            {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
         ];
 
         function generate()

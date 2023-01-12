@@ -13,7 +13,8 @@
         vm.dataId = stateParams.dataId;
         vm.fields = [
             {name: "Kode", value: "kode", table: true},
-            {name: "Nama", value: "nama", table: true}
+            {name: "Nama", value: "nama", table: true},
+            {name: "Nomor", value: "nomor", table: true}
         ];
     }
 })()

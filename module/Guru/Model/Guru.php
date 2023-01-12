@@ -7,6 +7,7 @@ use Bimbel\Siswa\Model\Siswa;
 use Bimbel\Pengeluaran\Model\Gaji;
 use Bimbel\Guru\Model\TunjanganGuru;
 use Bimbel\Master\Model\File;
+use Bimbel\Master\Model\Kursus;
 
 
 class Guru extends BaseModel
@@ -14,7 +15,7 @@ class Guru extends BaseModel
     protected $fillable = [
         'orang_id', 'status', 'orang',
         'berhenti', 'memilih', 'kelebihan', 'kekurangan', 'kesehatan', 'lingkungan', 'aturan', 'pelatihan', 'kapan',
-        'gaji_sebelumnya', 'gaji_diminta', 'ideal', 'rekaman', 'rekaman_id', 'pp', 'pp_id'
+        'gaji_sebelumnya', 'gaji_diminta', 'ideal', 'rekaman', 'rekaman_id', 'pp', 'pp_id', 'kursus_id'
 
     ];
     protected $table = 'guru';
@@ -41,6 +42,10 @@ class Guru extends BaseModel
     public function tunjangan_guru()
     {
         return $this->hasMany(TunjanganGuru::class, 'guru_id', 'id');
+    }
+    public function kursus()
+    {
+        return $this->hasOne(Kursus::class, 'id', 'kursus_id');
     }
     public function rekaman()
     {

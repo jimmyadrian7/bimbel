@@ -28,14 +28,15 @@ import table from './table.html';
             }
         };
 
-        controllerFunc.$inject = ['$scope'];
+        controllerFunc.$inject = ['$scope', 'session'];
 
         return directive;
 
-        function controllerFunc(scope)
+        function controllerFunc(scope, session)
         {
             let vm = this;
             
+            vm.addable = false;
             vm.title = `Tabel ${$state.current.title}`;
             vm.data = [];
 
@@ -56,6 +57,25 @@ import table from './table.html';
 
             function activate()
             {
+                let parent = false;
+                let menuKode = $state.current.name;
+                if ($state.current.nav)
+                {
+                    menuKode = $state.current.nav;
+                    parent = $state.current.menu;
+                }
+
+                let activeMenu = session.getMenu(menuKode, parent);
+                if (activeMenu)
+                {
+                    vm.addable = activeMenu.create;
+
+                    if (['deposit', 'user'].includes(menuKode))
+                    {
+                        vm.addable = false;
+                    }
+                }
+
                 getTableFields();
                 getData();
             }

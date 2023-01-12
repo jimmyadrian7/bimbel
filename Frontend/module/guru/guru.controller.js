@@ -9,9 +9,15 @@ import showGuru from "./html/modal/show-guru.html";
     angular.module('app.module.guru')
         .controller('GuruController', GuruController);
 
-    GuruController.$inject = ['$stateParams', 'agamaOptions', '$compile', '$scope', 'req', '$state', '$parse', 'Modal', 'logger', 'moment'];
+    GuruController.$inject = [
+        '$stateParams', 'agamaOptions', '$compile', '$scope', 'req', '$state', 
+        '$parse', 'Modal', 'logger', 'moment', 'kursusOptions'
+    ];
 
-    function GuruController(stateParams, agamaOptions, $compile, scope, req, state, $parse, Modal, logger, moment)
+    function GuruController(
+        stateParams, agamaOptions, $compile, scope, 
+        req, state, $parse, Modal, logger, moment, kursusOptions
+    )
     {
         let vm = this;
         let jenisKelamin = [
@@ -43,7 +49,8 @@ import showGuru from "./html/modal/show-guru.html";
             {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, table: true, hidden: true, hideDetail: true},
             {name: "No. HP", value: "orang.no_hp", table: true, hidden: true, hideDetail: true},
             {name: "Status", value: "status", type: 'selection', selection: vm.statusOpt, table: true, hidden: true, hideDetail: true},
-            {name: "Profile Picture", value: "pp", type: "file", hideDetail: true}
+            {name: "Profile Picture", value: "pp", type: "file", hideDetail: true},
+            {name: "Tempat Kursus", value: "kursus_id", type: "selection", selection: kursusOptions, table: true}
         ];
 
         vm.additional = {};
@@ -100,8 +107,6 @@ import showGuru from "./html/modal/show-guru.html";
         vm.generateGaji = generateGaji;
         vm.genGaji = genGaji;
 
-        vm.fetchDataSiswa = fetchDataSiswa;
-
         vm.tambahTunjangan = tambahTunjangan;
         vm.addTunjangan = addTunjangan;
         vm.deleteTunjangan = deleteTunjangan;
@@ -153,11 +158,7 @@ import showGuru from "./html/modal/show-guru.html";
                 state.reload();
             });
         }
-
-        function fetchDataSiswa()
-        {
-            req.get(`guru/data/siswa/${stateParams.dataId}`).then(data => vm.siswa = data);
-        }
+        
 
         function tambahTunjangan()
         {

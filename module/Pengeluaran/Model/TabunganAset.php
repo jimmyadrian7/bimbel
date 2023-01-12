@@ -4,12 +4,12 @@ namespace Bimbel\Pengeluaran\Model;
 
 use Bimbel\Core\Model\BaseModel;
 use Bimbel\Pengeluaran\Model\CicilanAset;
+use Bimbel\Master\Model\Kursus;
 
 class TabunganAset extends BaseModel 
 {
-    protected $fillable = ['nama', 'jumlah', 'harga', 'total', 'sisa', 'keterangan', 'cicil', 'status'];
+    protected $fillable = ['nama', 'jumlah', 'harga', 'total', 'sisa', 'keterangan', 'cicil', 'status', 'kursus_id'];
     protected $table = 'tabungan_aset';
-    // protected $with = ['cicilan_aset'];
 
     protected $status_enum = [
         ["value" => "a", "label" => "Aktif"],
@@ -21,6 +21,10 @@ class TabunganAset extends BaseModel
     public function cicilan_aset()
     {
         return $this->hasMany(CicilanAset::class, 'tabungan_aset_id', 'id');
+    }
+    public function kursus()
+    {
+        return $this->hasOne(Kursus::class, 'id', 'kursus_id');
     }
 
     

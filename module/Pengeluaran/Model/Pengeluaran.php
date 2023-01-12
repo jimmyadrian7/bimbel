@@ -2,12 +2,20 @@
 namespace Bimbel\Pengeluaran\Model;
 
 use Bimbel\Core\Model\BaseModel;
+use Bimbel\Master\Model\Kursus;
 
 class Pengeluaran extends BaseModel
 {
-    protected $fillable = ['nama', 'jumlah', 'harga', 'total', 'gaji', 'aset', 'tanggal'];
+    protected $fillable = ['nama', 'jumlah', 'harga', 'total', 'gaji', 'aset', 'tanggal', 'kursus_id'];
     protected $table = 'pengeluaran';
 
+
+    public function kursus()
+    {
+        return $this->hasOne(Kursus::class, 'id', 'kursus_id');
+    }
+
+    
     public function hitungTotal(&$attributes)
     {
         if (!array_key_exists('harga', $attributes) || !array_key_exists('jumlah', $attributes))

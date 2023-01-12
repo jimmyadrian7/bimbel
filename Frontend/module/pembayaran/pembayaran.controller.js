@@ -17,29 +17,13 @@
 
         activate();
 
+
         function activate()
         {
-            if (session.isSuperUser())
-            {
-                vm.menus = [
-                    {name: "Pembiayaan", list: 'pembayaran.pembiayaan', nav: 'pembiayaan'},
-                    {name: "Diskon", list: 'pembayaran.diskon', nav: 'diskon'},
-                    {name: "Tagihan", list: 'pembayaran.tagihan', nav: 'tagihan'},
-                    // {name: "Transaksi", list: 'pembayaran.transaksi', nav: 'transaksi'},
-                    {name: "Iuran", list: 'pembayaran.iuran', nav: 'iuran'}
-                ];
-            }
-            else
-            {
-                vm.menus = [
-                    {name: "Tagihan", list: 'pembayaran.tagihan', nav: 'tagihan'}
-                ];
-
-                if (session.isGuru())
-                {
-                    vm.menus.push({name: "Pembiayaan", list: 'pembayaran.pembiayaan', nav: 'pembiayaan'});
-                }
-            }
+            let menu = session.getGroupMenu('pembayaran');
+            vm.menus = menu.map(value => {
+                return {name: value.nama, list: 'pembayaran.' + value.kode, nav: value.kode};
+            });
         }
 
         function goState(menu)

@@ -46,7 +46,6 @@ import jadwal from "./html/modal/jadwal.html";
         vm.activeIndex = -1;
         vm.isSuperUser = session.isSuperUser();
         vm.referalOptions = referalOptions;
-        vm.edit_form = vm.isSuperUser ? 'siswa.siswa_form' : '';
 
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [

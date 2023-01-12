@@ -25,6 +25,7 @@ import modal from "../konfigurasi/user/html/modal.html";
         vm.isSiswa = session.isSiswa();
         vm.guru = {tunjangan: []};
         vm.siswa = {tunjangan: []};
+        vm.editable = session.getMenu(state.current.name).update;
 
         vm.fields = [
             [

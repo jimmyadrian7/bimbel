@@ -4,9 +4,9 @@
     angular.module('app.module.laporan.pengeluaran')
         .controller('LaporanPengeluaranController', LaporanPengeluaranController);
 
-    LaporanPengeluaranController.$inject = ['req', '$element', 'moment'];
+    LaporanPengeluaranController.$inject = ['req', '$element', 'moment', 'kursusOpt'];
 
-    function LaporanPengeluaranController(req, $element, moment)
+    function LaporanPengeluaranController(req, $element, moment, kursusOpt)
     {
         let vm = this;
 
@@ -19,7 +19,8 @@
 
         vm.fields = [
             {type: 'date', value: 'start_date'},
-            {type: 'date', value: 'end_date'}
+            {type: 'date', value: 'end_date'},
+            {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
         ];
 
         function generate()

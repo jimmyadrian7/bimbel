@@ -7,7 +7,8 @@ CREATE TABLE `agama` (
 CREATE TABLE `menu` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `kode` varchar(255),
-  `nama` varchar(255)
+  `nama` varchar(255),
+  `parent` varchar(255)
 );
 
 CREATE TABLE `file` (
@@ -119,6 +120,7 @@ CREATE TABLE `guru` (
   `orang_id` int,
   `status` ENUM ('a', 'n') DEFAULT "a",
   `pp_id` int,
+  `kursus_id` int,
   `berhenti` text,
   `memilih` text,
   `kelebihan` text,
@@ -147,7 +149,8 @@ CREATE TABLE `aset` (
   `tanggal_beli` date,
   `kondisi` varchar(255),
   `jumlah` varchar(255),
-  `harga` int
+  `harga` int,
+  `kursus_id` int
 );
 
 CREATE TABLE `gaji` (
@@ -173,6 +176,7 @@ CREATE TABLE `tabungan_aset` (
   `sisa` int,
   `keterangan` varchar(255),
   `cicil` int,
+  `kursus_id` int,
   `status` ENUM ('a', 'c', 'l') DEFAULT "a"
 );
 
@@ -187,6 +191,7 @@ CREATE TABLE `cicilan_aset` (
 
 CREATE TABLE `pengeluaran` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
+  `kursus_id` int,
   `nama` varchar(255),
   `jumlah` int,
   `harga` int,
@@ -217,6 +222,7 @@ CREATE TABLE `diskon` (
 CREATE TABLE `tagihan` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `siswa_id` int,
+  `kursus_id` int,
   `code` varchar(255),
   `sub_total` int,
   `potongan` int,
@@ -274,7 +280,7 @@ CREATE TABLE `role` (
 
 CREATE TABLE `user` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `username` varchar(255),
+  `username` varchar(255) UNIQUE,
   `password` varchar(255),
   `unenpass` varchar(255),
   `super_user` boolean DEFAULT 0,
@@ -292,7 +298,10 @@ CREATE TABLE `user_role` (
 CREATE TABLE `role_menu` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `role_id` int,
-  `menu_id` int
+  `menu_id` int,
+  `create` boolean,
+  `update` boolean,
+  `delete` boolean
 );
 
 CREATE TABLE `pengumuman` (
@@ -386,13 +395,19 @@ ALTER TABLE `guru` ADD FOREIGN KEY (`orang_id`) REFERENCES `orang` (`id`);
 
 ALTER TABLE `guru` ADD FOREIGN KEY (`pp_id`) REFERENCES `file` (`id`);
 
+ALTER TABLE `guru` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
+
 ALTER TABLE `guru` ADD FOREIGN KEY (`rekaman_id`) REFERENCES `file` (`id`);
 
 ALTER TABLE `tunjangan_guru` ADD FOREIGN KEY (`guru_id`) REFERENCES `guru` (`id`);
 
+ALTER TABLE `aset` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
+
 ALTER TABLE `gaji` ADD FOREIGN KEY (`guru_id`) REFERENCES `guru` (`id`);
 
 ALTER TABLE `gaji` ADD FOREIGN KEY (`pengeluaran_id`) REFERENCES `pengeluaran` (`id`);
+
+ALTER TABLE `tabungan_aset` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
 
 ALTER TABLE `cicilan_aset` ADD FOREIGN KEY (`tabungan_aset_id`) REFERENCES `tabungan_aset` (`id`);
 
@@ -400,7 +415,11 @@ ALTER TABLE `cicilan_aset` ADD FOREIGN KEY (`bukti_pembayaran_id`) REFERENCES `f
 
 ALTER TABLE `cicilan_aset` ADD FOREIGN KEY (`pengeluaran_id`) REFERENCES `pengeluaran` (`id`);
 
+ALTER TABLE `pengeluaran` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
+
 ALTER TABLE `tagihan` ADD FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`);
+
+ALTER TABLE `tagihan` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
 
 ALTER TABLE `tagihan_detail` ADD FOREIGN KEY (`tagihan_id`) REFERENCES `tagihan` (`id`);
 

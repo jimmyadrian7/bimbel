@@ -5,15 +5,15 @@ use Bimbel\Core\Model\BaseModel;
 use Bimbel\Siswa\Model\Siswa;
 use Bimbel\Pembayaran\Model\TagihanDetail;
 use Bimbel\Pembayaran\Model\Transaksi;
+use Bimbel\Master\Model\Kursus;
 
 class Tagihan extends BaseModel
 {
     protected $fillable = [
-        'code', 'siswa_id', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal',
+        'code', 'siswa_id', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal', 'kursus_id',
         'tagihan_detail'
     ];
     protected $table = 'tagihan';
-    // protected $with = ['tagihan_detail', 'transaksi'];
     protected $appends = ['siswa_data'];
 
     protected $status_enum = [
@@ -43,6 +43,10 @@ class Tagihan extends BaseModel
     public function transaksi()
     {
         return $this->hasMany(Transaksi::class, 'tagihan_id', 'id');
+    }
+    public function kursus()
+    {
+        return $this->hasOne(Kursus::class, 'id', 'kursus_id');
     }
 
 
@@ -120,12 +124,25 @@ class Tagihan extends BaseModel
         $this->update($tagihan_value);
     }
 
+    public function autoFillData(&$attributes)
+    {
+        if (!array_key_exists('siswa_id', $attributes))
+        {
+            return;
+        }
+
+        $siswa = new Siswa();
+        $siswa = $siswa->find($attributes['siswa_id']);
+        $attributes['kursus_id'] = $siswa->kursus_id;
+    }
+
     public function create(array $attributes = [])
     {
         $tagihan_details = self::getValue($attributes, 'tagihan_detail');
 
         $seq = new \Bimbel\Master\Model\Sequance();
         $attributes['code'] = $seq->getnextCode('pembiayaan');
+        $this->autoFillData($attributes);
 		$tagihan = parent::create($attributes);
         
         $tagihan->handleTagihanDetail($tagihan_details);
@@ -136,6 +153,7 @@ class Tagihan extends BaseModel
     public function update(array $attributes = [], array $options = [])
     {
         $tagihan_details = self::getValue($attributes, 'tagihan_detail');
+        $this->autoFillData($attributes);
         $result = parent::update($attributes, $options);
 
         $this->handleTagihanDetail($tagihan_details);

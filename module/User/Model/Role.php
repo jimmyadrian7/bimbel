@@ -2,17 +2,16 @@
 namespace Bimbel\User\Model;
 
 use Bimbel\Core\Model\BaseModel;
-use Bimbel\Master\Model\Menu;
+use Bimbel\User\Model\RoleMenu;
 
 class Role extends BaseModel
 {
     protected $fillable = ['kode', 'nama'];
     protected $table = 'role';
-    protected $with = ['menu'];
 
     
-    public function menu()
+    public function role_menu()
 	{
-		return $this->belongsToMany(Menu::class, 'role_menu', 'role_id', 'menu_id');
+		return $this->hasMany(RoleMenu::class, 'id', 'role_id');
 	}
 }

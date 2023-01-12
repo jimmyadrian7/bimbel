@@ -4,9 +4,9 @@
     angular.module('app.module.laporan.deposit')
         .controller('LaporanDepositController', LaporanDepositController);
 
-    LaporanDepositController.$inject = ['req', '$element', 'moment'];
+    LaporanDepositController.$inject = ['req', '$element', 'moment', 'kursusOpt'];
 
-    function LaporanDepositController(req, $element, moment)
+    function LaporanDepositController(req, $element, moment, kursusOpt)
     {
         let vm = this;
 
@@ -19,7 +19,8 @@
 
         vm.fields = [
             {type: 'date', value: 'start_date'},
-            {type: 'date', value: 'end_date'}
+            {type: 'date', value: 'end_date'},
+            {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
         ];
 
         function generate()

@@ -26,10 +26,6 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         ];
 
         vm.isSiswa = session.isSiswa();
-        vm.detail = 'pembayaran.tagihan_detail';
-        vm.list = 'pembayaran.tagihan';
-        vm.form = vm.isSiswa ? '' : 'pembayaran.tagihan_form';
-        vm.edit = session.isSuperUser() || session.isGuru() ? 'pembayaran.tagihan_form' : '';
 
         vm.data = {tagihan_detail: []};
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
