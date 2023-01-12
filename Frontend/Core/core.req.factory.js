@@ -30,14 +30,14 @@
         
         function put(url, data)
         {
-            return $http.put(`${baseUrl}/${url}`, data).then(success).catch(fail);
+            return $http.put(`${baseUrl}/update/${url}`, data).then(success).catch(fail);
         }
         
         function del(url, data)
         {
             return $http({
                 method: "DELETE",
-                url: `${baseUrl}/${url}`,
+                url: `${baseUrl}/delete/${url}`,
                 data: data,
                 headers: {
                     'Content-type': 'application/json;charset=utf-8'

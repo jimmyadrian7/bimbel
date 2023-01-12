@@ -1,6 +1,6 @@
 <?php
 
-$app->delete("/api/{model}", function ($request, $response, $args) {
+$app->delete("/api/delete/{model}", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\Master\Controller\DeleteController");
     $result = $controller->deleteData($request, $args);

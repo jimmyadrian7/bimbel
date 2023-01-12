@@ -1,6 +1,6 @@
 <?php
 
-$app->put("/api/{model}", function ($request, $response, $args) {
+$app->put("/api/update/{model}", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\Master\Controller\UpdateController");
     $result = $controller->updateData($request, $args);
