@@ -30,19 +30,23 @@
         
         function put(url, data)
         {
-            return $http.put(`${baseUrl}/update/${url}`, data).then(success).catch(fail);
+            // return $http.put(`${baseUrl}/update/${url}`, data).then(success).catch(fail);
+            url = "update/" + url;
+            return post(url, data);
         }
         
         function del(url, data)
         {
-            return $http({
-                method: "DELETE",
-                url: `${baseUrl}/delete/${url}`,
-                data: data,
-                headers: {
-                    'Content-type': 'application/json;charset=utf-8'
-                }
-            }).then(success).catch(fail);
+            url = "delete/" + url;
+            return post(url, data);
+            // return $http({
+            //     method: "DELETE",
+            //     url: `${baseUrl}/delete/${url}`,
+            //     data: data,
+            //     headers: {
+            //         'Content-type': 'application/json;charset=utf-8'
+            //     }
+            // }).then(success).catch(fail);
         }
 
 
