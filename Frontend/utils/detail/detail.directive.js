@@ -24,7 +24,9 @@ import previewHtml from "./preview.html";
                 edit: '@',
                 id: '=',
                 fields: '=',
-                noback: '='
+                noback: '=?',
+                editable: '=?',
+                deleteable: '=?'
             },
             transclude: {
                 title: '?appDetailTitle',
@@ -49,9 +51,6 @@ import previewHtml from "./preview.html";
             vm.back = back;
             vm.getValue = getValue;
             vm.preview = preview;
-
-            vm.editable = false;
-            vm.deleteable = false;
 
             scope.$watch(() => vm.table, watchTable);
 
@@ -79,8 +78,14 @@ import previewHtml from "./preview.html";
                 let activeMenu = session.getMenu(menuKode, parent);
                 if (activeMenu)
                 {
-                    vm.editable = activeMenu.update;
-                    vm.deleteable = activeMenu.delete;
+                    if (vm.editable === undefined)
+                    {
+                        vm.editable = activeMenu.update;
+                    }
+                    if (vm.deleteable === undefined)
+                    {
+                        vm.deleteable = activeMenu.delete;
+                    }
                 }
 
                 getDataDetail();

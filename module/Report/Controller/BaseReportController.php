@@ -3,7 +3,6 @@ namespace Bimbel\Report\Controller;
 
 use \Bimbel\Core\Controller\Controller as CoreController;
 use \Illuminate\Database\Capsule\Manager;
-use \Monolog\Logger;
 use Psr\Container\ContainerInterface;
 
 class BaseReportController extends CoreController
@@ -14,7 +13,6 @@ class BaseReportController extends CoreController
 
     public function __construct(
         Manager $database,
-        Logger $logger,
         ContainerInterface $container
     ) {
         $this->database = $database;

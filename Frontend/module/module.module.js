@@ -12,5 +12,6 @@
         'app.module.web',
         'app.module.konfigurasi',
         'app.module.message',
+        'app.module.log',
     ]);
 })()

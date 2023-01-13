@@ -7,7 +7,7 @@ use Bimbel\Master\Model\Menu;
 
 class RoleMenu extends BaseModel
 {
-    protected $fillable = ['kode', 'nama'];
+    protected $fillable = ['role_id', 'menu_id', 'create', 'update', 'delete'];
     protected $table = 'role_menu';
 
     

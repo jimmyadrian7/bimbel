@@ -1,0 +1,51 @@
+<app-modal data='vm.data'>
+    <app-modal-title>Tambah Menu</app-modal-title>
+
+    <app-modal-body>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive p-0" ng-init="vm.fetchMenu()">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Parent</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                
+                                <tbody>
+                                    <tr ng-if="!vm.modal.menu.data || vm.modal.menu.data.length === 0">
+                                        <td colspan="3" class="text-center">
+                                            <span class="text-xs font-weight-bold">No data Available</span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="vm.modal.menu.data" ng-repeat="menu in vm.modal.menu.data">
+                                        <td class="text-xs font-weight-bold" ng-bind="menu.nama"></td>
+                                        <td class="text-xs font-weight-bold" ng-bind="menu.parent"></td>
+                                        <td>
+                                            <button
+                                                ng-if="!vm.isAdded(menu)"
+                                                class="btn btn-link text-primary text-gradient px-3 my-0" 
+                                                ng-click="vm.modifyMenu(menu)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-modal-body>
+
+    <app-modal-footer>
+        <button type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i> Close
+        </button>
+    </app-modal-footer>
+</app-modal>

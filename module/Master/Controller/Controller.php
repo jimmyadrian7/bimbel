@@ -4,7 +4,6 @@ namespace Bimbel\Master\Controller;
 use Psr\Container\ContainerInterface;
 use \Bimbel\Core\Controller\Controller as CoreController;
 use \Illuminate\Database\Capsule\Manager;
-use \Monolog\Logger;
 
 abstract class Controller extends CoreController
 {
@@ -13,7 +12,6 @@ abstract class Controller extends CoreController
 
     public function __construct(
         Manager $database,
-        Logger $logger,
         ContainerInterface $container
     ) {
         $this->database = $database;

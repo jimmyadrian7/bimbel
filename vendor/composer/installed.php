@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '38c19e5cb9a68243e34017625afbc87613b27ee8',
+        'reference' => 'd465848fcbc101e2e8695916287d42fb95a0c016',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '38c19e5cb9a68243e34017625afbc87613b27ee8',
+            'reference' => 'd465848fcbc101e2e8695916287d42fb95a0c016',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -160,15 +160,6 @@
             'reference' => '00579529fea072851789505b2dec0d14cdfffe60',
             'type' => 'project',
             'install_path' => __DIR__ . '/../mk-j/php_xlsxwriter',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'monolog/monolog' => array(
-            'pretty_version' => '2.8.0',
-            'version' => '2.8.0.0',
-            'reference' => '720488632c590286b88b80e62aa3d3d551ad4a50',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../monolog/monolog',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -329,8 +320,7 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0.0 || 2.0.0 || 3.0.0',
-                1 => '1.0|2.0',
+                0 => '1.0|2.0',
             ),
         ),
         'psr/simple-cache' => array(

@@ -33,6 +33,13 @@ class DeleteController extends Controller
             $model->delete();
             $result = ["id" => $model_id];
 
+            $log = $this->getModel('log');
+            $log = $log->create([
+                "target_id" => $model_id,
+                "target_table" => $args['model'],
+                "operation" => "Delete"
+            ]);
+
             DB::commit();
         }
         catch(\Error $e) 

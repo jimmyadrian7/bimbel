@@ -48,6 +48,14 @@ class UpdateController extends Controller
             $model->update($model_values);
             $result = ["id" => $model->id];
 
+            $log = $this->getModel('log');
+            $log = $log->create([
+                "target_id" => $model->id,
+                "target_table" => $args['model'],
+                "operation" => "Update",
+                "data" => json_encode($model_values)
+            ]);
+
             DB::commit();
         }
         catch(\Error $e) 

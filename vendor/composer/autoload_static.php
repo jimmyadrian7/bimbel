@@ -77,7 +77,6 @@ class ComposerStaticInitfb923b7fbaed180290fa2fe10d5425e8
         ),
         'M' => 
         array (
-            'Monolog\\' => 8,
             'Masterminds\\' => 12,
         ),
         'I' => 
@@ -248,10 +247,6 @@ class ComposerStaticInitfb923b7fbaed180290fa2fe10d5425e8
         'Opis\\Closure\\' => 
         array (
             0 => __DIR__ . '/..' . '/opis/closure/src',
-        ),
-        'Monolog\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
         'Masterminds\\' => 
         array (

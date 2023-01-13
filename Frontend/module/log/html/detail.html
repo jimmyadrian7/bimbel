@@ -1,0 +1,25 @@
+<app-detail table="log" id="vm.dataId" fields="vm.fields" list="log" editable="false" deleteable="false">
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.target_table"></span>
+        </h6>
+    </app-detail-title>
+
+    <app-detail-additional>
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#data">Data</a>
+            </li>
+        </ul>
+
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="data">
+                <div class="my-4">
+                    <pre ng-bind-html="vm.previewJson(vm.data.data)"></pre>
+                </div>
+            </div>
+        </div>
+    </app-detail-additional>
+
+</app-detail>

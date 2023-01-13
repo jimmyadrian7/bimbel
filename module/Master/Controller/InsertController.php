@@ -35,6 +35,14 @@ class InsertController extends Controller
             $model = $model->create($model_values);
             $result = ["id" => $model->id];
 
+            $log = $this->getModel('log');
+            $log = $log->create([
+                "target_id" => $model->id,
+                "target_table" => $args['model'],
+                "operation" => "Create",
+                "data" => json_encode($model_values)
+            ]);
+
             DB::commit();
         }
         catch(\Error $e) 

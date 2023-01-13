@@ -21,7 +21,8 @@ import table from './table.html';
                 table: '@',
                 form: '@',
                 detail: '@',
-                fields: '='
+                fields: '=',
+                addable: '=?'
             },
             transclude: {
                 button: '?appTableButton'
@@ -36,7 +37,6 @@ import table from './table.html';
         {
             let vm = this;
             
-            vm.addable = false;
             vm.title = `Tabel ${$state.current.title}`;
             vm.data = [];
 
@@ -57,22 +57,20 @@ import table from './table.html';
 
             function activate()
             {
-                let parent = false;
-                let menuKode = $state.current.name;
-                if ($state.current.nav)
+                if (vm.addable === undefined)
                 {
-                    menuKode = $state.current.nav;
-                    parent = $state.current.menu;
-                }
-
-                let activeMenu = session.getMenu(menuKode, parent);
-                if (activeMenu)
-                {
-                    vm.addable = activeMenu.create;
-
-                    if (['deposit', 'user'].includes(menuKode))
+                    let parent = false;
+                    let menuKode = $state.current.name;
+                    if ($state.current.nav)
                     {
-                        vm.addable = false;
+                        menuKode = $state.current.nav;
+                        parent = $state.current.menu;
+                    }
+
+                    let activeMenu = session.getMenu(menuKode, parent);
+                    if (activeMenu)
+                    {
+                        vm.addable = activeMenu.create;
                     }
                 }
 

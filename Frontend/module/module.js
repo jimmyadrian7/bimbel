@@ -14,3 +14,4 @@ import "./web/web";
 import "./konfigurasi/konfigurasi";
 
 import "./message/message";
+import "./log/log";
