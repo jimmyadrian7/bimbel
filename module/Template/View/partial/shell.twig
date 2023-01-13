@@ -4,7 +4,10 @@
             {% include "/Template/View/partial/sidebar.twig" %}
 
             <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-                <div class="container-fluid">
+
+                <app-navbar></app-navbar>
+
+                <div class="container-fluid pb-5">
                     {# {% include "/Template/View/partial/breadcrumb.twig" %} #}
                     <div ui-view class="shuffle-animation"></div>
                 </div>

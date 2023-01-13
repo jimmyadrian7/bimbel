@@ -5,6 +5,8 @@ import "./table/app-table-template.directive";
 
 import "./detail/detail.directive";
 
+import "./navbar/app-subnavbar.directive";
+
 import "./form/form.directive";
 import "./form/app-form-input.directive";
 import "./form/app-form-preview.directive";

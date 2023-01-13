@@ -1,0 +1,23 @@
+<div class="row my-3">
+
+    <nav class="navbar navbar-expand-lg z-index-3 w-100 my-3">
+        <div class="navbar-collapse" id="navigation">
+            <ul class="navbar-nav navbar-nav-hover">
+                <div class="row text-center">
+                    <div class="col-md-auto" ng-repeat="menu in vm.menus">
+                        <button
+                            ng-click="vm.goState(menu)"
+                            class="btn btn-link text-gradient px-3 my-0"
+                            ng-class="vm.isCurrent(menu)"
+                            ng-bind="menu.name"></button>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="col-12">
+        <ui-view></ui-view>
+    </div>
+
+</div>

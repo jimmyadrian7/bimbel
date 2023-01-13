@@ -102,10 +102,13 @@ class UserController extends Controller
         $menu = DB::select(DB::raw($query), ['role_id' => join(", ", $role_ids)]);
 
         $guru = new Guru();
-        $guru = $guru->with('orang')->where('orang_id', $user->orang_id)->first();
+        $guru = $guru
+            ->with('orang', 'gaji', 'tunjangan_guru', 'pp')
+            ->where('orang_id', $user->orang_id)
+            ->first();
 
         $siswa = new Siswa();
-        $siswa = $siswa->with('orang')->where('orang_id', $user->orang_id)->first();
+        $siswa = $siswa->with('orang', 'jadwal')->where('orang_id', $user->orang_id)->first();
 
         $user->{'menu'} = $menu;
         $user->{'guru'} = $guru;
