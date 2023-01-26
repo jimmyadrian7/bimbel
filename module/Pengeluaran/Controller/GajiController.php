@@ -32,33 +32,35 @@ class GajiController extends Controller
             $year = $date[0];
             $month = $date[1];
 
-            $gaji = new Gaji();
-            $gaji = $gaji->whereYear("tanggal", $year)->whereMonth("tanggal", $month)->get();
-            $guru_ids = $gaji->pluck('guru_id');
-
             $guru = new Guru();
-            $gurus = $guru->where('status', 'a')->whereNotIn('id', $guru_ids)->get();
-
-            // $pengeluaran = new Pengeluaran();
-            // $pengeluaran = $pengeluaran->create([
-            //     "nama" => sprintf("Gaji Guru (%s)", date('m')),
-            //     "jumlah" => 1,
-            //     "harga" => $total_gaji,
-            //     "gaji" => true
-            // ]);
+            $gurus = $guru->where('status', 'a')->get();
             
             foreach ($gurus as $guru)
             {
                 $gaji = new Gaji();
-                $gaji = $gaji->create([
+                $gaji = $gaji
+                    ->whereYear("tanggal", $year)
+                    ->whereMonth("tanggal", $month)
+                    ->where('guru_id', $guru->id)
+                    ->first();
+
+                $gaji_value = [
                     'guru_id' => $guru->id,
-                    // 'pengeluaran_id' => $pengeluaran->id,
                     'tanggal' => $data['date']
-                ]);
+                ];
+
+                if ($gaji)
+                {
+                    $gaji->update($gaji_value);
+                }
+                else
+                {
+                    $gaji = $gaji->create($gaji_value);
+                }
+
+                
                 $total_gaji += $gaji->total;
             }
-
-            // $pengeluaran->update(['harga' => $total_gaji, 'jumlah' => $pengeluaran->jumlah]);
             
             $result = true;
 

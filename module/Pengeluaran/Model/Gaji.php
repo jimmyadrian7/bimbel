@@ -146,4 +146,11 @@ class Gaji extends BaseModel
 		$gaji = parent::create($attributes);
         return $gaji;
     }
+
+    public function update(array $attributes = [], array $options = [])
+    {
+        $this->validateData($attributes);
+        $this->autoFillData($attributes);
+        return parent::update($attributes, $options);
+    }
 }

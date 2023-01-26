@@ -51,6 +51,10 @@ import modal from "../konfigurasi/user/html/modal.html";
             {name: 'Gaji', value: 'total', type: 'number'},
             {name: 'Tanggal', value: 'tanggal', type: 'date'}
         ];
+        vm.kursusFields = [
+            {name: "Kode", value: "kode"},
+            {name: "Nama", value: "nama"}
+        ];
         vm.ortuFields = [
             [
                 {name: "Nama Ayah", value: "orang.nama_ayah"},

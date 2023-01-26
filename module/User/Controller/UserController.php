@@ -92,7 +92,7 @@ class UserController extends Controller
 
         $guru = new Guru();
         $guru = $guru
-            ->with('orang', 'gaji', 'tunjangan_guru', 'pp')
+            ->with('orang', 'gaji', 'tunjangan_guru', 'pp', 'kursus')
             ->where('orang_id', $user->orang_id)
             ->first();
 

@@ -100,6 +100,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="list" href="#gaji">Gaji</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="list" href="#kursus">Tempat Kursus</a>
+                            </li>
                         </ul>
 
                         <div class="tab-content text-justify">
@@ -114,6 +117,13 @@
                                     <app-table-template
                                         data="vm.guru.gaji"
                                         fields="vm.gajiFields"></app-table-template>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="kursus">
+                                <div class="table-responsive p-0 mt-2">
+                                    <app-table-template
+                                        data="vm.guru.kursus"
+                                        fields="vm.kursusFields"></app-table-template>
                                 </div>
                             </div>
                         </div>

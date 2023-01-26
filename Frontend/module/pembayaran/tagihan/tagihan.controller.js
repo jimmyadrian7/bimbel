@@ -56,6 +56,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
             {name: "Sub Total", value: "sub_total", type: 'number'},
             {name: "Diskon", value: "diskon.diskon", type: 'number'},
             {name: "Total", value: "total", type: 'number'},
+            {name: "Komisi", value: "komisi", type: 'number'}
         ];
 
         vm.diskonFields = [
