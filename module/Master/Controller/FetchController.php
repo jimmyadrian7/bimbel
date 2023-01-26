@@ -15,32 +15,70 @@ class FetchController extends Controller
             {
                 throw new HttpNotFoundException($request);
             }
+            $getData = $request->getQueryParams();
             $model_name = substr($model_name, 0, (strlen($model_name) - 1));
             $model = $this->getModel($model_name);
-            $filtered_data = ['siswa', 'deposit', 'tagihan'];
+            $filtered_data = ['siswa', 'deposit', 'tagihan', 'kursus', 'guru', 'aset', 'tabungan_aset', 'pengeluaran'];
             $condition = [];
+            $pagination = false;
+            $page = 1;
+
+            if (array_key_exists('pagination', $getData))
+            {
+                $pagination = $getData['pagination'] == "1" ? true : false;
+                $page = $getData['page'];
+            }
+
+            if (array_key_exists('search', $getData))
+            {
+                $condition[] = [$model->searchField, 'like', '%'. $getData['search'] .'%'];
+            }
             
             if (in_array($model_name, $filtered_data))
             {
                 $session = new \Bimbel\Master\Model\Session();
-                $siswa_ids = $session->getSiswaIds();
 
-                if ($siswa_ids !== false)
+                if (!$session->isSuperUser())
                 {
-                    if ($model_name != 'siswa')
+                    switch($model_name)
                     {
-                        $model->whereIn('id', $siswa_ids);
-                    }
-                    else
-                    {
-                        $model->whereIn('siswa_id', $siswa_ids);
+                        case 'siswa':
+                            $siswa_ids = $session->getSiswaIds();
+                            $condition[] = ['id', 'in', $siswa_ids];
+                        break;
+                        case 'kursus':
+                            $kursus_ids = $session->getKursusIds();
+                            $condition[] = ['id', 'in', $kursus_ids];
+                        break;
+                        case 'guru':
+                            $guru_ids = $session->getGuruIds();
+                            $condition[] = ['id', 'in', $guru_ids];
+                        break;
+                        case 'aset':
+                        case 'tabungan_aset':
+                        case 'pengeluaran':
+                            $kursus_ids = $session->getKursusIds();
+                            $condition[] = ['kursus_id', 'in', $kursus_ids];
+                        break;
+                        default:
+                        $siswa_ids = $session->getSiswaIds();
+                        $condition[] = ['siswa_id', 'in', $siswa_ids];
+                        break;
                     }
                 }
             }
 
-            $data = [
-                "data" => $model->fetchAllData($condition, $model)
-            ];
+            if ($pagination)
+            {
+                $data = $model->fetchAllData($condition, $model, $pagination, $page);
+            }
+            else
+            {
+                $data = [
+                    "data" => $model->fetchAllData($condition, $model)
+                ];
+            }
+            
 
             return $data;
         }

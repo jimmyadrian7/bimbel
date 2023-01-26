@@ -44,6 +44,11 @@
         <div class="card">
             <div class="card-header">
                 <h6 class="mb-0 text-gradient text-primary" ng-bind="vm.data.nama"></h6>
+                <div ng-if="vm.isGuru && vm.guru.pp">
+                    <div class="img-container">
+                        <img src="data:{{vm.guru.pp.filetype}};base64, {{vm.guru.pp.base64}}" alt="{{vm.guru.pp.filename}}">
+                    </div>
+                </div>
             </div>
 
             <div class="card-body pt-0 pb-4">

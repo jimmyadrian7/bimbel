@@ -2,8 +2,10 @@
 namespace Bimbel\User\Controller;
 
 use \Bimbel\Master\Controller\Controller;
-use \Bimbel\User\Model\User;
+
 use \Bimbel\Master\Model\Menu;
+use \Bimbel\Master\Model\Session;
+use \Bimbel\User\Model\User;
 use \Bimbel\Guru\Model\Guru;
 use \Bimbel\Siswa\Model\Siswa;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -45,14 +47,9 @@ class UserController extends Controller
                 throw new \Error("Username or password is incorrect");
             }
 
-            $user->offsetUnset('password');
-            $user->offsetUnset('unenpass');
-            $user->offsetUnset('orang_id');
-            $user->offsetUnset('role');
-
             $result = true;
             $session = $this->container->get('Session');
-            $session->set('user', $user);
+            $session->set('user_id', $user->id);
         }
         catch(\Error $e) 
         {
@@ -64,20 +61,11 @@ class UserController extends Controller
 
     public function getCurrentUser()
     {
-        $session = $this->container->get('Session');
-        $user = $session->get('user');
-
-        if (!$user)
-        {
-            throw new \Error("You are currently not logged in", 501);
-        }
-
-        $user = $user->refresh();
-        $user->offsetUnset('password');
-        $user->offsetUnset('unenpass');
+        $session = new Session();
+        $user = $session->getCurrentUser();
 
         $menu = new Menu();
-        if ($user->super_user)
+        if ($session->isSuperUser())
         {
             $query = "
                 SELECT 
@@ -94,12 +82,13 @@ class UserController extends Controller
                     role_menu.create, role_menu.update, role_menu.delete
                 FROM role_menu
                 LEFT JOIN menu ON menu.id = role_menu.menu_id
-                WHERE role_id = (:role_id)
+                WHERE role_id IN (%s)
             ";
         }
 
         $role_ids = $user->role->pluck('id')->toArray();
-        $menu = DB::select(DB::raw($query), ['role_id' => join(", ", $role_ids)]);
+        $query = sprintf($query, join(", ", $role_ids));
+        $menu = DB::select(DB::raw($query));
 
         $guru = new Guru();
         $guru = $guru
@@ -120,7 +109,7 @@ class UserController extends Controller
     public function logoutCurrentUser()
     {
         $session = $this->container->get('Session');
-        $user = $session->get('user');
+        $user = $session->get('user_id');
 
         if (!$user)
         {

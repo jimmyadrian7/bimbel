@@ -4,6 +4,9 @@
         <button class="btn btn-link text-gradient text-primary mb-0 px-3" ng-click="vm.nonaktif()" ng-if="vm.data.status == 'a'">
             <i class="fa fa-ban me-2"></i> Nonaktif
         </button>
+        <button class="btn btn-link text-gradient text-primary mb-0 px-3" ng-click="vm.aktif()" ng-if="vm.data.status == 'n'">
+            <i class="fa fa-check me-2"></i> Aktif
+        </button>
     </app-detail-button>
 
     <app-detail-title>
@@ -33,6 +36,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="list" href="#detail">Detail</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#kursus">Tempat Kursus</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="list" href="#kuesioner">Kuesioner</a>
@@ -111,6 +117,12 @@
                         </table>
                     </div>
                 </div>
+            </div>
+
+            <div class="tab-pane fade" id="kursus">
+                <app-table-template
+                    data="vm.data.kursus"
+                    fields="vm.additional.kursusFields"></app-table-template>
             </div>
 
             <div class="tab-pane fade show" id="kuesioner">

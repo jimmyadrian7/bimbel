@@ -14,6 +14,7 @@
             getMenu: getMenu,
             getGroupMenu: getGroupMenu,
             isSuperUser: isSuperUser,
+            isAdminCabang: isAdminCabang,
             isGuru: isGuru,
             isSiswa: isSiswa
         }
@@ -57,7 +58,11 @@
 
         function isSuperUser()
         {
-            return data.super_user;
+            return data.jenis_user == 's';
+        }
+        function isAdminCabang()
+        {
+            return data.jenis_user == 'c';
         }
         function isGuru()
         {

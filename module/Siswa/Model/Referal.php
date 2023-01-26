@@ -7,7 +7,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class Referal extends BaseModel
 {
-    protected $fillable = ['siswa_id', 'nama'];
+    protected $fillable = ['nama'];
     protected $table = 'referal';
 
 

@@ -10,3 +10,4 @@ import "./sequance/sequance";
 import "./referal/referal";
 import "./kursus/kursus";
 import "./role/role";
+import "./whatsapp/whatsapp";

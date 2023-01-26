@@ -17,6 +17,7 @@ $containerBuilder->addDefinitions('./dependencies/twig.php');
 $containerBuilder->addDefinitions('./dependencies/pdf.php');
 $containerBuilder->addDefinitions('./dependencies/excel.php');
 $containerBuilder->addDefinitions('./dependencies/mailer.php');
+$containerBuilder->addDefinitions('./dependencies/HttpRequest.php');
 
 
 // Build PHP-DI Container instance

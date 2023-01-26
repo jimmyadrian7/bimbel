@@ -7,4 +7,5 @@ class Log extends BaseModel
 {
     protected $fillable = ['target_id', 'target_table', 'operation', 'data'];
     protected $table = 'log';
+    public $searchField = "target_table";
 }

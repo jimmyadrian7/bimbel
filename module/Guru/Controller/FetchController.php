@@ -4,6 +4,7 @@ namespace Bimbel\Guru\Controller;
 use \Bimbel\Master\Controller\Controller;
 use \Bimbel\Siswa\Model\Siswa;
 use \Bimbel\Guru\Model\Guru;
+use \Bimbel\Master\Model\Session;
 use Illuminate\Database\Capsule\Manager as DB;
 
 class FetchController extends Controller
@@ -14,10 +15,18 @@ class FetchController extends Controller
 
         try 
         {
+            $session = new Session();
             $getData = $request->getQueryParams();
             
             $guru = new Guru();
-            $data = $guru->without(['siswa', 'gaji'])->whereHas('orang', function($q) use ($getData) {
+
+            if (!$session->isSuperUser())
+            {
+                $guru_ids = $session->getGuruIds();
+                $guru = $guru->whereIn('id', $guru_ids);
+            }
+
+            $data = $guru->whereHas('orang', function($q) use ($getData) {
                 $q->where('nama', 'like', '%' . $getData['query'] . '%');
             })->where('status', 'a')->get();
 
@@ -58,17 +67,27 @@ class FetchController extends Controller
 
     public function getGuruAvailable($args)
     {
+        $session = new Session();
         $result = [];
 
         try {
+            $additionalQuery = "1 = 1";
             $query = "
                 SELECT guru.id AS guru_id FROM guru
                 LEFT JOIN siswa ON siswa.guru_id = guru.id
                 LEFT JOIN jadwal ON jadwal.siswa_id = siswa.id AND jadwal.hari = :hari
-                WHERE guru.status = 'a'
+                WHERE guru.status = 'a' AND %s
                 GROUP BY siswa.guru_id, guru.id
                 HAVING COUNT(guru_id) <= :limit
             ";
+
+            if (!$session->isSuperUser())
+            {
+                $guru_ids = $session->getGuruIds();
+                $additionalQuery = "guru.id IN (%s)";
+                $additionalQuery = sprintf($additionalQuery, join(",", $guru_ids));
+            }
+            $query = sprintf($query, $additionalQuery);
 
             $guru_ids = DB::select(
                 DB::raw($query), 
@@ -84,7 +103,7 @@ class FetchController extends Controller
             }, []);
 
             $guru = new Guru();
-            $guru = $guru->whereIn('id', $guru_ids);
+            $guru = $guru->with('orang')->whereIn('id', $guru_ids);
 
             $result = $guru->get();
         }

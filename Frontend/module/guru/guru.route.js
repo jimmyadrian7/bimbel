@@ -24,13 +24,6 @@ import form from "./html/form.html";
                 });
             });
         };
-        let getKursusOptions = (req) => {
-            return req.get('kursuss').then(response => {
-                return response.data.map((value) => {
-                    return {value: value.id, label: value.nama}
-                });
-            });
-        };
 
         return [
             {
@@ -43,8 +36,7 @@ import form from "./html/form.html";
                     title: 'Guru',
                     menu: 'guru',
                     resolve: {
-                        agamaOptions: getAgaOptions,
-                        kursusOptions: getKursusOptions
+                        agamaOptions: getAgaOptions
                     }
                 }
             },
@@ -58,8 +50,7 @@ import form from "./html/form.html";
                     title: 'Detail Guru',
                     menu: 'guru',
                     resolve: {
-                        agamaOptions: getAgaOptions,
-                        kursusOptions: getKursusOptions
+                        agamaOptions: getAgaOptions
                     }
                 }
             },
@@ -73,8 +64,7 @@ import form from "./html/form.html";
                     title: 'Form Guru',
                     menu: 'guru',
                     resolve: {
-                        agamaOptions: getAgaOptions,
-                        kursusOptions: getKursusOptions
+                        agamaOptions: getAgaOptions
                     }
                 }
             }

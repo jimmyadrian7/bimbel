@@ -9,6 +9,7 @@ class Pengumuman extends BaseModel
     protected $fillable = ['judul', 'isi', 'gambar_id', 'gambar', 'tanggal'];
     protected $table = 'pengumuman';
     protected $with = ['gambar'];
+    public $searchField = "judul";
 
 
     public function gambar()

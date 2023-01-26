@@ -44,13 +44,13 @@ import jadwal from "./html/modal/jadwal.html";
         vm.modal = {};
         vm.dataId = stateParams.dataId;
         vm.activeIndex = -1;
-        vm.isSuperUser = session.isSuperUser();
+        vm.hideGuru = session.isSuperUser() || session.isAdminCabang();
         vm.referalOptions = referalOptions;
 
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [
-            {name: "No. Formulir", value: "no_formulir", table: true, hidden: true},
-            {name: "Tanggal Pendaftaran", value: "tanggal_pendaftaran", table: true, hidden: true, type: "date"},
+            {name: "No. Formulir", value: "no_formulir", table: true},
+            {name: "Tanggal Pendaftaran", value: "tanggal_pendaftaran", table: true, type: "date"},
             {
                 name: "Guru", 
                 value: "guru_id", 
@@ -58,7 +58,7 @@ import jadwal from "./html/modal/jadwal.html";
                 url: 'guru/search/autocomplete',
                 valueName: 'guru_data',
                 table: true,
-                hidden: !vm.isSuperUser
+                hidden: !vm.hideGuru
             },
             {name: "Nama", value: "orang.nama", table: true},
             {name: "Nama Mandarin", value: "orang.nama_mandarin", table: true},
@@ -152,7 +152,7 @@ import jadwal from "./html/modal/jadwal.html";
                 let getter = $parse('guru_id');
                 getter.assign(vm.data, vm.data.guru_data);
 
-                if (!session.isSuperUser())
+                if (!vm.hideGuru)
                 {
                     vm.data.guru_id = guru.id;
                 }

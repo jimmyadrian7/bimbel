@@ -7,4 +7,5 @@ class File extends BaseModel
 {
     protected $fillable = ['filename', 'filetype', 'base64'];
     protected $table = 'file';
+    public $searchField = "filename";
 }

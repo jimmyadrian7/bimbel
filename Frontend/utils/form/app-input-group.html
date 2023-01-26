@@ -1,0 +1,4 @@
+<div class="input-group" ng-class="focused ? 'focused' : ''">
+    <span class="input-group-text text-body"><i ng-class="icon"></i></span>
+    <input type="text" class="form-control form-control-sm" ng-model-dynamic="{{ expr }}" placeholder="{{ placeholder }}" ng-focus="focused=true" ng-blur="focused=false">
+</div>

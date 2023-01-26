@@ -3,6 +3,9 @@
         <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.gantiPass()" ng-if="vm.data.status == 'a'">
             <i class="fas fa-plus me-2"></i> Ganti password
         </button>
+        <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.adminCabang()" ng-if="vm.cabangAble()">
+            <i class="fas fa-plus me-2"></i> Jadikan Admin Cabang
+        </button>
     </app-detail-button>
 
     <app-detail-title>

@@ -9,5 +9,6 @@
         'app.module.konfigurasi.referal',
         'app.module.konfigurasi.kursus',
         'app.module.konfigurasi.role',
+        'app.module.konfigurasi.whatsapp',
     ]);
 })()

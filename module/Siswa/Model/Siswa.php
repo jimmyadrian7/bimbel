@@ -336,7 +336,7 @@ class Siswa extends BaseModel
         $refs = self::getValue($attributes, 'ref');
 
         self::handleOrang($attributes);
-        self::getSequance($attributes);
+        // self::getSequance($attributes);
 
 		$siswa = parent::create($attributes);
         $siswa->handleJadwal($jadwals);
@@ -392,10 +392,22 @@ class Siswa extends BaseModel
     }
 
 
-    public function fetchAllData($condition, $obj)
+    public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
     {
         $obj = $this->with('orang');
-        return parent::fetchAllData($condition, $obj);
+
+        foreach($condition as $key => $con)
+        {
+            if ($con[0] == 'nama')
+            {
+                $obj->whereHas('orang', function($q) use ($con) {
+                    $q->where([$con]);
+                });
+                unset($condition[$key]);
+            }
+        }
+
+        return parent::fetchAllData($condition, $obj, $pagination, $page);
     }
 
     public function fetchDetail($id, $obj)

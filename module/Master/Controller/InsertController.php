@@ -35,6 +35,29 @@ class InsertController extends Controller
             $model = $model->create($model_values);
             $result = ["id" => $model->id];
 
+
+            function removeBase64(&$data)
+            {
+                if (gettype($data) == "array")
+                {
+                    foreach($data as $key => &$value)
+                    {
+                        if (gettype($value) == "array")
+                        {
+                            removeBase64($value);
+                        }
+                        else
+                        {
+                            if ($key == "base64")
+                            {
+                                unset($data[$key]);
+                            }
+                        }
+                    }
+                }
+            }
+            removeBase64($model_values);
+
             $log = $this->getModel('log');
             $log = $log->create([
                 "target_id" => $model->id,

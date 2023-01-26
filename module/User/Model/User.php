@@ -8,9 +8,16 @@ use Bimbel\User\Model\Role;
 
 class User extends BaseModel
 {
-    protected $fillable = ['username', 'password', 'unenpass', 'super_user', 'is_public', 'orang_id', 'orang', 'status'];
+    protected $fillable = ['username', 'password', 'unenpass', 'jenis_user', 'orang_id', 'orang', 'status'];
 	protected $table = 'user';
-	protected $with  = ['role', 'orang'];
+	protected $hidden = ['password'];
+	// protected $with  = ['role', 'orang'];
+
+	protected $status_enum = [
+        ["value" => "s", "label" => "Super Admin"],
+        ["value" => "c", "label" => "Admin Cabang"],
+        ["value" => "u", "label" => "User"]
+    ];
 
 
 	public function orang()
@@ -21,7 +28,6 @@ class User extends BaseModel
 	{
 		return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
 	}
-
 
 	public static function encrypt($value)
 	{
@@ -54,6 +60,27 @@ class User extends BaseModel
             unset($attributes['orang']);
         }
     }
+	public function handleCabang($attributes)
+	{
+		$jenis_user = self::getValue($attributes, 'jenis_user', false);
+
+		if (empty($jenis_user))
+		{
+			return;
+		}
+
+		if ($jenis_user == 'c')
+		{
+			$role = new Role();
+			$role = $role->where('kode', 'C')->first();
+			$is_exists = $this->role()->where('role.id', $role->id)->exists();
+
+			if (!$is_exists)
+			{
+				$this->role()->attach([$role->id]);
+			}
+		}
+	}
 
 	public function create(array $attributes = [])
 	{
@@ -99,6 +126,7 @@ class User extends BaseModel
 		}
 
         $this->handleOrang($attributes);
+        $this->handleCabang($attributes);
 		return parent::update($attributes, $options);
 	}
 
@@ -108,8 +136,28 @@ class User extends BaseModel
 		return parent::delete();
 	}
 
+
+	public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
+    {
+        $obj = $this->with('orang');
+
+		foreach($condition as $key => $con)
+        {
+            if ($con[0] == 'nama')
+            {
+                $obj->whereHas('orang', function($q) use ($con) {
+                    $q->where([$con]);
+                });
+                unset($condition[$key]);
+            }
+        }
+
+        return parent::fetchAllData($condition, $obj, $pagination, $page);
+    }
+
 	public function fetchDetail($id, $obj)
     {
+		$obj = $obj->with('orang', 'role');
         $data = parent::fetchDetail($id, $obj);
         $data->deleteable = false;
 

@@ -22,18 +22,19 @@ import table from './table.html';
                 form: '@',
                 detail: '@',
                 fields: '=',
-                addable: '=?'
+                addable: '=?',
+                nosearch: '=?'
             },
             transclude: {
                 button: '?appTableButton'
             }
         };
 
-        controllerFunc.$inject = ['$scope', 'session'];
+        controllerFunc.$inject = ['$scope', 'session', '$location'];
 
         return directive;
 
-        function controllerFunc(scope, session)
+        function controllerFunc(scope, session, $location)
         {
             let vm = this;
             
@@ -42,10 +43,18 @@ import table from './table.html';
 
             vm.tambahData = tambahData;
             vm.getValue = getValue;
+            vm.changePage = changePage;
             vm.goDetail = goDetail;
             vm.getValue = getValue;
 
+            vm.currentPage = $location.search().page || 1;
+            vm.currentPage = parseInt(vm.currentPage);
+            vm.lastPage = 1;
+            vm.page_array = [];
+
+
             scope.$watch(() => vm.table, watchTable);
+            scope.$watch(() => vm.searchValue, watchSearch);
 
             function watchTable(newVal)
             {
@@ -87,9 +96,52 @@ import table from './table.html';
 
             function getData()
             {
-                req.get(vm.table).then(response => {
+                let url = `${vm.table}?pagination=1&page=${vm.currentPage}`;
+
+                if (vm.searchValue)
+                {
+                    url = `${url}&search=${vm.searchValue}`;
+                }
+
+                req.get(url).then(response => {
                     vm.data = response.data || [];
+                    vm.lastPage = response.last_page;
+                    generatePage(response.last_page);
                 });
+            }
+
+            function generatePage(last_page)
+            {
+                let start = 1;
+                let end = vm.currentPage + 2;
+                let totalPage = 5;
+                if (vm.currentPage > 3)
+                {
+                    start = vm.currentPage - 2;
+                }
+
+                if (end > last_page)
+                {
+                    start = last_page - 4;
+                    end = last_page;
+                }
+
+                if (last_page < 5)
+                {
+                    start = 1;
+                    end = last_page;
+                    totalPage = last_page;
+                }
+
+                vm.lastPage = end;
+                vm.page_array = Array.from({length: totalPage}, (_, i) => start + i);
+            }
+
+            function changePage(page)
+            {
+                vm.currentPage = page;
+                $location.search('page', page);
+                getData();
             }
 
             function tambahData()
@@ -132,6 +184,17 @@ import table from './table.html';
                         return arr[index].label;
                     }
                 }
+            }
+
+            function watchSearch(newVal, oldVal)
+            {
+                if (newVal === oldVal)
+                {
+                    return;
+                }
+
+                vm.currentPage = 1;
+                getData();
             }
         }
     }

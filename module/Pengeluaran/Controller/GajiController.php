@@ -39,26 +39,26 @@ class GajiController extends Controller
             $guru = new Guru();
             $gurus = $guru->where('status', 'a')->whereNotIn('id', $guru_ids)->get();
 
-            $pengeluaran = new Pengeluaran();
-            $pengeluaran = $pengeluaran->create([
-                "nama" => sprintf("Gaji Guru (%s)", date('m')),
-                "jumlah" => 1,
-                "harga" => $total_gaji,
-                "gaji" => true
-            ]);
+            // $pengeluaran = new Pengeluaran();
+            // $pengeluaran = $pengeluaran->create([
+            //     "nama" => sprintf("Gaji Guru (%s)", date('m')),
+            //     "jumlah" => 1,
+            //     "harga" => $total_gaji,
+            //     "gaji" => true
+            // ]);
             
             foreach ($gurus as $guru)
             {
                 $gaji = new Gaji();
                 $gaji = $gaji->create([
                     'guru_id' => $guru->id,
-                    'pengeluaran_id' => $pengeluaran->id,
+                    // 'pengeluaran_id' => $pengeluaran->id,
                     'tanggal' => $data['date']
                 ]);
                 $total_gaji += $gaji->total;
             }
 
-            $pengeluaran->update(['harga' => $total_gaji, 'jumlah' => $pengeluaran->jumlah]);
+            // $pengeluaran->update(['harga' => $total_gaji, 'jumlah' => $pengeluaran->jumlah]);
             
             $result = true;
 

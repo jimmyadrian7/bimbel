@@ -120,7 +120,6 @@ CREATE TABLE `guru` (
   `orang_id` int,
   `status` ENUM ('a', 'n') DEFAULT "a",
   `pp_id` int,
-  `kursus_id` int,
   `berhenti` text,
   `memilih` text,
   `kelebihan` text,
@@ -141,6 +140,12 @@ CREATE TABLE `tunjangan_guru` (
   `guru_id` int,
   `nama` varchar(255),
   `nominal` int
+);
+
+CREATE TABLE `guru_kursus` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `guru_id` int,
+  `kursus_id` int
 );
 
 CREATE TABLE `aset` (
@@ -283,8 +288,7 @@ CREATE TABLE `user` (
   `username` varchar(255) UNIQUE,
   `password` varchar(255),
   `unenpass` varchar(255),
-  `super_user` boolean DEFAULT 0,
-  `is_public` boolean DEFAULT 0,
+  `jenis_user` ENUM ('s', 'c', 'u') DEFAULT "u",
   `orang_id` int,
   `status` ENUM ('a', 'n') DEFAULT "a"
 );
@@ -395,11 +399,13 @@ ALTER TABLE `guru` ADD FOREIGN KEY (`orang_id`) REFERENCES `orang` (`id`);
 
 ALTER TABLE `guru` ADD FOREIGN KEY (`pp_id`) REFERENCES `file` (`id`);
 
-ALTER TABLE `guru` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
-
 ALTER TABLE `guru` ADD FOREIGN KEY (`rekaman_id`) REFERENCES `file` (`id`);
 
 ALTER TABLE `tunjangan_guru` ADD FOREIGN KEY (`guru_id`) REFERENCES `guru` (`id`);
+
+ALTER TABLE `guru_kursus` ADD FOREIGN KEY (`guru_id`) REFERENCES `guru` (`id`);
+
+ALTER TABLE `guru_kursus` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
 
 ALTER TABLE `aset` ADD FOREIGN KEY (`kursus_id`) REFERENCES `kursus` (`id`);
 

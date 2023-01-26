@@ -9,9 +9,27 @@
 
     <div class="col-12 my-3">
         <div class="card">
-            <div class="card-header text-gradient text-primary">
-                <h6 class="mb-0" ng-bind="vm.title"></h6>
+            <div class="card-header">
+                <div class="row">
+                    <div class="col text-gradient text-primary">
+                        <h6 class="mb-0" ng-bind="vm.title"></h6>
+                    </div>
+                    <div class="col-md-3" ng-if="!vm.nosearch">
+                        <div class="input-group" ng-class="focused ? 'focused' : ''">
+                            <span class="input-group-text text-body"><i class="fas fa-search"></i></span>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-sm"
+                                ng-model="vm.searchValue"
+                                ng-model-options="{ debounce: 500 }"
+                                placeholder="Search..." 
+                                ng-focus="focused=true" 
+                                ng-blur="focused=false">
+                        </div>
+                    </div>
+                </div>
             </div>
+            
             <div class="card-body pt-0">
                 <div class="table-responsive">
                     <table class="table align-items-center mb-0">
@@ -50,6 +68,36 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div class="card-footer">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a 
+                                href="javascript:;" 
+                                class="page-link" 
+                                ng-class="vm.currentPage == 1 ? 'disabled' : ''"
+                                ng-click="vm.changePage(vm.currentPage - 1)">
+                                <i class="fa fa-angle-left"></i>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item" ng-repeat="line in vm.page_array" ng-class="line == vm.currentPage ? 'active' : ''">
+                            <a href="javascript:;" class="page-link" ng-click="vm.changePage(line)" ng-bind="line"></a>
+                        </li>
+                        <li class="page-item">
+                            <a 
+                                href="javascript:;" 
+                                class="page-link"
+                                ng-class="vm.currentPage == vm.lastPage ? 'disabled' : ''"
+                                ng-click="vm.changePage(vm.currentPage + 1)">
+                                <i class="fa fa-angle-right"></i>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>

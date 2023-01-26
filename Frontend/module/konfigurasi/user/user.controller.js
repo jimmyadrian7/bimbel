@@ -34,6 +34,9 @@ import modal from "./html/modal.html";
 
         vm.getLabel = getLabel;
 
+        vm.cabangAble = cabangAble;
+        vm.adminCabang = adminCabang;
+
         function gantiPass()
         {
             vm.myModal = $compile(modal)($scope);
@@ -66,6 +69,32 @@ import modal from "./html/modal.html";
                     return statusOpt[index].label;
                 }
             }
+        }
+
+        function cabangAble()
+        {
+            let result = false;
+
+            if (vm.data.jenis_user == 'u' && vm.data.role)
+            {
+                vm.data.role.forEach(value => {
+                    if (value.kode == 'G')
+                    {
+                        result = true;
+                    }
+                });
+            }
+
+            return result;
+        }
+
+        function adminCabang()
+        {
+            let data = {
+                id: vm.dataId,
+                jenis_user: 'c'
+            };
+            req.put('user', data).then(() => state.reload());
         }
     }
 })()

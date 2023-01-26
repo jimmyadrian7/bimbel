@@ -75,7 +75,7 @@ class SiswaController extends BaseReportController
             $siswa = $siswa->whereIn('id', $siswa_ids);
         }
         
-        $siswas = $siswa->where('status', 'b')->get();
+        $siswas = $siswa->where('status', 'a')->get();
         $header = array('No. Formulir', 'Nama', 'Nama Mandarin', 'Jadwal');
         $subHeader = ['', '', '', 'Hari', 'Waktu'];
         $rowNumber = 0;

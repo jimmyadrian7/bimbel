@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
     public $timestamps = false;
+    public $searchField = "nama";
     
     public function getFillable()
     {
@@ -42,14 +43,34 @@ class BaseModel extends Model
         return $result;
     }
 
-    public function fetchAllData($condition, $obj)
+    public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
     {
         if (!empty($condition))
         {
-            $obj = $obj->where($condition);
+            foreach($condition as $key => $cond)
+            {
+                if (in_array("in", $cond))
+                {
+                    $obj = $obj->whereIn($cond[0], $cond[2]);
+                    array_splice($condition, $key, 1);
+                }
+            }
+
+            if (!empty($condition))
+            {
+                $obj = $obj->where($condition);
+            }
         }
 
-        $data = $obj->get();
+        if ($pagination)
+        {
+            $data = $obj->paginate($_ENV['row_per_page'], ['*'], 'page', $page);
+        }
+        else
+        {
+            $data = $obj->get();
+        }
+        
         return $data;
     }
 

@@ -173,6 +173,24 @@ class Tagihan extends BaseModel
         return parent::delete();
     }
 
+
+    public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
+    {
+        foreach($condition as $key => $con)
+        {
+            if ($con[0] == 'nama')
+            {
+                $obj = $obj->whereHas('siswa', function($query) use ($con) {
+                    $query->whereHas('orang', function($q) use ($con) {
+                        $q->where([$con]);
+                    });
+                });
+                unset($condition[$key]);
+            }
+        }
+
+        return parent::fetchAllData($condition, $obj, $pagination, $page);
+    }
     
     public function fetchDetail($id, $obj)
     {

@@ -102,6 +102,6 @@ class MainSeed {
         echo "Create super admin user.... \r\n";
         $guru = $this->modelList->getModel('Guru')->create(['orang' => ['nama' => 'Admin']]);
         $user = $this->modelList->getModel('User')->where(['orang_id' => $guru->orang_id])->first();
-        $user->update(['username' => 'admin', 'pass' => 'admin', 'super_user' => true]);
+        $user->update(['username' => 'admin', 'pass' => 'admin', 'jenis_user' => 's']);
     }
 }

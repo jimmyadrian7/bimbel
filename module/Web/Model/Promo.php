@@ -9,6 +9,7 @@ class Promo extends BaseModel
     protected $fillable = ['judul', 'gambar_id', 'gambar', 'tanggal'];
     protected $table = 'promo';
     protected $with = ['gambar'];
+    public $searchField = "judul";
 
 
     public function gambar()

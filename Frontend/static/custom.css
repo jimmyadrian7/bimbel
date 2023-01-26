@@ -40,3 +40,8 @@
     height: 100px;
     width: 100px;
 }
+
+
+.input-group:not(.focused) .form-control {
+    padding-left: 1px !important;
+}

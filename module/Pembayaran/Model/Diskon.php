@@ -8,6 +8,7 @@ class Diskon extends BaseModel
 {
     protected $fillable = ['diskon', 'tipe_diskon'];
     protected $table = 'diskon';
+    public $searchField = "diskon";
 
     protected $tipe_diskon_enum = [
       ["value" => "p", "label" => "Persen"],

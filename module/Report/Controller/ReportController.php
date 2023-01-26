@@ -85,6 +85,7 @@ class ReportController extends BaseReportController
 
     public function getGaji($request, $args)
     {
+        $session = new \Bimbel\Master\Model\Session();
         $postData = $request->getParsedBody();
         $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
         $gaji = $gaji
@@ -94,8 +95,22 @@ class ReportController extends BaseReportController
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
             $gaji = $gaji->whereHas('guru', function($q) use ($postData) {
-                $q->where('kursus_id', $postData['tempat_kursus']);
+                $q->whereHas('kursus', function ($qq) use ($postData) {
+                    $qq->where('kursus.id', $postData['tempat_kursus']);
+                });
             });
+        }
+        else
+        {
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $gaji = $gaji->whereHas('guru', function($q) use ($kursus_ids) {
+                    $q->whereHas('kursus', function ($qq) use ($kursus_ids) {
+                        $qq->whereIn('kursus.id', $kursus_ids);
+                    });
+                });
+            }
         }
 
         $gaji = $gaji->get();

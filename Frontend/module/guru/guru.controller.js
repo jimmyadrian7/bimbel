@@ -2,6 +2,7 @@ import modalGaji from "./html/modal/modal-gaji.html";
 import tunjangan from "./html/modal/tunjangan.html";
 import pilihHari from "./html/modal/pilih-hari.html";
 import showGuru from "./html/modal/show-guru.html";
+import kursusHtml from "./html/modal/kursus.html";
 
 (() => {
     "use strict";
@@ -11,12 +12,12 @@ import showGuru from "./html/modal/show-guru.html";
 
     GuruController.$inject = [
         '$stateParams', 'agamaOptions', '$compile', '$scope', 'req', '$state', 
-        '$parse', 'Modal', 'logger', 'moment', 'kursusOptions'
+        '$parse', 'Modal', 'logger', 'moment', 'session'
     ];
 
     function GuruController(
         stateParams, agamaOptions, $compile, scope, 
-        req, state, $parse, Modal, logger, moment, kursusOptions
+        req, state, $parse, Modal, logger, moment, session
     )
     {
         let vm = this;
@@ -34,11 +35,12 @@ import showGuru from "./html/modal/show-guru.html";
             {value: "7", label: "Minggu"}
         ];
 
-        vm.modal = {siswa: {}, added: [], listGuru: []};
+        vm.modal = {siswa: {}, added: [], listGuru: [], kursus: []};
         vm.siswa = [];
         vm.modalElement = false;
-        vm.data = {};
+        vm.data = {kursus: []};
         vm.dataId = stateParams.dataId;
+        vm.isSuperUser = session.isSuperUser();
 
         vm.statusOpt = [
             {value: 'a', label: 'Aktif'},
@@ -49,8 +51,7 @@ import showGuru from "./html/modal/show-guru.html";
             {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, table: true, hidden: true, hideDetail: true},
             {name: "No. HP", value: "orang.no_hp", table: true, hidden: true, hideDetail: true},
             {name: "Status", value: "status", type: 'selection', selection: vm.statusOpt, table: true, hidden: true, hideDetail: true},
-            {name: "Profile Picture", value: "pp", type: "file", hideDetail: true},
-            {name: "Tempat Kursus", value: "kursus_id", type: "selection", selection: kursusOptions, table: true}
+            {name: "Profile Picture", value: "pp", type: "file", hideDetail: true}
         ];
 
         vm.additional = {};
@@ -81,6 +82,10 @@ import showGuru from "./html/modal/show-guru.html";
                 {name: "Tanggal Lahir", value: "orang.tanggal_lahir", type: 'date'},
                 {name: "Hobi", value: "orang.hobi"}
             ]
+        ];
+        vm.additional.kursusFields = [
+            {name: "Kode", value: "kode"},
+            {name: "Nama", value: "nama"}
         ];
         vm.additional.surveyFields = [
             {name: "Mengapa Anda memilih berhenti dari perusahaan sebelumnya?", value: "berhenti", type: "textarea"},
@@ -115,6 +120,13 @@ import showGuru from "./html/modal/show-guru.html";
         vm.previewGuru = previewGuru;
 
         vm.nonaktif = nonaktif;
+        vm.aktif = aktif;
+
+        vm.editKursus = editKursus;
+        vm.fetchKursus = fetchKursus;
+        vm.isAdded = isAdded;
+        vm.addKursus = addKursus;
+        vm.removeKursus = removeKursus;
 
         function getValue(field)
         {
@@ -211,6 +223,49 @@ import showGuru from "./html/modal/show-guru.html";
             req.put('guru', data).then(response => {
                 state.reload();
             });
+        }
+
+        function aktif()
+        {
+            let data = {
+                id: vm.dataId,
+                status: 'a'
+            };
+            req.put('guru', data).then(response => {
+                state.reload();
+            });
+        }
+
+        function editKursus()
+        {
+            vm.modalElement = $compile(kursusHtml)(scope);
+        }
+
+        function fetchKursus()
+        {
+            req.get('kursuss').then(response => {
+                vm.modal.kursus = response.data;
+            });
+        }
+        function isAdded(kursus)
+        {
+            let result = false;
+            vm.data.kursus.forEach(value => {
+                if (value.id == kursus.id)
+                {
+                    result = true;
+                }
+            });
+
+            return result;
+        }
+        function addKursus(kursus)
+        {
+            vm.data.kursus.push(kursus);
+        }
+        function removeKursus(idx)
+        {
+            vm.data.kursus.splice(idx, 1);
         }
     }
 })()

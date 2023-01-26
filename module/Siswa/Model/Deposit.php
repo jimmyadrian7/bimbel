@@ -9,7 +9,7 @@ class Deposit extends BaseModel
 {
     protected $fillable = ['tanggal', 'nominal', 'siswa_id', 'status', 'bukti_pembayaran', 'bukti_pembayaran_id'];
     protected $table = 'deposit';
-    protected $with = ['bukti_pembayaran', 'siswa'];
+    // protected $with = ['bukti_pembayaran', 'siswa'];
 
     protected $status_enum = [
         ["value" => "a", "label" => "Aktif"],
@@ -83,8 +83,29 @@ class Deposit extends BaseModel
     }
 
 
+    public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
+    {
+        $obj = $this->with('siswa', 'siswa.orang', 'bukti_pembayaran');
+
+        foreach($condition as $key => $con)
+        {
+            if ($con[0] == 'nama')
+            {
+                $obj = $obj->whereHas('siswa', function($query) use ($con) {
+                    $query->whereHas('orang', function($q) use ($con) {
+                        $q->where([$con]);
+                    });
+                });
+                unset($condition[$key]);
+            }
+        }
+
+        return parent::fetchAllData($condition, $obj, $pagination, $page);
+    }
+
     public function fetchDetail($id, $obj)
     {
+        $obj = $obj->with('siswa', 'siswa.orang', 'bukti_pembayaran');
         $data = parent::fetchDetail($id, $obj);
 
         $data->editable = false;

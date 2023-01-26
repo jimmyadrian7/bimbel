@@ -15,11 +15,10 @@ class Guru extends BaseModel
     protected $fillable = [
         'orang_id', 'status', 'orang',
         'berhenti', 'memilih', 'kelebihan', 'kekurangan', 'kesehatan', 'lingkungan', 'aturan', 'pelatihan', 'kapan',
-        'gaji_sebelumnya', 'gaji_diminta', 'ideal', 'rekaman', 'rekaman_id', 'pp', 'pp_id', 'kursus_id'
+        'gaji_sebelumnya', 'gaji_diminta', 'ideal', 'rekaman', 'rekaman_id', 'pp', 'pp_id', 'kursus'
 
     ];
     protected $table = 'guru';
-    // protected $with = ['orang', 'gaji', 'tunjangan_guru', 'rekaman'];
 
     protected $status_enum = [
         ["value" => "a", "label" => "Aktif"],
@@ -45,7 +44,7 @@ class Guru extends BaseModel
     }
     public function kursus()
     {
-        return $this->hasOne(Kursus::class, 'id', 'kursus_id');
+        return $this->belongsToMany(Kursus::class, 'guru_kursus', 'guru_id', 'kursus_id');
     }
     public function rekaman()
     {
@@ -129,6 +128,42 @@ class Guru extends BaseModel
             $user = $user->where("orang_id", $this->orang_id)->first();
             $user->update(['status' => 'n']);
         }
+        if ($status == 'a')
+        {
+            $user = new \Bimbel\User\Model\User();
+            $user = $user->where("orang_id", $this->orang_id)->first();
+            $user->update(['status' => 'a']);
+        }
+    }
+    public function handleKursus($kursuss)
+    {
+        if (empty($kursuss))
+        {
+            return;
+        }
+
+        $kursus_ids = [];
+
+        foreach($kursuss as $kursus)
+        {
+            if (!array_key_exists('id', $kursus))
+            {
+                continue;
+            }
+
+            array_push($kursus_ids, $kursus['id']);
+            $isExists = $this->kursus()->where('kursus.id', $kursus['id'])->exists();
+
+            if ($isExists)
+            {
+                continue;
+            }
+
+            $this->kursus()->attach([$kursus['id']]);
+        }
+
+        $kursus_unids = $this->kursus()->whereNotIn('kursus.id', $kursus_ids)->get()->pluck('id');
+        $this->kursus()->detach($kursus_unids);
     }
 
     public function createuser()
@@ -148,23 +183,30 @@ class Guru extends BaseModel
 
     public function create(array $attributes = [])
     {
+        $kursus = self::getValue($attributes, 'kursus');
         self::handleOrang($attributes);
         self::handleFile($attributes, 'rekaman');
         self::handleFile($attributes, 'pp');
 		$guru = parent::create($attributes);
 
         $guru->createuser();
+        $guru->handleKursus($kursus);
 
         return $guru;
     }
 
     public function update(array $attributes = [], array $options = [])
     {
+        $kursus = self::getValue($attributes, 'kursus');
         $this->handleOrang($attributes);
         $this->handleFile($attributes, 'rekaman');
         $this->handleFile($attributes, 'pp');
         $this->handleStatus($attributes);
-        return parent::update($attributes, $options);
+        
+        $result = parent::update($attributes, $options);
+        $this->handleKursus($kursus);
+
+        return $result;
     }
 
     public function delete()
@@ -180,20 +222,33 @@ class Guru extends BaseModel
         $this->orang()->delete();
         $this->rekaman()->delete();
         $this->pp()->delete();
+        $this->kursus()->delete();
 
         return $result;
     }
 
 
-    public function fetchAllData($condition, $obj)
+    public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
     {
         $obj = $this->with('orang');
-        return parent::fetchAllData($condition, $obj);
+
+        foreach($condition as $key => $con)
+        {
+            if ($con[0] == 'nama')
+            {
+                $obj->whereHas('orang', function($q) use ($con) {
+                    $q->where([$con]);
+                });
+                unset($condition[$key]);
+            }
+        }
+
+        return parent::fetchAllData($condition, $obj, $pagination, $page);
     }
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'pp');
+        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'pp', 'kursus', 'siswa', 'siswa.orang');
         $data = parent::fetchDetail($id, $obj);
         
         if ($data->status != 'a')
