@@ -45,3 +45,7 @@
 .input-group:not(.focused) .form-control {
     padding-left: 1px !important;
 }
+
+.select2-container--bootstrap-5 {
+    min-width: 176px;
+}

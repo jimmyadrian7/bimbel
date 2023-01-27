@@ -11,6 +11,7 @@ import "./form/form.directive";
 import "./form/app-form-input.directive";
 import "./form/app-form-preview.directive";
 import "./form/app-input-group.directive";
+import "./form/app-input-select.directive";
 
 import "./number/app-number-format.directive";
 import "./number/app-number-input.directive";

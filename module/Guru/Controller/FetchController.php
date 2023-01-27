@@ -31,11 +31,10 @@ class FetchController extends Controller
             })->where('status', 'a')->get();
 
             foreach ($data as &$value) {
-                $value["nama"] = $value["orang"]["nama"];
-                $value->{"nama"} = $value->orang->nama;
+                $value->{"text"} = $value->orang->nama;
             }
 
-            $data = $data->map->only(["id", "nama"]);
+            $data = $data->map->only(["id", "text"]);
             
             return $data;
         }

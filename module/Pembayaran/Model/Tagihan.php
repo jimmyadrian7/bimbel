@@ -116,6 +116,7 @@ class Tagihan extends BaseModel
             ->delete();
 
         $tagihan_value = [
+            'siswa_id' => $this->siswa_id,
             'potongan' => $potongan,
             'sub_total' => $sub_total,
             'total' => $total,
@@ -136,8 +137,18 @@ class Tagihan extends BaseModel
         $attributes['kursus_id'] = $siswa->kursus_id;
     }
 
+    public function validateData($attributes)
+    {
+        if (!array_key_exists('siswa_id', $attributes) || empty($attributes['siswa_id']))
+        {
+            throw new \Error("Please input siswa");
+        }
+    }
+
     public function create(array $attributes = [])
     {
+        $this->validateData($attributes);
+
         $tagihan_details = self::getValue($attributes, 'tagihan_detail');
 
         $seq = new \Bimbel\Master\Model\Sequance();
@@ -152,6 +163,8 @@ class Tagihan extends BaseModel
 
     public function update(array $attributes = [], array $options = [])
     {
+        $this->validateData($attributes);
+        
         $tagihan_details = self::getValue($attributes, 'tagihan_detail');
         $this->autoFillData($attributes);
         $result = parent::update($attributes, $options);

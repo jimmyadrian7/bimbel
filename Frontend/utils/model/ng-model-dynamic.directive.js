@@ -45,7 +45,8 @@
             if (attrs.inputAutocomplete)
             {
                 element.removeAttr('input-autocomplete');
-                element.attr('app-autocomplete', attrs.inputAutocomplete);
+                // element.attr('app-autocomplete', attrs.inputAutocomplete);
+                element.attr('app-input-select', attrs.inputAutocomplete);
             }
 
             if (attrs.inputFile)

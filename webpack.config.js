@@ -1,3 +1,4 @@
+var webpack = require("webpack");
 const path = require('path');
 
 module.exports = {
@@ -19,5 +20,11 @@ module.exports = {
 				use: ['html-loader']
 			}
 		]
-	}
+	},
+	plugins: [
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        })
+    ]
 }

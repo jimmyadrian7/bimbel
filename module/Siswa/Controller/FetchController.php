@@ -15,9 +15,17 @@ class FetchController extends Controller
             $getData = $request->getQueryParams();
             
             $siswa = new Siswa();
-            $data = $siswa->whereHas('orang', function($q) use ($getData) {
-                $q->where('nama', 'like', '%' . $getData['query'] . '%');
-            })->where('status', 'a');
+
+            if (array_key_exists("query", $getData))
+            {
+                $data = $siswa->whereHas('orang', function($q) use ($getData) {
+                    $q->where('nama', 'like', '%' . $getData['query'] . '%');
+                })->where('status', 'a');
+            }
+            else
+            {
+                $data = $siswa->where('status', 'a');
+            }
 
             $session = new \Bimbel\Master\Model\Session();
             $siswa_ids = $session->getSiswaIds();
@@ -29,11 +37,10 @@ class FetchController extends Controller
 
             $data = $data->get();
             foreach ($data as &$value) {
-                $value["nama"] = $value["orang"]["nama"];
-                $value->{"nama"} = $value->orang->nama;
+                $value->{"text"} = $value->orang->nama;
             }
 
-            $data = $data->map->only(["id", "nama"]);
+            $data = $data->map->only(["id", "text"]);
             
             return $data;
         }

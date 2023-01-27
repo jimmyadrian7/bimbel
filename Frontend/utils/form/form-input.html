@@ -23,18 +23,26 @@
     ng-if="type == 'selection'" 
     type="text" 
     ng-model-dynamic="{{ expr }}"
-    class="form-control form-control-sm"
+    class="form-select form-select-sm"
     option="true">
 </select>
 
-<input
+<!-- <input
     ng-if="type == 'autocomplete'" 
     type="text"
     id="{{field.value}}"
     ng-model-dynamic="{{ expr }}"
     input-autocomplete="true"
     url="{{field.url}}"
-    class="form-control form-control-sm">
+    class="form-control form-control-sm"> -->
+
+<select
+    ng-if="type == 'autocomplete'"
+    class="form-select form-select-sm"
+    ng-model-dynamic="{{ expr }}"
+    url="{{field.url}}"
+    input-autocomplete="true">
+</select>
 
 <input
     ng-if="type == 'file'" 
