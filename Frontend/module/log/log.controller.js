@@ -16,7 +16,8 @@
         vm.fields = [
             {name: "Target Id", value: "target_id", table: true},
             {name: "Target Table", value: "target_table", table: true},
-            {name: "Operation", value: "operation", table: true}
+            {name: "Operation", value: "operation", table: true},
+            {name: "User", value: "user.orang.nama", table: true}
         ];
 
 

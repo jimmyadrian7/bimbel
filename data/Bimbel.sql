@@ -376,7 +376,8 @@ CREATE TABLE `log` (
   `target_id` int,
   `target_table` varchar(255),
   `operation` varchar(255),
-  `data` text
+  `data` text,
+  `user_id` int
 );
 
 CREATE TABLE `broadcast` (
@@ -479,3 +480,5 @@ ALTER TABLE `pengumuman` ADD FOREIGN KEY (`gambar_id`) REFERENCES `file` (`id`);
 ALTER TABLE `promo` ADD FOREIGN KEY (`gambar_id`) REFERENCES `file` (`id`);
 
 ALTER TABLE `testimoni` ADD FOREIGN KEY (`gambar_id`) REFERENCES `file` (`id`);
+
+ALTER TABLE `log` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);

@@ -72,12 +72,14 @@ class UpdateController extends Controller
 
             removeBase64($model_values);
 
+            $session = new \Bimbel\Master\Model\Session();
             $log = $this->getModel('log');
             $log = $log->create([
                 "target_id" => $model->id,
                 "target_table" => $args['model'],
                 "operation" => "Update",
-                "data" => json_encode($model_values)
+                "data" => json_encode($model_values),
+                "user_id" => $session->getCurrentUser()->id
             ]);
 
             DB::commit();
