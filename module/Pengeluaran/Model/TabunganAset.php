@@ -39,6 +39,23 @@ class TabunganAset extends BaseModel
         $attributes['sisa'] = $attributes['total'];
     }
 
+    public function getSisa($exclude_id = false)
+    {
+        $sisa = $this->total;
+
+        foreach($this->cicilan_aset as $cicilan_aset)
+        {
+            if ($exclude_id && $exclude_id == $cicilan_aset->id)
+            {
+                continue;    
+            }
+
+            $sisa -= $cicilan_aset->nominal;
+        }
+
+        return $sisa;
+    }
+
 
     public function create(array $attributes = [])
     {

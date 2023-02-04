@@ -1,0 +1,42 @@
+<app-detail table="account_configuration" id="1" fields="vm.fields" list="konfigurasi.account_configuration" edit="konfigurasi.account_configuration_form" noback="true" editable="true">
+
+    <app-detail-title>
+        <h6 class="mb-0 text-gradient text-primary">Konfigurasi Akun</h6>
+    </app-detail-title>
+
+    <app-detail-additional>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h7 class="mb-0 text-gradient text-primary">Whatsapp</h7>
+            </div>
+            <div class="col-md-6" ng-repeat="fields in vm.wa_fields">
+                <table class="table-preview">
+                    <tr ng-repeat="field in fields track by $index">
+                        <td class="text-xs" ng-bind="field.name"></td>
+                        <td class="px-3">:</td>
+                        <td class="font-weight-bolder text-dark text-xs content">
+                            <span ng-bind="vm.data[field.value]"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h7 class="mb-0 text-gradient text-primary">Email</h7>
+            </div>
+            <div class="col-md-6" ng-repeat="fields in vm.mail_fields">
+                <table class="table-preview">
+                    <tr ng-repeat="field in fields track by $index">
+                        <td class="text-xs" ng-bind="field.name"></td>
+                        <td class="px-3">:</td>
+                        <td class="font-weight-bolder text-dark text-xs content">
+                            <span ng-bind="vm.data[field.value]"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </app-detail-additional>
+
+</app-detail>

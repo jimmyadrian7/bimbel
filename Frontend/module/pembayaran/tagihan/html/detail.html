@@ -2,6 +2,13 @@
     <app-detail-button>
         <button 
             class="btn btn-link text-gradient text-primary px-3 mb-0" 
+            ng-click="vm.notify()"
+            ng-if="vm.data.status != 'l'">
+            <i class="fa fa-bell me-2"></i> Ingatkan
+        </button>
+
+        <button 
+            class="btn btn-link text-gradient text-primary px-3 mb-0" 
             ng-click="vm.bayarTagihan()" 
             ng-if="vm.data.status != 'l'">
             <i class="fa fa-usd me-2"></i> Bayar

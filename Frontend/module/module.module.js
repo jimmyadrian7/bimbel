@@ -13,5 +13,6 @@
         'app.module.konfigurasi',
         'app.module.message',
         'app.module.log',
+        'app.module.broadcast',
     ]);
 })()

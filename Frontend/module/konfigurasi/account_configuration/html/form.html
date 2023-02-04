@@ -1,0 +1,38 @@
+<app-form detail="konfigurasi.account_configuration" list="konfigurasi.account_configuration" id="1" table="account_configuration" fields="vm.fields">
+
+    <app-form-body>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h7 class="mb-0 text-gradient text-primary">Whatsapp</h7>
+            </div>
+            <div class="col-md-6" ng-repeat="fields in vm.wa_fields">
+                <table>
+                    <tr ng-repeat="field in fields track by $index">
+                        <td class="text-xs" ng-bind="field.name"></td>
+                        <td class="px-3">:</td>
+                        <td class="font-weight-bolder text-dark text-xs content">
+                            <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h7 class="mb-0 text-gradient text-primary">Email</h7>
+            </div>
+            <div class="col-md-6" ng-repeat="fields in vm.mail_fields">
+                <table>
+                    <tr ng-repeat="field in fields track by $index">
+                        <td class="text-xs" ng-bind="field.name"></td>
+                        <td class="px-3">:</td>
+                        <td class="font-weight-bolder text-dark text-xs content">
+                            <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </app-form-body>
+
+</app-form>

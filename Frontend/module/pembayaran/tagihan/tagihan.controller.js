@@ -8,9 +8,11 @@ import modalDiskon from "./html/modal/modal-diskon.html";
     angular.module('app.module.pembayaran.tagihan')
         .controller('TagihanController', TagihanController);
 
-    TagihanController.$inject = ['$stateParams', '$parse', '$compile', '$scope', 'req', 'Modal', '$state', 'session'];
+    TagihanController.$inject = [
+        '$stateParams', '$parse', '$compile', '$scope', 'req', 'Modal', '$state', 'session', 'logger'
+    ];
 
-    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session)
+    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session, logger)
     {
         let vm = this;
 
@@ -97,6 +99,8 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         vm.verif = verif;
 
         vm.generateInvoice = generateInvoice;
+
+        vm.notify = notify;
 
         function getValue(field)
         {
@@ -253,6 +257,16 @@ import modalDiskon from "./html/modal/modal-diskon.html";
                 vm.activePdf = {filename: "invoice.pdf", filetype: 'application/pdf', base64: response.data};
                 let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
                 element = $compile(element)($scope);
+            });
+        }
+
+        function notify()
+        {
+            req.get(`notify/tagihan/wa/${vm.dataId}`).then(response => {
+                if (response)
+                {
+                    logger.success("Notifikasi telah terkirim");
+                }
             });
         }
     }

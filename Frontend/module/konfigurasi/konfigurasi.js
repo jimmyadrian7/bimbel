@@ -11,3 +11,4 @@ import "./referal/referal";
 import "./kursus/kursus";
 import "./role/role";
 import "./whatsapp/whatsapp";
+import "./account_configuration/account_configuration";

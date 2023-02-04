@@ -27,4 +27,37 @@ class FetchController extends Controller
 
         return $data;
     }
+
+    public function getTemplateAutocomplete($request, $args)
+    {
+        $getData = $request->getQueryParams();
+        $wa = new \Bimbel\Whatsapp\Model\Whatsapp();
+
+        $result = $wa->getTemplate($getData['query']);
+        $data = json_decode($result['data']);
+
+        if ($result['status'] !== 200 && $result['status'] !== 201)
+        {
+            $data = json_decode($result['data']);
+            throw new \Error($data->error->message);
+        }
+
+        $data = array_map(function($v) {
+            $t_name = $v->name . "(". $v->language .")";
+            $t_content = "";
+
+            foreach ($v->components as $content)
+            {
+                if ($content->type == "BODY")
+                {
+                    $t_content = $content->text;
+                }
+            }
+
+            $newData = ["id" => $t_name, 'text' => $t_name, 'content' => $t_content];
+            return $newData;
+        }, $data->data);
+
+        return $data;
+    }
 }

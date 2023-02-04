@@ -80,6 +80,17 @@ class User extends BaseModel
 				$this->role()->attach([$role->id]);
 			}
 		}
+		else
+		{
+			$role = new Role();
+			$role = $role->where('kode', 'C')->first();
+			$is_exists = $this->role()->where('role.id', $role->id)->exists();
+			
+			if ($is_exists)
+			{
+				$this->role()->detach([$role->id]);
+			}
+		}
 	}
 
 	public function create(array $attributes = [])

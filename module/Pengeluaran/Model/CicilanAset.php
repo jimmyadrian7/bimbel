@@ -5,10 +5,11 @@ namespace Bimbel\Pengeluaran\Model;
 use Bimbel\Core\Model\BaseModel;
 use Bimbel\Master\Model\File;
 use Bimbel\Pengeluaran\Model\TabunganAset;
+use Bimbel\Pengeluaran\Model\Pengeluaran;
 
 class CicilanAset extends BaseModel 
 {
-    protected $fillable = ['tabungan_aset_id', 'bukti_pembayaran_id', 'bukti_pembayaran', 'pengeluaran_id', 'nominal'];
+    protected $fillable = ['tabungan_aset_id', 'bukti_pembayaran_id', 'bukti_pembayaran', 'pengeluaran_id', 'nominal', 'tanggal'];
     protected $table = 'cicilan_aset';
     protected $with = ['bukti_pembayaran'];
 
@@ -20,6 +21,10 @@ class CicilanAset extends BaseModel
     public function tabungan_aset()
     {
         return $this->belongsTo(File::class, 'tabungan_aset_id', 'id');
+    }
+    public function pengeluaran()
+    {
+        return $this->hasOne(Pengeluaran::class, 'id', 'pengeluaran_id');
     }
 
 
@@ -55,14 +60,25 @@ class CicilanAset extends BaseModel
     public function createPengeluaran($attributes, $tabungan_aset)
     {
         $nominal = $attributes['nominal'];        
-        $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
-        $pengeluaran = $pengeluaran->create([
+        $pengeluaran = new Pengeluaran();
+        $pengeluaran_value = [
             "nama" => sprintf("Cicilan %s", $tabungan_aset->nama),
             "jumlah" => 1,
             "harga" => $nominal,
             "aset" => true,
-            "kursus_id" => $tabungan_aset->kursus_id
-        ]);
+            "kursus_id" => $tabungan_aset->kursus_id,
+            "tanggal" => $attributes['tanggal']
+        ];
+
+        if (!empty($this->pengeluaran_id))
+        {
+            $pengeluaran = $this->pengeluaran;
+            $this->pengeluaran->update($pengeluaran_value);
+        }
+        else
+        {
+            $pengeluaran = $pengeluaran->create($pengeluaran_value);
+        }
 
         return $pengeluaran;
     }
@@ -76,7 +92,8 @@ class CicilanAset extends BaseModel
 
         $tabungan_aset = new TabunganAset();
         $tabungan_aset = $tabungan_aset->find($attributes['tabungan_aset_id']);
-        $sisa = $tabungan_aset->sisa - $attributes['nominal'];
+        $current_id = $this->id ?: false;
+        $sisa = $tabungan_aset->getSisa($current_id) - $attributes['nominal'];
         $status = 'c';
 
         if ($sisa < 0)
@@ -104,5 +121,13 @@ class CicilanAset extends BaseModel
         
         $cicilan_asset = parent::create($attributes);
         return $cicilan_asset;
+    }
+
+    public function update(array $attributes = [], array $options = [])
+    {
+        self::handleFile($attributes);
+        $this->autoFill($attributes);
+
+        return parent::update($attributes, $options);
     }
 }

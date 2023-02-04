@@ -261,6 +261,10 @@ class Guru extends BaseModel
             $data->deleteable = false;
         }
 
+        $user = new \Bimbel\User\Model\User();
+        $user = $user->where('orang_id', $data->orang_id)->first();
+        $data->user = $user;
+
         return $data;
     }
 }

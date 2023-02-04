@@ -15,3 +15,5 @@ import "./konfigurasi/konfigurasi";
 
 import "./message/message";
 import "./log/log";
+
+import "./broadcast/broadcast";

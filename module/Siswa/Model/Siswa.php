@@ -253,6 +253,14 @@ class Siswa extends BaseModel
     public function createUser()
     {
         $user = new \Bimbel\User\Model\User();
+        $user = $user->where("orang_id", $this->orang_id);
+
+        if ($user->count() > 0)
+        {
+            return;
+        }
+
+        $user = new \Bimbel\User\Model\User();
         $user = $user->create([
             // "username" => $this->orang->nama,
             "orang_id" => $this->orang_id
@@ -419,6 +427,10 @@ class Siswa extends BaseModel
         {
             $data->deleteable = false;
         }
+
+        $user = new \Bimbel\User\Model\User();
+        $user = $user->where('orang_id', $data->orang_id)->first();
+        $data->user = $user;
 
         return $data;
     }

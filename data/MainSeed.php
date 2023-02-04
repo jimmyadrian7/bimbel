@@ -87,7 +87,9 @@ class MainSeed {
         $this->importData('role');
         $this->importData('role_menu');
         $this->importData('konfigurasi_web');
+        $this->importData('account_configuration');
         $this->importData('referal');
+        $this->importData('kursus');
 
         // Sample Data
         echo "Import sample data.... \r\n";

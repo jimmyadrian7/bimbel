@@ -32,6 +32,15 @@ class ReportController extends BaseReportController
             $where_condition = "tagihan.kursus_id = :tempat_kursus";
             $params['tempat_kursus'] = $postData['tempat_kursus'];
         }
+        else
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $where_condition = "tagihan.kursus_id IN (" . join(",", $kursus_ids) . ")";
+            }
+        }
 
         $query = sprintf($query, $where_condition);
         $tagihan = DB::select(DB::raw($query), $params);
@@ -49,6 +58,15 @@ class ReportController extends BaseReportController
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
             $pengeluaran = $pengeluaran->where('kursus_id', $postData['tempat_kursus']);
+        }
+        else
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $pengeluaran = $pengeluaran->whereIn('kursus_id', $kursus_ids);
+            }
         }
 
         $pengeluaran = $pengeluaran->get();
@@ -176,6 +194,17 @@ class ReportController extends BaseReportController
             $deposit = $deposit->whereHas('siswa', function($q) use ($postData) {
                 $q->where('kursus_id', $postData['tempat_kursus']);
             });
+        }
+        else
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $deposit = $deposit->whereHas('siswa', function($q) use ($kursus_ids) {
+                    $q->whereIn('kursus_id', $kursus_ids);
+                });
+            }
         }
 
         $deposit = $deposit->get();

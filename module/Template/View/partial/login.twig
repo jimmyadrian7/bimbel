@@ -6,29 +6,26 @@
                     <h3 class="font-weight-bolder text-info text-gradient">LOGIN</h3>
                 </div>
                 <div class="card-body">
-                    <label>Username</label>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Username" ng-model="vm.form.username">
-                    </div>
+                    <form ng-submit="vm.login()">
+                        <label>Username</label>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Username" ng-model="vm.form.username">
+                        </div>
 
-                    <label>Password</label>
-                    <div class="mb-3">
-                        <input type="password" class="form-control" placeholder="Password" ng-model="vm.form.password">
-                    </div>
+                        <label>Password</label>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" placeholder="Password" ng-model="vm.form.password">
+                        </div>
 
-                    <div class="text-danger" ng-if="vm.errorMsg">
-                        <small ng-bind="vm.errorMsg"></small>
-                    </div>
+                        <div class="text-danger" ng-if="vm.errorMsg">
+                            <small ng-bind="vm.errorMsg"></small>
+                        </div>
 
-                    <div class="text-center">
-                        <button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0" ng-click="vm.login()">Sign in</button>
-                    </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in</button>
+                        </div>
+                    </form>
                 </div>
-                {# <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                    <p class="mb-4 text-sm mx-auto">
-                        <a class="text-info text-gradient font-weight-bold" href="#">Forgot password ?</a>
-                    </p>
-                </div> #}
             </div>
         </div>
 

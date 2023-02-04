@@ -36,9 +36,9 @@ import transaksi from "./html/modal/transaksi.html";
         ];
 
         vm.cicilanFields = [
+            {name: 'Tanggal', value: 'tanggal', type: 'date'},
             {name: 'Nominal', value: 'nominal', type: 'number'},
-            {name: 'Bukti Pembayaran', value: 'bukti_pembayaran', type: 'file'},
-            {name: 'Tanggal', value: 'tanggal', type: 'date', hidden: true}
+            {name: 'Bukti Pembayaran', value: 'bukti_pembayaran', type: 'file'}
         ];
 
         vm.myModal = false;
@@ -50,22 +50,37 @@ import transaksi from "./html/modal/transaksi.html";
 
         vm.generateInvoice = generateInvoice;
 
+        vm.editData = editData;
+
         function tambahCicilan()
         {
+            vm.modal.form = {};
             vm.myModal = $compile(transaksi)($scope);
         }
         function buatCicilan()
         {
             let data = {
+                id: vm.modal.form.id,
                 tabungan_aset_id: vm.dataId,
                 bukti_pembayaran: vm.modal.form.bukti_pembayaran,
-                nominal: vm.modal.form.nominal
+                nominal: vm.modal.form.nominal,
+                tanggal: vm.modal.form.tanggal
             };
-            
-            req.post('cicilan_aset', data).then(response => {
-                Modal.getInstance(vm.myModal[0]).hide();
-                state.reload();
-            });
+
+            if (data.id)
+            {
+                req.put('cicilan_aset', data).then(response => {
+                    Modal.getInstance(vm.myModal[0]).hide();
+                    state.reload();
+                });
+            }
+            else
+            {
+                req.post('cicilan_aset', data).then(response => {
+                    Modal.getInstance(vm.myModal[0]).hide();
+                    state.reload();
+                });
+            }
         }
 
         function getStatusLabel(val)
@@ -85,6 +100,12 @@ import transaksi from "./html/modal/transaksi.html";
                 let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
                 element = $compile(element)($scope);
             });
+        }
+
+        function editData(idx)
+        {
+            vm.modal.form = vm.data.cicilan_aset[idx];
+            vm.myModal = $compile(transaksi)($scope);
         }
     }
 })()

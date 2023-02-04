@@ -23,7 +23,7 @@
                     {% for pendapatan in pendapatans %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{{ pendapatan.nama }}</td>
+                            <td>{{ pendapatan.deskripsi }}</td>
                             <td>{{ pendapatan.qty|number_format(0, ',', '.') }}</td>
                             <td>{{ pendapatan.total|number_format(0, ',', '.') }}</td>
                         </tr>

@@ -26,10 +26,37 @@
         <div class="tab-content text-justify">
             <div class="tab-pane fade show active" id="transaksi">
                 <div class="my-3">
-                    <div class="my-3">
-                        <app-table-template
-                            data="vm.data.cicilan_aset" 
-                            fields="vm.cicilanFields"></app-table-template>
+                    <div class="table-responsive mb-3">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th 
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                                        ng-repeat="field in vm.cicilanFields" ng-bind="field.name"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="!vm.data.cicilan_aset || vm.data.cicilan_aset.length == 0">
+                                    <td colspan="3" class="text-center">
+                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    </td>
+                                </tr>
+                    
+                                <tr ng-repeat="data in vm.data.cicilan_aset track by $index" ng-if="vm.data.cicilan_aset.length > 0">
+                                    <td ng-repeat="field in vm.cicilanFields">
+                                        <app-form-preview type="{{field.type}}" value="data[field.value]"></app-form-preview>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-click="vm.editData($index)">
+                                            <i class="fa fa-edit me-2"></i> Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

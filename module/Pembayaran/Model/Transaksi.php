@@ -32,7 +32,8 @@ class Transaksi extends BaseModel
     {        
         $tagihan_value = [
             'hutang' => $this->tagihan->hutang - $this->nominal,
-            'status' => 'c'
+            'status' => 'c',
+            'siswa_id' => $this->tagihan->siswa_id
         ];
 
         if ($tagihan_value['hutang'] === 0)

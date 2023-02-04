@@ -35,7 +35,7 @@
             let appErrorPrefix = exceptionHandler.config.appErrorPrefix || '';
             let errorData = { exception: exception, cause: cause };
 
-            logger.error(exception, errorData);
+            // logger.error(exception, errorData);
             
             $delegate(exception, cause);
         }

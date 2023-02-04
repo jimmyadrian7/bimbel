@@ -1,0 +1,33 @@
+<app-form detail="broadcast_detail" list="broadcast" id="vm.dataId" table="broadcast" fields="vm.fields" data="vm.data">
+
+    <app-form-body>
+        <div class="row">
+            <div class="col-md-6">
+                <table>
+                    <tr>
+                        <td class="text-xs">Template</td>
+                        <td class="px-3">:</td>
+                        <td class="font-weight-bolder text-dark py-2">
+                            <select
+                                ng-if="!vm.dataId"
+                                class="form-select form-select-sm"
+                                ng-model-dynamic="vm.data.template_name"
+                                url="get/WA/autocomplete"
+                                id="template_name"
+                                input-autocomplete="true">
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="my-3">
+                    <div class="text-xs">Content</div>
+                    <div class="font-weight-bolder text-dark py-2">
+                        <app-form-preview type="" value="vm.data.content"></app-form-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-form-body>
+
+</app-form>

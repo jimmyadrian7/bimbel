@@ -35,7 +35,9 @@ import modal from "./html/modal.html";
         vm.getLabel = getLabel;
 
         vm.cabangAble = cabangAble;
+        vm.isCabang = isCabang;
         vm.adminCabang = adminCabang;
+        vm.removeAdminCabang = removeAdminCabang;
 
         function gantiPass()
         {
@@ -88,11 +90,32 @@ import modal from "./html/modal.html";
             return result;
         }
 
+        function isCabang()
+        {
+            let result = false;
+
+            if (vm.data.jenis_user == "c")
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
         function adminCabang()
         {
             let data = {
                 id: vm.dataId,
                 jenis_user: 'c'
+            };
+            req.put('user', data).then(() => state.reload());
+        }
+
+        function removeAdminCabang()
+        {
+            let data = {
+                id: vm.dataId,
+                jenis_user: 'u'
             };
             req.put('user', data).then(() => state.reload());
         }

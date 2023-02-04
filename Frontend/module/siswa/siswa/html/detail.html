@@ -36,6 +36,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="list" href="#referal">Referensi</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#account">Account</a>
+            </li>
         </ul>
 
         <div class="tab-content text-justify">
@@ -220,6 +223,29 @@
                                 <td class="px-3">:</td>
                                 <td class="font-weight-bolder text-dark py-2">
                                     <app-form-preview type="" value="vm.data.referal_other"></app-form-input>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="account">
+                <div class="row my-4">
+                    <div class="col-md-6">
+                        <table>
+                            <tr>
+                                <td class="text-xs">Username</td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark">
+                                    <app-form-preview type="" value="vm.data.user.username"></app-form-input>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-xs">Password</td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark">
+                                    <app-form-preview type="" value="vm.data.user.unenpass"></app-form-input>
                                 </td>
                             </tr>
                         </table>

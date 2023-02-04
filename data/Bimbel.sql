@@ -50,6 +50,19 @@ CREATE TABLE `kursus` (
   `nama` varchar(255)
 );
 
+CREATE TABLE `account_configuration` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `wa_invoice_template` varchar(255),
+  `wa_invoice_template_language` varchar(255),
+  `wa_business_account_id` varchar(255),
+  `wa_phone_number_id` varchar(255),
+  `wa_access_token` text,
+  `mail_host` varchar(255),
+  `mail_port` varchar(255),
+  `mail_user` varchar(255),
+  `mail_pass` varchar(255)
+);
+
 CREATE TABLE `siswa` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `no_formulir` varchar(255),
@@ -350,13 +363,10 @@ CREATE TABLE `konfigurasi_web` (
   `tiktok` text
 );
 
-CREATE TABLE `message` (
+CREATE TABLE `user_question` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `message_type` ENUM ('e', 'w'),
-  `from` varchar(255),
-  `from_name` varchar(255),
-  `to` varchar(255),
-  `to_name` varchar(255),
+  `name` varchar(255),
+  `email` varchar(255),
   `subject` varchar(255),
   `message` text
 );
@@ -367,6 +377,19 @@ CREATE TABLE `log` (
   `target_table` varchar(255),
   `operation` varchar(255),
   `data` text
+);
+
+CREATE TABLE `broadcast` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `template_name` varchar(255),
+  `content` varchar(255),
+  `status` ENUM ('n', 's') DEFAULT "n"
+);
+
+CREATE TABLE `broadcast_siswa` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `broadcast_id` int,
+  `siswa_id` int
 );
 
 ALTER TABLE `orang` ADD FOREIGN KEY (`agama_id`) REFERENCES `agama` (`id`);

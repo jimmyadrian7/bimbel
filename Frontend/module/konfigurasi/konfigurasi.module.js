@@ -10,5 +10,6 @@
         'app.module.konfigurasi.kursus',
         'app.module.konfigurasi.role',
         'app.module.konfigurasi.whatsapp',
+        'app.module.konfigurasi.account_configuration',
     ]);
 })()

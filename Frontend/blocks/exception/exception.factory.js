@@ -19,10 +19,10 @@
                 if (e.data && e.data.exception.length > 0)
                 {
                     newException = e.data.exception[0];
-                    // if (newException.code != 501)
-                    // {
-                    //     logger.error(newException.message, e, "Error");
-                    // }
+                    if (newException.code != 501)
+                    {
+                        logger.error(newException.message, e, "Error");
+                    }
                     
                     return $q.reject(newException.message);
                 }

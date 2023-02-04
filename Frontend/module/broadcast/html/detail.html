@@ -1,0 +1,25 @@
+<app-detail table="broadcast" id="vm.dataId" fields="vm.fields" list="broadcast" edit="broadcast_form">
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.template_name"></span>
+            <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getLabel(vm.data.status)"></span>
+        </h6>
+    </app-detail-title>
+
+    <app-detail-button>
+        <button class="btn btn-link text-gradient text-primary mb-0 px-3" ng-click="vm.sendMessage()" ng-if="vm.data.status == 'n'">
+            <i class="fa fa-send me-2"></i> Send
+        </button>
+    </app-detail-button>
+
+    <app-detail-additional>
+        <div class="my-3">
+            <div class="text-xs">Content</div>
+            <div class="font-weight-bolder text-dark py-2">
+                <app-form-preview type="" value="vm.data.content"></app-form-input>
+            </div>
+        </div>
+    </app-detail-additional>
+
+</app-detail>

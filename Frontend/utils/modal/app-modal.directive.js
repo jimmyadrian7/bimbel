@@ -1,5 +1,4 @@
-import Modal from "bootstrap/js/dist/modal";
-import html from "./modal.html";
+import html from "./app-modal.html";
 
 (() => {
     "use strict";
@@ -7,9 +6,9 @@ import html from "./modal.html";
     angular.module('app.utils')
         .directive('appModal', appModal);
 
-    appModal.$inject = ['req'];
+    appModal.$inject = ['Modal'];
 
-    function appModal(req)
+    function appModal(Modal)
     {
         let directive = {
             restrict: 'E',
@@ -19,7 +18,7 @@ import html from "./modal.html";
             scope: true,
             replace: true,
             bindToController: {
-                data: '='
+                data: '=?'
             },
             transclude: {
                 title: 'appModalTitle',
