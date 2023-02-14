@@ -55,6 +55,7 @@ class GajiController extends Controller
                 }
                 else
                 {
+                    $gaji = new Gaji();
                     $gaji = $gaji->create($gaji_value);
                 }
 
