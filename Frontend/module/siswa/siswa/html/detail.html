@@ -1,6 +1,20 @@
 <app-detail table="siswa" id="vm.dataId" fields="vm.fields" list="siswa.siswa" edit="siswa.siswa_form">
     <app-detail-button>
         <button 
+            ng-if="vm.data.status == 'b'"
+            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+            ng-click="vm.resetTagihan()">
+            <i class="fa fa-refresh me-2"></i> Reset Tagihan
+        </button>
+
+        <button 
+            ng-if="vm.data.status == 'a'"
+            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+            ng-click="vm.buatTagihan()">
+            <i class="fa fa-plus me-2"></i> Buat Tagihan
+        </button>
+
+        <button 
             ng-if="vm.data.status == 'a'"
             class="btn btn-link text-gradient text-primary px-3 mb-0" 
             ng-click="vm.updateStatus()">

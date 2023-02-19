@@ -21,10 +21,31 @@ class IuranTerbuat extends BaseModel
     }
 
     
-    public function getTagihanDetail($firstTime = false)
+    public function getTagihanDetail($firstTime = false, $tanggal = false)
     {
         $iuran_terbuat = $this;
         $result = [];
+
+        if ($tanggal)
+        {
+            $latestDate = explode("-", $tanggal);
+        }else
+        {
+            $latestDate = new \DateTime('now');
+            $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
+            $latestDate = $latestDate->format('Y-n');
+            $latestDate = explode("-", $latestDate);
+        }
+        
+        $bulan = $latestDate[1];
+        $tahun = $latestDate[0];
+        $total_tanggal = (int) (((int) $tahun) . ((int) $bulan));
+        $total_current_tanggal = (int) (((int) $this->tahun) . ((int) $this->bulan));
+
+        if ($this->bulan != null && $this->tahun != null && $total_tanggal <= $total_current_tanggal)
+        {
+            return $result;
+        }
 
         foreach ($iuran_terbuat->iuran->iuran_detail as $iuran_detail) {
             if (!$firstTime && $iuran_detail->skip)
@@ -85,12 +106,29 @@ class IuranTerbuat extends BaseModel
 
         return $tagihan;
     }
-    public function updateDate()
+    public function updateDate($tanggal = false)
     {
-        $latestDate = new \DateTime('now');
-        $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
-        $latestDate = $latestDate->format('Y-n');
-        $latestDate = explode("-", $latestDate);
+        if (!$tanggal)
+        {
+            $latestDate = new \DateTime('now');
+            $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
+            $latestDate = $latestDate->format('Y-n');
+            $latestDate = explode("-", $latestDate);
+        }
+        else
+        {
+            $latestDate = explode("-", $tanggal);
+            $bulan = $latestDate[1];
+            $tahun = $latestDate[0];
+
+            $cekbulan = $bulan - $this->bulan;
+            $cektahun = $tahun - $this->tahun;
+
+            if ($cektahun < 0 && $cekbulan < 0)
+            {
+                throw new \Error("Tanggal telah tergenerate");
+            }
+        }
 
         $this->update([
             'bulan' => $latestDate[1],

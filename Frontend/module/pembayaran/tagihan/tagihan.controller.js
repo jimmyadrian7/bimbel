@@ -9,10 +9,10 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         .controller('TagihanController', TagihanController);
 
     TagihanController.$inject = [
-        '$stateParams', '$parse', '$compile', '$scope', 'req', 'Modal', '$state', 'session', 'logger'
+        '$stateParams', '$parse', '$compile', '$scope', 'req', 'Modal', '$state', 'session', 'logger', 'moment'
     ];
 
-    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session, logger)
+    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session, logger, moment)
     {
         let vm = this;
 
@@ -57,9 +57,14 @@ import modalDiskon from "./html/modal/modal-diskon.html";
             {name: "Qty", value: "qty", type: 'number'},
             {name: "Sub Total", value: "sub_total", type: 'number'},
             {name: "Diskon", value: "diskon.diskon", type: 'number'},
-            {name: "Total", value: "total", type: 'number'},
-            {name: "Komisi", value: "komisi", type: 'number'}
+            {name: "Total", value: "total", type: 'number'}
         ];
+
+        if (!session.isSiswa())
+        {
+            vm.tagihanDetailFields.push({name: "Komisi", value: "komisi", type: 'number'});
+        }
+
 
         vm.diskonFields = [
             {name: "Diskon", value: "diskon", type: 'number'},
@@ -67,12 +72,12 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         ];
 
         vm.transaksiFields = [
+            {name: "Tanggal", value: "tanggal", type: 'date'},
             {name: "Nominal", value: "nominal", type: 'number'},
-            {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: 'file'},
-            {name: "Tanggal", value: "tanggal", type: 'date', hidden: true}
+            {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: 'file'}
         ];
 
-        vm.modal = {form: {}};
+        vm.modal = {form: {tanggal: moment(new Date()).format("YYYY-MM-DD")}};
         vm.myModal = false;
         vm.myModalDiskon = false;
 
@@ -102,6 +107,9 @@ import modalDiskon from "./html/modal/modal-diskon.html";
 
         vm.notify = notify;
 
+        vm.editTransaksi = editTransaksi;
+        vm.deleteTransaksi = deleteTransaksi;
+
         function getValue(field)
         {
             if (!field)
@@ -130,6 +138,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
 
         function bayarTagihan()
         {
+            vm.modal.form = {tanggal: moment(new Date()).format("YYYY-MM-DD")};
             vm.myModal = $compile(modal)($scope);
         }
         function buatTransaksi()
@@ -137,13 +146,26 @@ import modalDiskon from "./html/modal/modal-diskon.html";
             let data = {
                 nominal: vm.modal.form.nominal,
                 tagihan_id: vm.data.id,
-                bukti_pembayaran: vm.modal.form.bukti_pembayaran
+                bukti_pembayaran: vm.modal.form.bukti_pembayaran,
+                tanggal: vm.modal.form.tanggal
             };
 
-            req.post('transaksi', data).then(response => {
-                Modal.getInstance(vm.myModal[0]).hide();
-                state.reload();
-            });
+            if (vm.modal.form.id)
+            {
+                data.id = vm.modal.form.id;
+
+                req.put('transaksi', data).then(response => {
+                    Modal.getInstance(vm.myModal[0]).hide();
+                    state.reload();
+                });
+            }
+            else
+            {
+                req.post('transaksi', data).then(response => {
+                    Modal.getInstance(vm.myModal[0]).hide();
+                    state.reload();
+                });
+            }
         }
 
 
@@ -266,6 +288,24 @@ import modalDiskon from "./html/modal/modal-diskon.html";
                 if (response)
                 {
                     logger.success("Notifikasi telah terkirim");
+                }
+            });
+        }
+
+
+        function editTransaksi(d)
+        {
+            vm.modal.form = d;
+            vm.myModal = $compile(modal)($scope);
+        }
+        function deleteTransaksi(d)
+        {
+            let data = {id: d.id};
+            req.del('transaksi', data).then( response => {
+                if (response)
+                {
+                    logger.success("Success");
+                    state.reload();
                 }
             });
         }

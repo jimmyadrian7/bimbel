@@ -51,4 +51,37 @@ class FetchController extends Controller
 
         return $result;
     }
+
+    public function generateTagihan($request, $args)
+    {
+        $result = true;
+
+        try 
+        {
+            $data = $request->getParsedBody();            
+            $siswa = new Siswa();
+
+            $siswa = $siswa->find($data['id']);
+
+            if ($data['reset'])            
+            {
+                $siswa->iuran_terbuat()->delete();
+                
+                foreach($siswa->tagihan as $tagihan)
+                {
+                    $tagihan->delete();
+                }
+
+                $siswa->recreateIuran();
+            }
+
+            $siswa->triggerIuran($data['reset'], $data['tanggal']);
+        }
+        catch(\Error $e) 
+        {
+            throw new \Exception($e->getMessage());
+        }
+
+        return $result;
+    }
 }

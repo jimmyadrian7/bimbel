@@ -144,6 +144,20 @@ class Transaksi extends BaseModel
         $this->handleTagihanDetail();
     }
     
+    public function cekStatus($attributes)
+    {
+        if (!array_key_exists('status', $attributes) || $attributes['status'] != 'v')
+        {
+            return;
+        }
+
+        if ($this->tagihan->hutang < $this->nominal)
+        {
+            throw new \Error("Pembayaran tidak dapat lebih besar dari hutang");
+        }
+    }
+
+
     public function create(array $attributes = [])
     {
         $this->validateData($attributes);
@@ -158,10 +172,22 @@ class Transaksi extends BaseModel
     public function update(array $attributes = [], array $options = [])
     {
         $this->handleFile($attributes);
+        $this->cekStatus($attributes);
+
+        if (array_key_exists('tagihan_id', $attributes) && array_key_exists('nominal', $attributes))
+        {
+            $this->validateData($attributes);
+        }
+
+
         $result = parent::update($attributes, $options);
 
         $this->refresh();
-        $this->handleStatus();
+
+        if (array_key_exists('status', $attributes))
+        {
+            $this->handleStatus();
+        }
 
         return $result;
     }

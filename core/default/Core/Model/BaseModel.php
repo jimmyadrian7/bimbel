@@ -64,7 +64,7 @@ class BaseModel extends Model
 
         if ($pagination)
         {
-            $data = $obj->paginate($_ENV['row_per_page'], ['*'], 'page', $page);
+            $data = $obj->orderBy('id', 'DESC')->paginate($_ENV['row_per_page'], ['*'], 'page', $page);
         }
         else
         {

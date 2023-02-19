@@ -83,6 +83,17 @@
                                             ng-click="vm.verif(data)">
                                             <i class="fa fa-check me-2"></i> Verif
                                         </button>
+                                        <button
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0"
+                                            ng-click="vm.editTransaksi(data)">
+                                            <i class="fa fa-edit me-2"></i> Edit
+                                        </button>
+                                        <button
+                                            ng-if="data.status != 'v'"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0"
+                                            ng-click="vm.deleteTransaksi(data)">
+                                            <i class="far fa-trash-alt me-2"></i> Delete
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>

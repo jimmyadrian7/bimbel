@@ -1,6 +1,7 @@
 import iuran from "./html/modal/iuran.html";
 import edit_iuran from "./html/modal/edit_iuran.html";
 import jadwal from "./html/modal/jadwal.html";
+import tagihan_modal from "./html/modal/tagihan.html";
 
 (() => {
     "use strict";
@@ -40,6 +41,7 @@ import jadwal from "./html/modal/jadwal.html";
         ];
 
         vm.myModal = false;
+        vm.reset = false;
         vm.data = {iuran: [], jadwal: [], ref: {}};
         vm.modal = {};
         vm.dataId = stateParams.dataId;
@@ -140,6 +142,10 @@ import jadwal from "./html/modal/jadwal.html";
 
         vm.getReportSiswa = getReportSiswa;
         vm.getReportJadwal = getReportJadwal;
+
+        vm.resetTagihan = resetTagihan;
+        vm.generateTagihan = generateTagihan;
+        vm.buatTagihan = buatTagihan;
 
         activate();
 
@@ -342,6 +348,30 @@ import jadwal from "./html/modal/jadwal.html";
                 vm.activeExcel = {filename: "jadwal.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data};
                 let element = `<app-download-preview value='vm.activeExcel'></app-download-preview>`;
                 element = $compile(element)($scope);
+            });
+        }
+
+        function resetTagihan()
+        {
+            vm.reset = true;
+            vm.myModal = $compile(tagihan_modal)($scope);
+        }
+        function buatTagihan()
+        {
+            vm.reset = false;
+            vm.myModal = $compile(tagihan_modal)($scope);
+        }
+        function generateTagihan()
+        {
+            let data = {
+                tanggal: vm.modal.tanggal_tagihan,
+                reset: vm.reset,
+                id: vm.dataId
+            };
+
+            req.post('siswa/generate/tagihan', data).then(response => {
+                Modal.getInstance(vm.myModal[0]).hide();
+                state.reload();
             });
         }
     }

@@ -176,12 +176,13 @@ class Tagihan extends BaseModel
 
     public function delete()
     {
-        if ($this->status != 'p')
-        {
-            throw new \Error("Tagihan cannot be deleted");
-        }
+        // if ($this->status != 'p')
+        // {
+        //     throw new \Error("Tagihan cannot be deleted");
+        // }
 
         $this->tagihan_detail()->delete();
+        $this->transaksi()->delete();
 
         return parent::delete();
     }

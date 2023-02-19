@@ -66,7 +66,7 @@ class Siswa extends BaseModel
     }
     public function tagihan()
     {
-        return $this->hasMany(Tagihan::class, 'id', 'siswa_id');
+        return $this->hasMany(Tagihan::class, 'siswa_id', 'id');
     }
     public function guru()
     {
@@ -132,6 +132,19 @@ class Siswa extends BaseModel
         }
 
         $attributes['orang_id'] = $orang->id;
+    }
+
+
+    public function recreateIuran()
+    {
+        foreach($this->iuran as $iuran)
+        {
+            $iuran_terbuat = new IuranTerbuat();
+            $iuran_terbuat = $iuran_terbuat->create([
+                'siswa_id' => $this->id,
+                'iuran_id' => $iuran->id
+            ]);
+        }
     }
 
     /*
@@ -306,7 +319,7 @@ class Siswa extends BaseModel
     }
     
 
-    public function triggerIuran($firstTime = false)
+    public function triggerIuran($firstTime = false, $tanggal = false)
     {
         $tagihan = new Tagihan();
         $tagihan_detail = [];
@@ -318,9 +331,12 @@ class Siswa extends BaseModel
                 continue;
             }
 
-            $td = $iuran_terbuat->getTagihanDetail($firstTime);
+            $td = $iuran_terbuat->getTagihanDetail($firstTime, $tanggal);
             $tagihan_detail = array_merge($tagihan_detail, $td);
-            $iuran_terbuat->updateDate();
+            if (count($td) > 0)
+            {
+                $iuran_terbuat->updateDate($tanggal);
+            }
         }
 
         if (count($tagihan_detail) === 0)
@@ -328,10 +344,17 @@ class Siswa extends BaseModel
             throw new \Error("Tagihan is empty");
         }
 
-        $tagihan = $tagihan->create([
+        $tagihan_value = [
             "siswa_id" => $this->id,
             "tagihan_detail" => $tagihan_detail
-        ]);
+        ];
+
+        if($tanggal)
+        {
+            $tagihan_value['tanggal'] = $tanggal;
+        }
+
+        $tagihan = $tagihan->create($tagihan_value);
 
         return $tagihan;
     }

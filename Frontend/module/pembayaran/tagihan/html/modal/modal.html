@@ -56,11 +56,13 @@
 
             <div class="col-12">
                 <table>
-                    <tr ng-repeat="field in vm.transaksiFields" ng-if="!field.hidden">
+                    <tr ng-repeat="field in vm.transaksiFields" ng-if="!field.hidden && !(field.value == 'nominal' && vm.modal.form.status == 'v')">
                         <td class="text-xs" ng-bind="field.name"></td>
                         <td class="px-3">:</td>
                         <td>
-                            <app-form-input type="{{field.type}}" expr="vm.modal.form.{{field.value}}"></app-form-input>
+                            <app-form-input 
+                                type="{{field.type}}" 
+                                expr="vm.modal.form.{{field.value}}"></app-form-input>
                         </td>
                     </tr>
                 </table>
