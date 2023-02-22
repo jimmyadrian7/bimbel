@@ -263,7 +263,10 @@ CREATE TABLE `tagihan_detail` (
   `sub_total` int,
   `total` int,
   `komisi` int,
-  `pembiayaan_id` int
+  `pembiayaan_id` int,
+  `system` boolean,
+  `tanggal_iuran_mulai` date,
+  `tanggal_iuran_berakhir` date
 );
 
 CREATE TABLE `transaksi` (

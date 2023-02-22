@@ -42,6 +42,11 @@ class IuranTerbuat extends BaseModel
         $total_tanggal = (int) (((int) $tahun) . ((int) $bulan));
         $total_current_tanggal = (int) (((int) $this->tahun) . ((int) $this->bulan));
 
+        $tanggal_start = $tahun . "-" . $bulan . "-1";
+        $tanggal_end = new \DateTime($tanggal_start);
+        $tanggal_end->modify("+" . ($this->iuran->bulan-1) . "month");
+        $tanggal_end = $tanggal_end->format("Y-n-1");
+
         if ($this->bulan != null && $this->tahun != null && $total_tanggal <= $total_current_tanggal)
         {
             return $result;
@@ -59,7 +64,11 @@ class IuranTerbuat extends BaseModel
                 "nama" => $iuran_detail->pembiayaan->nama,
                 "nominal" => $iuran_detail->pembiayaan->harga,
                 "qty" => $iuran_detail->qty,
-                'pembiayaan_id' => $iuran_detail->pembiayaan->id
+                'pembiayaan_id' => $iuran_detail->pembiayaan->id,
+                'system' => true,
+                'tanggal_iuran_mulai' => $tanggal_start,
+                'tanggal_iuran_berakhir' => $tanggal_end,
+                'bulan' => $iuran_terbuat->iuran->bulan
             ];
             array_push($result, $tagihan_detail);
         }

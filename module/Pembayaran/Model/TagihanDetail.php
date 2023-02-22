@@ -10,7 +10,8 @@ class TagihanDetail extends BaseModel
 {
     protected $fillable = [
         'tagihan_id', 'kode', 'nama', 'nominal', 'sub_total', 'qty', 'komisi_guru', 'total',
-        'kategori_pembiayaan', 'potongan', 'total', 'pembiayaan_id', 'diskon_id', 'komisi'
+        'kategori_pembiayaan', 'potongan', 'total', 'pembiayaan_id', 'diskon_id', 'komisi',
+        'tanggal_iuran_mulai', 'tanggal_iuran_berakhir', 'system', 'bulan'
     ];
     protected $table = 'tagihan_detail';
     protected $with = ['diskon', 'pembiayaan'];

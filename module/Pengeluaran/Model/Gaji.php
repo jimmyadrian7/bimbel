@@ -70,11 +70,9 @@ class Gaji extends BaseModel
         @sub_total => total sebelum potongan
         @komisi => total komisi yang diterima
     */
-    public function hitungTagihan($siswa_ids)
+    public function hitungTagihan($siswa_ids, $year, $month)
     {
         $tagihans = new \Bimbel\Pembayaran\Model\Tagihan();
-        $year = date("Y");
-        $month = date("m");
 
         $result = [
             "potongan" => 0,
@@ -85,13 +83,15 @@ class Gaji extends BaseModel
         $tagihans = $tagihans
             ->whereYear('tanggal', $year)
             ->whereMonth('tanggal', $month)
-            ->whereIn('siswa_id', $siswa_ids)->get();
+            ->whereIn('siswa_id', $siswa_ids)
+            ->where('status', 'l')
+            ->get();
 
         foreach ($tagihans as $tagihan)
         {
             foreach ($tagihan->tagihan_detail as $tagihan_detail)
             {
-                if ($tagihan_detail->komisi_guru === 0)
+                if ($tagihan_detail->komisi === 0 || $tagihan_detail->system)
                 {
                     continue;
                 }
@@ -100,6 +100,28 @@ class Gaji extends BaseModel
                 $result['sub_total'] += $tagihan_detail->sub_total;
                 $result['komisi'] += $tagihan_detail->komisi;
             }
+        }
+
+        $tagihan_detail = new \Bimbel\Pembayaran\Model\TagihanDetail();
+        $tagihan_detail = $tagihan_detail
+            ->where("system", true)
+            ->whereDate('tanggal_iuran_mulai', "<=", $year . "-" . $month . "-1")
+            ->whereDate('tanggal_iuran_berakhir', ">=", $year . "-" . $month . "-1")
+            ->whereHas('tagihan', function ($q) use ($siswa_ids) {
+                $q->where('status', 'l')->whereIn('siswa_id', $siswa_ids);
+            })
+            ->get();
+        
+        foreach ($tagihan_detail as $td)
+        {
+            if ($td->komisi <= 0)
+            {
+                continue;
+            }
+                
+            $result['potongan'] += $td->potongan;
+            $result['sub_total'] += $td->sub_total;
+            $result['komisi'] += floor($td->komisi / $td->bulan);
         }
 
         return $result;
@@ -118,7 +140,11 @@ class Gaji extends BaseModel
         $guru = $guru->find($attributes['guru_id']);
         $siswa_ids = $guru->siswa->pluck('id');
 
-        $komisi = $this->hitungTagihan($siswa_ids);
+        $tanggal = explode("-", $attributes['tanggal']);
+        $year = $tanggal[0];
+        $month = $tanggal[1];
+
+        $komisi = $this->hitungTagihan($siswa_ids, $year, $month);
         $tunjangan = $this->hitungTunjangan($guru);
 
         $attributes['total_siswa'] = $guru->siswa->count();

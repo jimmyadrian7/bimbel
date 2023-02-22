@@ -45,4 +45,63 @@ class NotifyController extends Controller
             throw new \Exception($e->getMessage());
         }
     }
+
+    public function fixData($request, $args)
+    {
+        $result = ["data" => "success"];
+
+        try
+        {
+            $siswa = new \Bimbel\Siswa\Model\Siswa();
+            $siswas = $siswa->get();
+
+            foreach($siswas as $siswa)
+            {
+                foreach($siswa->iuran_terbuat as $iuran_terbuat)
+                {
+                    if ($iuran_terbuat->tahun == NULL || $iuran_terbuat->bulan == NULL)
+                    {
+                        continue;
+                    }
+                    
+                    $pembiayaan_ids = $iuran_terbuat->iuran->iuran_detail->pluck('pembiayaan_id')->toArray();
+
+                    $tagihan_details = new \Bimbel\Pembayaran\Model\TagihanDetail();
+                    $tagihan_details = $tagihan_details
+                        ->whereHas('tagihan', function($q) use ($siswa){
+                            $q->where('siswa_id', $siswa->id);
+                        })
+                        ->whereIn('pembiayaan_id', $pembiayaan_ids)
+                        ->get();
+
+                    $tanggal_mulai = $iuran_terbuat->tahun . "-" . $iuran_terbuat->bulan . "-1";
+                    $tanggal_berakhir = new \DateTime($tanggal_mulai);
+                    $tanggal_berakhir = $tanggal_berakhir->modify("+" . ($iuran_terbuat->iuran->bulan-1) . "month");
+                    $tanggal_berakhir = $tanggal_berakhir->format("Y-n-1");
+                        
+                    foreach($tagihan_details as $tagihan_detail)
+                    {
+                        $tagihan_detail_value = [
+                            "system" => true,
+                            "tanggal_iuran_mulai" => $tanggal_mulai,
+                            "tanggal_iuran_berakhir" => $tanggal_berakhir,
+                            'nominal' => $tagihan_detail->nominal,
+                            'qty' => $tagihan_detail->qty,
+                            'pembiayaan_id' => $tagihan_detail->pembiayaan_id,
+                            'tagihan_id' => $tagihan_detail->tagihan_id,
+                            'bulan' => $iuran_terbuat->iuran->bulan
+                        ];
+
+                        $tagihan_detail->update($tagihan_detail_value);
+                    }
+                }
+            }
+        }
+        catch(\Error $e) 
+        {
+            throw new \Exception($e->getMessage());
+        }
+
+        return $result;
+    }
 }
