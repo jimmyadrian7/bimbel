@@ -11,7 +11,7 @@ class Tagihan extends BaseModel
 {
     protected $fillable = [
         'code', 'siswa_id', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal', 'kursus_id',
-        'tagihan_detail'
+        'tagihan_detail', 'tanggal_lunas'
     ];
     protected $table = 'tagihan';
     protected $appends = ['siswa_data'];

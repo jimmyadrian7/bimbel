@@ -39,6 +39,7 @@ class Transaksi extends BaseModel
         if ($tagihan_value['hutang'] === 0)
         {
             $tagihan_value['status'] = 'l';
+            $tagihan_value['tanggal_lunas'] = $this->tanggal;
         }
 
         $this->tagihan->update($tagihan_value);

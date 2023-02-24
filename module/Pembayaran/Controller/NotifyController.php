@@ -52,6 +52,7 @@ class NotifyController extends Controller
 
         try
         {
+            // Fix data tagihan detail
             $siswa = new \Bimbel\Siswa\Model\Siswa();
             $siswas = $siswa->get();
 
@@ -95,6 +96,20 @@ class NotifyController extends Controller
                         $tagihan_detail->update($tagihan_detail_value);
                     }
                 }
+            }
+
+            // fix data tagihan
+            $tagihans = new \Bimbel\Pembayaran\Model\Tagihan();
+            $tagihans = $tagihans->where('status', 'l')->get();
+
+            foreach ($tagihans as $tagihan)
+            {
+                $transaksi_terkakhir = $tagihan->transaksi()->where('status', 'v')->latest('tanggal')->first();
+                
+                $tagihan->update([
+                    'tanggal_lunas' => $transaksi_terkakhir->tanggal,
+                    'siswa_id' => $tagihan->siswa_id
+                ]);
             }
         }
         catch(\Error $e) 
