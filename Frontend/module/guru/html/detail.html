@@ -44,6 +44,9 @@
                 <a class="nav-link" data-bs-toggle="list" href="#kuesioner">Kuesioner</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#bank">Bank</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="list" href="#account">Account</a>
             </li>
         </ul>
@@ -137,6 +140,22 @@
                                 <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-input>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="bank">
+                <div class="row mt-4">
+                    <div class="col-md-6" ng-repeat="fields in vm.additional.bankFields">
+                        <table>
+                            <tr ng-repeat="field in fields track by $index">
+                                <td class="text-xs" ng-bind="field.name"></td>
+                                <td class="px-3">:</td>
+                                <td class="font-weight-bolder text-dark text-xs">
+                                    <app-form-preview type="{{field.type}}" value="vm.getValue(field)"></app-form-preview>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

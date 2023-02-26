@@ -15,7 +15,8 @@ class Guru extends BaseModel
     protected $fillable = [
         'orang_id', 'status', 'orang',
         'berhenti', 'memilih', 'kelebihan', 'kekurangan', 'kesehatan', 'lingkungan', 'aturan', 'pelatihan', 'kapan',
-        'gaji_sebelumnya', 'gaji_diminta', 'ideal', 'rekaman', 'rekaman_id', 'pp', 'pp_id', 'kursus'
+        'gaji_sebelumnya', 'gaji_diminta', 'ideal', 'rekaman', 'rekaman_id', 'pp', 'pp_id', 'kursus',
+        'nama_bank', 'no_rek'
 
     ];
     protected $table = 'guru';

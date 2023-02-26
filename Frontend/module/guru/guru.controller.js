@@ -83,6 +83,12 @@ import kursusHtml from "./html/modal/kursus.html";
                 {name: "Hobi", value: "orang.hobi"}
             ]
         ];
+        vm.additional.bankFields = [
+            [
+                {name: "Nama Bank", value: "nama_bank"},
+                {name: "Nomor Rekening", value: "no_rek"}
+            ]
+        ];
         vm.additional.kursusFields = [
             {name: "Kode", value: "kode"},
             {name: "Nama", value: "nama"}
