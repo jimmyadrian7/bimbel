@@ -17,6 +17,7 @@
             [
                 {name: "Invoice Template", value: "wa_invoice_template"},
                 {name: "Invoice Template Language", value: "wa_invoice_template_language"},
+                {name: "Parameter", value: "parameter", type: "boolean"},
                 {name: "Business Account ID", value: "wa_business_account_id"},
             ],
             [

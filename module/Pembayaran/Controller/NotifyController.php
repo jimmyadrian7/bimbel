@@ -23,12 +23,19 @@ class NotifyController extends Controller
             $configuration = new \Bimbel\Master\Model\AccountConfiguration();
             $configuration = $configuration->first();
 
+            $nama = "";
+
+            if ($configuration->parameter)
+            {
+                $nama = $siswa->orang->nama;
+            }
+
             $wa = new \Bimbel\Whatsapp\Model\Whatsapp();
             $result = $wa->sendMessageTemplate(
                 $configuration->wa_invoice_template, 
                 $configuration->wa_invoice_template_language, 
                 $siswa->orang->no_hp,
-                $siswa->orang->nama
+                $nama
             );
 
             if ($result['status'] != '200' && $result['status'] != '201')
