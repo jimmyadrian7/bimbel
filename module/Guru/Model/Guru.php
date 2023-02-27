@@ -249,7 +249,7 @@ class Guru extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'pp', 'kursus', 'siswa', 'siswa.orang');
+        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'orang.pp', 'kursus', 'siswa', 'siswa.orang');
         $data = parent::fetchDetail($id, $obj);
         
         if ($data->status != 'a')

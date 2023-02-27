@@ -44,9 +44,9 @@
         <div class="card">
             <div class="card-header">
                 <h6 class="mb-0 text-gradient text-primary" ng-bind="vm.data.nama"></h6>
-                <div ng-if="vm.isGuru && vm.guru.pp">
+                <div ng-if="vm.data.pp">
                     <div class="img-container">
-                        <img src="data:{{vm.guru.pp.filetype}};base64, {{vm.guru.pp.base64}}" alt="{{vm.guru.pp.filename}}">
+                        <img src="data:{{vm.data.pp.filetype}};base64, {{vm.data.pp.base64}}" alt="{{vm.data.pp.filename}}">
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                 <div class="row">
                     <div class="col-md-6" ng-repeat="fields in vm.fields">
                         <table>
-                            <tr ng-repeat="field in fields track by $index">
+                            <tr ng-repeat="field in fields track by $index" ng-if="!field.hideDetail">
                                 <td class="text-xs" ng-bind="field.name"></td>
                                 <td class="px-3">:</td>
                                 

@@ -12,7 +12,7 @@ class Session extends SessionMaster
     {
         $user_id = $this->get('user_id');
         $data = new User();
-        $data = $data->with('orang')->find($user_id);
+        $data = $data->with('orang', 'orang.pp')->find($user_id);
         if (!$data)
         {
             throw new \Error("You are currently not logged in", 501);

@@ -443,7 +443,7 @@ class Siswa extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('orang', 'iuran', 'jadwal');
+        $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp');
         $data = parent::fetchDetail($id, $obj);
 
         if ($data->status != 'b')

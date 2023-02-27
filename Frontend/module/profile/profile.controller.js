@@ -33,7 +33,8 @@ import modal from "../konfigurasi/user/html/modal.html";
                 {name: "Jenis Kelamin", value: "jenis_kelamin", type: 'selection', selection: jenisKelamin},
                 {name: "Agama", value: "agama_id", type: 'selection', selection: agamaOptions},
                 {name: "Tempat Lahir", value: "tempat_lahir"},
-                {name: "Tanggal Lahir", value: "tanggal_lahir", type: 'date'}
+                {name: "Tanggal Lahir", value: "tanggal_lahir", type: 'date'},
+                {name: "Profile Picture", value: "pp", type: "file", hideDetail: true}
             ],
             [
                 {name: "No. HP", value: "no_hp"},

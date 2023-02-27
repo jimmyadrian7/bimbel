@@ -119,4 +119,29 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function fixDataGuru($request, $args)
+    {
+        $result = ["data" => "success"];
+
+        try
+        {
+            $gurus = new \Bimbel\Guru\Model\Guru();
+            $gurus = $gurus->get();
+
+            foreach ($gurus as $guru)
+            {
+                $guru = $guru->orang->update([
+                    'pp_id' => $guru->pp_id
+                ]);
+            }
+
+        }
+        catch(\Error $e) 
+        {
+            throw new \Exception($e->getMessage());
+        }
+
+        return $result;
+    }
 }

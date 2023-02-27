@@ -51,7 +51,7 @@ import kursusHtml from "./html/modal/kursus.html";
             {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, table: true, hidden: true, hideDetail: true},
             {name: "No. HP", value: "orang.no_hp", table: true, hidden: true, hideDetail: true},
             {name: "Status", value: "status", type: 'selection', selection: vm.statusOpt, table: true, hidden: true, hideDetail: true},
-            {name: "Profile Picture", value: "pp", type: "file", hideDetail: true}
+            {name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true}
         ];
 
         vm.additional = {};

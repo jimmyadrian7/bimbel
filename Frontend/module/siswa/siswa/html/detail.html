@@ -27,6 +27,12 @@
             <span class="text-gradient text-primary" ng-bind="vm.data.orang.nama"></span>
             <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getValue(vm.status_field)"></span>
         </h6>
+
+        <div ng-if="vm.data.orang.pp">
+            <div class="img-container">
+                <img src="data:{{vm.data.orang.pp.filetype}};base64, {{vm.data.orang.pp.base64}}" alt="{{vm.data.orang.pp.filename}}">
+            </div>
+        </div>
     </app-detail-title>
 
     <app-detail-additional>
