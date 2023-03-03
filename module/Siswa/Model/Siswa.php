@@ -423,7 +423,7 @@ class Siswa extends BaseModel
         $user = $user->where('orang_id', $this->orang_id)->first();
 
         $log = new \Bimbel\Master\Model\Log();
-        
+
         $log->where('user_id', $user->id)->delete();
         $user->delete();
         $this->orang()->delete();
@@ -455,10 +455,10 @@ class Siswa extends BaseModel
         $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp');
         $data = parent::fetchDetail($id, $obj);
 
-        if ($data->status != 'b')
-        {
-            $data->deleteable = false;
-        }
+        // if ($data->status != 'b')
+        // {
+        //     $data->deleteable = false;
+        // }
 
         $user = new \Bimbel\User\Model\User();
         $user = $user->where('orang_id', $data->orang_id)->first();
