@@ -1,4 +1,5 @@
 import table from './table.html';
+import filterHtml from "./modal/filter.html";
 
 (() => {
     "use strict";
@@ -30,22 +31,27 @@ import table from './table.html';
             }
         };
 
-        controllerFunc.$inject = ['$scope', 'session', '$location'];
+        controllerFunc.$inject = ['$scope', 'session', '$location', '$compile', 'Modal', '$element'];
 
         return directive;
 
-        function controllerFunc(scope, session, $location)
+        function controllerFunc(scope, session, $location, $compile, Modal, element)
         {
             let vm = this;
             
             vm.title = `Tabel ${$state.current.title}`;
             vm.data = [];
+            vm.oldFields = [];
+
+            vm.myModal = false;
 
             vm.tambahData = tambahData;
             vm.getValue = getValue;
             vm.changePage = changePage;
             vm.goDetail = goDetail;
             vm.getValue = getValue;
+
+            vm.showFilter = showFilter;
 
             vm.currentPage = $location.search().page || 1;
             vm.currentPage = parseInt(vm.currentPage);
@@ -89,6 +95,7 @@ import table from './table.html';
 
             function getTableFields()
             {
+                vm.oldFields = vm.fields;
                 vm.fields = vm.fields.filter((field) => {
                     return field.table;
                 });
@@ -195,6 +202,43 @@ import table from './table.html';
 
                 vm.currentPage = 1;
                 getData();
+            }
+
+            function showFilter()
+            {
+                vm.countField = 1;
+                vm.fieldsFilter = vm.oldFields.map((value) => {
+                    let opt = {
+                        label: value.name,
+                        value: value.value,
+                        type: value.type,
+                        selection: value.selection,
+                        operation: [
+                            {value: "=", label: "="},
+                            {value: "like", label: "like"}
+                        ]
+                    };
+
+                    if (opt.type == "selection" || opt.type == "date")
+                    {
+                        opt.operation = [{value: "=", label: "="}];
+                    }
+
+                    if (opt.type == "number")
+                    {
+                        opt.operation = [
+                            {value: "=", label: "="},
+                            {value: "<", label: "<"},
+                            {value: "<=", label: "<="},
+                            {value: ">", label: ">"},
+                            {value: ">=", label: ">="}
+                        ];
+                    }
+
+                    return opt;
+                });
+                
+                vm.myModal = $compile(filterHtml)(scope);
             }
         }
     }

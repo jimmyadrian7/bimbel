@@ -44,7 +44,7 @@ class IuranTerbuat extends BaseModel
 
         $tanggal_start = $tahun . "-" . $bulan . "-1";
         $tanggal_end = new \DateTime($tanggal_start);
-        $tanggal_end->modify("+" . ($this->iuran->bulan-1) . "month");
+        $tanggal_end->modify("+" . ($this->iuran->bulan - 1) . "month");
         $tanggal_end = $tanggal_end->format("Y-n-1");
 
         if ($this->bulan != null && $this->tahun != null && $total_tanggal <= $total_current_tanggal)

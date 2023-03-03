@@ -19,7 +19,6 @@
         ];
 
         let jenisKomisiOpt = [
-            {value: null, label: ''},
             {value: 's', label: 'Siswa'},
             {value: 'p', label: 'Persen'},
             {value: 'n', label: 'Nominal'}

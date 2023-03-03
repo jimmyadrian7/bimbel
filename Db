@@ -37,6 +37,10 @@ class Db {
                     $this->runSeed();
                     break;
                 case "help":
+                case "import":
+                    $this->importData();
+                    break;
+                case "help":
                 case "--help":
                     $this->help();
                     break;
@@ -46,7 +50,14 @@ class Db {
 
     function runSeed()
     {
-        $files = glob(DATA_PATH.'/*.php');
+        $files = glob(DATA_PATH.'/MainSeed.php');
+
+        $this->run($files);
+    }
+
+    function importData()
+    {
+        $files = glob(DATA_PATH.'/Import.php');
 
         $this->run($files);
     }

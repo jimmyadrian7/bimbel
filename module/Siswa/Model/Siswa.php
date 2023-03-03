@@ -398,10 +398,10 @@ class Siswa extends BaseModel
 
     public function delete()
     {
-        if ($this->status != 'b')
-        {
-            throw new \Error("Siswa cannot be deleted");
-        }
+        // if ($this->status != 'b')
+        // {
+        //     throw new \Error("Siswa cannot be deleted");
+        // }
 
         $this->iuran_terbuat()->delete();
         $this->jadwal()->delete();

@@ -109,6 +109,23 @@ class TagihanDetail extends BaseModel
             $result = $pembiayaan->nominal * $attributes['qty'];
         }
 
+        $bulan_total = 0;
+
+        if (!empty($this->bulan))
+        {
+            $bulan_total = $this->bulan;
+        }
+
+        if (array_key_exists('bulan', $attributes) && !empty($attributes['bulan']))
+        {
+            $bulan_total = $attributes['bulan'];
+        }
+
+        if ($bulan_total > 0)
+        {
+            $result = $result / $bulan_total;
+        }
+
         return $result;
     }
 

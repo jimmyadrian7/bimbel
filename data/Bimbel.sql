@@ -41,7 +41,8 @@ CREATE TABLE `orang` (
   `nama_ibu` varchar(255),
   `no_hp_ortu` varchar(255),
   `pekerjaan_ayah` varchar(255),
-  `pekerjaan_ibu` varchar(255)
+  `pekerjaan_ibu` varchar(255),
+  `pp_id` int
 );
 
 CREATE TABLE `kursus` (
@@ -247,7 +248,8 @@ CREATE TABLE `tagihan` (
   `total` int,
   `hutang` int,
   `status` ENUM ('p', 'c', 'l') DEFAULT "p",
-  `tanggal` datetime DEFAULT (now())
+  `tanggal` datetime DEFAULT (now()),
+  `tanggal_lunas` date
 );
 
 CREATE TABLE `tagihan_detail` (
@@ -397,6 +399,8 @@ CREATE TABLE `broadcast_siswa` (
 );
 
 ALTER TABLE `orang` ADD FOREIGN KEY (`agama_id`) REFERENCES `agama` (`id`);
+
+ALTER TABLE `orang` ADD FOREIGN KEY (`pp_id`) REFERENCES `file` (`id`);
 
 ALTER TABLE `siswa` ADD FOREIGN KEY (`guru_id`) REFERENCES `guru` (`id`);
 
