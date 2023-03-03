@@ -407,6 +407,7 @@ class Siswa extends BaseModel
         $this->jadwal()->delete();
         $this->iuran()->detach();
         $this->referal()->detach();
+        $this->deposit()->delete();
         
         $tagihan = new Tagihan();
         $tagihans = $tagihan->where('siswa_id', $this->id)->get();
