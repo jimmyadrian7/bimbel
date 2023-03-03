@@ -422,6 +422,9 @@ class Siswa extends BaseModel
         $user = new \Bimbel\User\Model\User();
         $user = $user->where('orang_id', $this->orang_id)->first();
 
+        $log = new \Bimbel\Master\Model\Log();
+        
+        $log->where('user_id', $user->id)->delete();
         $user->delete();
         $this->orang()->delete();
 
