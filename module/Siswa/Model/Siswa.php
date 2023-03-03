@@ -420,7 +420,7 @@ class Siswa extends BaseModel
         $result = parent::delete();
 
         $user = new \Bimbel\User\Model\User();
-        $user = $user->where('orang_id', $this->orang_id)->get();
+        $user = $user->where('orang_id', $this->orang_id)->first();
 
         $user->delete();
         $this->orang()->delete();
