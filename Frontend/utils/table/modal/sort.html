@@ -1,0 +1,56 @@
+<app-modal data='vm.data'>
+    <app-modal-title>Sort</app-modal-title>
+
+    <app-modal-body>
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-end">
+                            <button class="btn btn-link text-primary text-gradient m-0" ng-click="vm.tambahSort()">
+                                <i class="fa fa-plus"></i> Tambah
+                            </button>
+                        </div>
+
+                        <table>
+                            <tr ng-repeat="(i, d) in vm.sortData">
+                                <td class="p-2">
+                                    <select
+                                        ng-model="vm.sortData[i].field"
+                                        class="form-select form-select-sm"
+                                        ng-options="item.value as item.label for item in vm.fieldOptions">
+                                    </select>
+                                </td>
+                                <td class="p-2">
+                                    <select
+                                        ng-model="vm.sortData[i].type"
+                                        class="form-select form-select-sm"
+                                        ng-options="item.value as item.label for item in vm.sortOptions">
+                                    </select>
+                                </td>
+                                <td class="p-2" ng-if="i != 0">
+                                    <button class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.deleteSort(i)">
+                                        <i class="far fa-trash-alt me-2"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-modal-body>
+
+    <app-modal-footer>
+        <button type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i> Close
+        </button>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3" ng-click="vm.clearSort()">
+            <i class="fas fa-times me-2"></i> Clear
+        </button>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3" ng-click="vm.applySort()" data-bs-dismiss="modal">
+            <i class="fas fa-check me-2"></i> Apply
+        </button>
+    </app-modal-footer>
+</app-modal>

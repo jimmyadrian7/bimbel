@@ -148,7 +148,7 @@ class User extends BaseModel
 	}
 
 
-	public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
+	public function fetchAllData($condition, $obj, $pagination = false, $page = 1, $sort = [])
     {
         $obj = $this->with('orang');
 
@@ -163,7 +163,7 @@ class User extends BaseModel
             }
         }
 
-        return parent::fetchAllData($condition, $obj, $pagination, $page);
+        return parent::fetchAllData($condition, $obj, $pagination, $page, $sort);
     }
 
 	public function fetchDetail($id, $obj)

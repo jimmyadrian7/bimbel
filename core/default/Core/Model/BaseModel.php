@@ -43,7 +43,7 @@ class BaseModel extends Model
         return $result;
     }
 
-    public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
+    public function fetchAllData($condition, $obj, $pagination = false, $page = 1, $sort = [])
     {
         if (!empty($condition))
         {
@@ -54,11 +54,40 @@ class BaseModel extends Model
                     $obj = $obj->whereIn($cond[0], $cond[2]);
                     array_splice($condition, $key, 1);
                 }
-            }
+                else
+                {
+                    $checkField = $cond[0];
+                    $checkField = explode(".", $checkField);
 
-            if (!empty($condition))
+                    if (count($checkField) > 1)
+                    {
+                        $obj = $this->deepWhere($obj, $cond);
+                    }
+                    else
+                    {
+                        $obj = $obj->where([$cond]);
+                    }
+                }
+            }
+        }
+
+        if (!empty($sort))
+        {
+            foreach($sort as $key => $s)
             {
-                $obj = $obj->where($condition);
+                // $checkField = $cond[0];
+                // $checkField = explode(".", $checkField);
+
+                // if (count($checkField) > 1)
+                // {
+                //     $obj = $this->deepSort($obj, $s);
+                // }
+                // else
+                // {
+                //     $obj = $obj->orderBy($s[0], $s[1]);
+                // }
+
+                $obj = $obj->orderBy($s[0], $s[1]);
             }
         }
 
@@ -82,4 +111,35 @@ class BaseModel extends Model
 
         return $data;
     }
+
+    public function deepWhere($obj, $cond)
+    {
+        $field = $cond[0];
+        $field = explode(".", $field);
+        $fieldOne = $field[0];
+
+        array_shift($field);
+
+        $cond[0] = join(".", $field);
+
+        $obj = $obj->whereHas($fieldOne, function($q) use ($cond) {
+            $field = $cond[0];
+            $field = explode(".", $field);
+            $fieldOne = $field[0];
+
+            if (count($field) == 1)
+            {
+                return $q->where($fieldOne, $cond[1], $cond[2]);
+            }
+
+            return $this->deepWhere($q, $cond);
+        });
+
+        return $obj;
+    }
+
+    // public function deepSort($obj, $s)
+    // {
+
+    // }
 }

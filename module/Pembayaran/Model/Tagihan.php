@@ -188,7 +188,7 @@ class Tagihan extends BaseModel
     }
 
 
-    public function fetchAllData($condition, $obj, $pagination = false, $page = 1)
+    public function fetchAllData($condition, $obj, $pagination = false, $page = 1, $sort = [])
     {
         foreach($condition as $key => $con)
         {
@@ -203,7 +203,7 @@ class Tagihan extends BaseModel
             }
         }
 
-        return parent::fetchAllData($condition, $obj, $pagination, $page);
+        return parent::fetchAllData($condition, $obj, $pagination, $page, $sort);
     }
     
     public function fetchDetail($id, $obj)

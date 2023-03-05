@@ -1,5 +1,6 @@
 import table from './table.html';
 import filterHtml from "./modal/filter.html";
+import sortHtml from "./modal/sort.html";
 
 (() => {
     "use strict";
@@ -7,9 +8,9 @@ import filterHtml from "./modal/filter.html";
     angular.module('app.utils')
         .directive('appTable', appTable);
 
-    appTable.$inject = ['req', '$state', '$parse'];
+    appTable.$inject = ['req', '$state', '$parse', '$compile'];
 
-    function appTable(req, $state, $parse)
+    function appTable(req, $state, $parse, $compile)
     {
         let directive = {
             restrict: 'E',
@@ -31,18 +32,32 @@ import filterHtml from "./modal/filter.html";
             }
         };
 
-        controllerFunc.$inject = ['$scope', 'session', '$location', '$compile', 'Modal', '$element'];
+        controllerFunc.$inject = ['$scope', 'session', '$location', '$timeout'];
 
         return directive;
 
-        function controllerFunc(scope, session, $location, $compile, Modal, element)
+        function controllerFunc(scope, session, $location, $timeout)
         {
             let vm = this;
             
             vm.title = `Tabel ${$state.current.title}`;
             vm.data = [];
             vm.oldFields = [];
+            vm.filterData = [
+                {field: "", operation: "", value: "", selected: false}
+            ];
+            vm.appliedFilter = [
+                {field: "", operation: "", value: "", selected: false}
+            ];
+            vm.sortData = [
+                {field: "", type: ""}
+            ];
+            vm.appliedSort = [
+                {field: "", type: ""}
+            ];
 
+            vm.isFilter = false;
+            vm.isSort = false;
             vm.myModal = false;
 
             vm.tambahData = tambahData;
@@ -52,11 +67,28 @@ import filterHtml from "./modal/filter.html";
             vm.getValue = getValue;
 
             vm.showFilter = showFilter;
+            vm.changeField = changeField;
+            vm.tambahFilter = tambahFilter;
+            vm.deleteFilter = deleteFilter;
+            vm.clearFilter = clearFilter;
+            vm.applyFilter = applyFilter;
+
+            vm.showSort = showSort;
+            vm.tambahSort = tambahSort;
+            vm.deleteSort = deleteSort;
+            vm.clearSort = clearSort;
+            vm.applySort = applySort;
 
             vm.currentPage = $location.search().page || 1;
             vm.currentPage = parseInt(vm.currentPage);
             vm.lastPage = 1;
             vm.page_array = [];
+
+            
+            vm.sortOptions = [
+                {label: "Ascending", value: "ASC"},
+                {label: "Descending", value: "DESC"}
+            ];
 
 
             scope.$watch(() => vm.table, watchTable);
@@ -103,18 +135,49 @@ import filterHtml from "./modal/filter.html";
 
             function getData()
             {
-                let url = `${vm.table}?pagination=1&page=${vm.currentPage}`;
+                let url = `${vm.table}`;
+                let data = {};
+                let method = "get";
 
                 if (vm.searchValue)
                 {
                     url = `${url}&search=${vm.searchValue}`;
                 }
 
-                req.get(url).then(response => {
-                    vm.data = response.data || [];
-                    vm.lastPage = response.last_page;
-                    generatePage(response.last_page);
-                });
+                if (vm.isFilter || vm.isSort)
+                {
+                    method = "post";
+                    if (vm.isFilter)
+                    {
+                        data.filter = vm.appliedFilter;
+                    }
+
+                    if (vm.isSort)
+                    {
+                        data.sort = vm.appliedSort;
+                    }
+
+                    url = `${vm.table}/custom`;
+                }
+
+                url = `${url}?pagination=1&page=${vm.currentPage}`;
+
+                if (method == "get")
+                {
+                    req.get(url).then(response => {
+                        vm.data = response.data || [];
+                        vm.lastPage = response.last_page;
+                        generatePage(response.last_page);
+                    });
+                }
+                else
+                {
+                    req.post(url, data).then(response => {
+                        vm.data = response.data || [];
+                        vm.lastPage = response.last_page;
+                        generatePage(response.last_page);
+                    });
+                }
             }
 
             function generatePage(last_page)
@@ -204,10 +267,12 @@ import filterHtml from "./modal/filter.html";
                 getData();
             }
 
+
             function showFilter()
             {
-                vm.countField = 1;
-                vm.fieldsFilter = vm.oldFields.map((value) => {
+                vm.filterData = angular.copy(vm.appliedFilter);
+
+                vm.fieldOptions = vm.oldFields.map((value) => {
                     let opt = {
                         label: value.name,
                         value: value.value,
@@ -219,7 +284,14 @@ import filterHtml from "./modal/filter.html";
                         ]
                     };
 
-                    if (opt.type == "selection" || opt.type == "date")
+                    if (opt.type == "autocomplete")
+                    {
+                        opt.value =  opt.value.split("_");
+                        opt.value = opt.value[0] + ".orang.nama";
+                    }
+
+
+                    if (opt.type == "selection" || opt.type == "date" || opt.type == "boolean")
                     {
                         opt.operation = [{value: "=", label: "="}];
                     }
@@ -235,10 +307,130 @@ import filterHtml from "./modal/filter.html";
                         ];
                     }
 
+                    if (opt.type == "autocomplete" || opt.type == "textarea")
+                    {
+                        opt.type = undefined;
+                    }
+
                     return opt;
+                }).filter((val) => {
+                    return val.type != 'file';
                 });
                 
                 vm.myModal = $compile(filterHtml)(scope);
+            }
+
+            function changeField(idx)
+            {
+                let selected = vm.filterData[idx].field;
+                let selectedData = getSelectedOption(selected);
+
+                vm.filterData[idx].selected = selectedData;
+
+            }
+
+            function getSelectedOption(field)
+            {
+                let result = false;
+
+                vm.fieldOptions.forEach((val) => {
+                    if (val.value == field)
+                    {
+                        result = val;
+                    }
+                });
+
+                return result;
+            }
+
+            function tambahFilter()
+            {
+                vm.filterData.push({field: "", operation: "", value: "", selected: false});
+            }
+
+            function deleteFilter(idx)
+            {
+                vm.filterData.splice(idx, 1);
+            }
+
+            function clearFilter()
+            {
+                vm.filterData = [
+                    {field: "", operation: "", value: "", selected: false}
+                ];
+            }
+
+            function applyFilter()
+            {
+                vm.appliedFilter = angular.copy(vm.filterData);
+
+                if (vm.appliedFilter.length == 1 && (!vm.appliedFilter[0].field || !vm.appliedFilter[0].operation || !vm.appliedFilter[0].value))
+                {
+                    vm.isFilter = false;
+                }
+                else
+                {
+                    vm.isFilter = true;
+                }
+
+                $timeout(() => {getData();}, 500);
+            }
+
+
+            function showSort()
+            {
+                vm.sortData = angular.copy(vm.appliedSort);
+
+                vm.fieldOptions = vm.oldFields.map((value) => {
+                    let opt = {label: value.name, value: value.value};
+
+                    if (value.type == "autocomplete")
+                    {
+                        opt.value =  opt.value.split("_");
+                        opt.value = opt.value[0] + ".orang.nama";
+                    }
+
+                    return opt;
+                }).filter((val) => {
+                    return val.type != 'file' && val.value.split(".").length == 1;
+                });
+                
+                vm.myModal = $compile(sortHtml)(scope);
+            }
+
+            function tambahSort()
+            {
+                vm.sortData.push({field: "", type: ""});
+            }
+
+            function deleteSort(idx)
+            {
+                vm.sortData.splice(idx, 1);
+            }
+
+            function clearSort()
+            {
+                vm.sortData = [
+                    {field: "", type: ""}
+                ];
+            }
+
+            function applySort()
+            {
+                vm.appliedSort = angular.copy(vm.sortData);
+
+                if (vm.appliedSort.length == 1 && (!vm.appliedSort[0].field || !vm.appliedSort[0].type))
+                {
+                    vm.isSort = false;
+                }
+                else
+                {
+                    vm.isSort = true;
+                }
+
+                
+
+                $timeout(() => {getData();}, 500);
             }
         }
     }
