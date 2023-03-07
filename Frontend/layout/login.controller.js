@@ -39,6 +39,12 @@
         function backTowebsite()
         {
             let baseUrl = $window.location.pathname.split('/admin')[0];
+
+            if (baseUrl == "")
+            {
+                baseUrl = "/";
+            }
+
             $window.location = baseUrl;
         }
     }
