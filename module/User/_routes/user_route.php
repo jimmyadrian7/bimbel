@@ -23,7 +23,7 @@ $app->get("/api/user/current/login", function ($request, $response, $args) {
 $app->post("/api/user/current/logout", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\User\Controller\UserController");
-    $result = $controller->logoutCurrentUser($request, $args);
+    $result = $controller->logoutCurrentUser($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));

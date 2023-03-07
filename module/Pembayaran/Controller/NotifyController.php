@@ -6,7 +6,7 @@ use \Slim\Exception\HttpNotFoundException;
 
 class NotifyController extends Controller
 {
-    public function notifyInvoice($request, $args)
+    public function notifyInvoice($request, $args, &$response)
     {
         try 
         {
@@ -49,11 +49,11 @@ class NotifyController extends Controller
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
     }
 
-    public function fixData($request, $args)
+    public function fixData($request, $args, &$response)
     {
         $result = ["data" => "success"];
 
@@ -121,13 +121,13 @@ class NotifyController extends Controller
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;
     }
 
-    public function fixDataGuru($request, $args)
+    public function fixDataGuru($request, $args, &$response)
     {
         $result = ["data" => "success"];
 
@@ -146,7 +146,7 @@ class NotifyController extends Controller
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;

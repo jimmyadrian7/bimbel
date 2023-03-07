@@ -9,7 +9,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class FetchController extends Controller
 {
-    public function getGuru($request, $args)
+    public function getGuru($request, $args, &$response)
     {
         $result = [];
 
@@ -40,13 +40,13 @@ class FetchController extends Controller
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;
     }
 
-    public function getSiswaGuru($request, $args)
+    public function getSiswaGuru($request, $args, &$response)
     {
         $result = [];
 
@@ -58,13 +58,13 @@ class FetchController extends Controller
         }
         catch (\Error $e)
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;
     }
 
-    public function getGuruAvailable($args)
+    public function getGuruAvailable($args, &$response)
     {
         $session = new Session();
         $result = [];
@@ -108,7 +108,7 @@ class FetchController extends Controller
         }
         catch (\Error $e)
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;

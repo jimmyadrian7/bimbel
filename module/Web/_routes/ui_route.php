@@ -13,7 +13,7 @@ $app->get("/", function ($request, $response, $args) {
 $app->post("/submit/question", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\Web\Controller\QuestionController");
-    $result = $controller->submitQuestion($request);
+    $result = $controller->submitQuestion($request, $response);
 
     $response = $response->withHeader("Content-Type", "text/html");
     $response->getBody()->write($result);

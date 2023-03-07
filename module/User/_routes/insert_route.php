@@ -3,7 +3,7 @@
 $app->post("/api/user/role", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\User\Controller\InsertController");
-    $result = $controller->insertRole($request, $args);
+    $result = $controller->insertRole($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));
@@ -13,7 +13,7 @@ $app->post("/api/user/role", function ($request, $response, $args) {
 $app->post("/api/role/menu", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\User\Controller\InsertController");
-    $result = $controller->insertMenu($request, $args);
+    $result = $controller->insertMenu($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));

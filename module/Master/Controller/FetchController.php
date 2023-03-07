@@ -6,8 +6,10 @@ use \Slim\Exception\HttpNotFoundException;
 
 class FetchController extends Controller
 {
-    public function fetchDatas($request, $args)
+    public function fetchDatas($request, $args, &$response)
     {
+        $result = [];
+
         try 
         {
             $model_name = $args["models"];
@@ -70,42 +72,45 @@ class FetchController extends Controller
 
             if ($pagination)
             {
-                $data = $model->fetchAllData($condition, $model, $pagination, $page);
+                $result = $model->fetchAllData($condition, $model, $pagination, $page);
             }
             else
             {
-                $data = [
+                $result = [
                     "data" => $model->fetchAllData($condition, $model)
                 ];
             }
-            
-
-            return $data;
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
+
+        return $result;
     }
 
-    public function fetchData($request, $args)
+    public function fetchData($request, $args, &$response)
     {
+        $result = [];
+
         try 
         {
             $model_id = $args["model_id"];
             $model = $this->getModel($args["model"]);
-            $data = $model->fetchDetail($model_id, $model);
-            return $data;
-
+            $result = $model->fetchDetail($model_id, $model);
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
+
+        return $result;
     }
 
-    public function fetchCustomDatas($request, $args)
+    public function fetchCustomDatas($request, $args, &$response)
     {
+        $result = [];
+
         try 
         {
             $model_name = $args["models"];
@@ -196,21 +201,20 @@ class FetchController extends Controller
 
             if ($pagination)
             {
-                $data = $model->fetchAllData($condition, $model, $pagination, $page, $sort);
+                $result = $model->fetchAllData($condition, $model, $pagination, $page, $sort);
             }
             else
             {
-                $data = [
+                $result = [
                     "data" => $model->fetchAllData($condition, $model)
                 ];
             }
-            
-
-            return $data;
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
+
+        return $result;
     }
 }

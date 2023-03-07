@@ -6,7 +6,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class UpdateController extends Controller
 {
-    public function updateData($request, $args)
+    public function updateData($request, $args, &$response)
     {
         $result = [];
 
@@ -99,7 +99,7 @@ class UpdateController extends Controller
         catch(\Error $e) 
         {
             DB::rollBack();
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;

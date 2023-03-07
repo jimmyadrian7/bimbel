@@ -5,7 +5,7 @@ use \Bimbel\Master\Controller\Controller;
 
 class QuestionController extends Controller
 {
-    public function submitQuestion($request)
+    public function submitQuestion($request, &$response)
     {
         $result = "OK";
 
@@ -34,9 +34,9 @@ class QuestionController extends Controller
                 $message->setSubject($data["subject"]);
             });
         }
-        catch(\Error $e) 
+        catch(\Error $e)
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;

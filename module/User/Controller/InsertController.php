@@ -8,7 +8,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class InsertController extends Controller
 {
-    public function insertRole($request, $args)
+    public function insertRole($request, $args, &$response)
     {
         $result = [];
 
@@ -52,13 +52,13 @@ class InsertController extends Controller
         catch(\Error $e) 
         {
             DB::rollBack();
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;
     }
 
-    public function insertMenu($request, $args)
+    public function insertMenu($request, $args, &$response)
     {
         $result = [];
 
@@ -102,7 +102,7 @@ class InsertController extends Controller
         catch(\Error $e) 
         {
             DB::rollBack();
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;

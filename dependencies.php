@@ -18,6 +18,7 @@ $containerBuilder->addDefinitions('./dependencies/pdf.php');
 $containerBuilder->addDefinitions('./dependencies/excel.php');
 $containerBuilder->addDefinitions('./dependencies/mailer.php');
 $containerBuilder->addDefinitions('./dependencies/HttpRequest.php');
+$containerBuilder->addDefinitions('./dependencies/ErrorHandler.php');
 
 
 // Build PHP-DI Container instance

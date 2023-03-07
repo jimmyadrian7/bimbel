@@ -6,7 +6,7 @@ use \Bimbel\Siswa\Model\Siswa;
 
 class FetchController extends Controller
 {
-    public function getSiswa($request, $args)
+    public function getSiswa($request, $args, &$response)
     {
         $result = [];
 
@@ -44,15 +44,15 @@ class FetchController extends Controller
             
             return $data;
         }
-        catch(\Error $e) 
+        catch(\Error $e)
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;
     }
 
-    public function generateTagihan($request, $args)
+    public function generateTagihan($request, $args, &$response)
     {
         $result = true;
 
@@ -77,9 +77,9 @@ class FetchController extends Controller
 
             $siswa->triggerIuran($data['reset'], $data['tanggal']);
         }
-        catch(\Error $e) 
+        catch(\Error $e)
         {
-            throw new \Exception($e->getMessage());
+            $result = $this->container->get('error')($e, $response);
         }
 
         return $result;

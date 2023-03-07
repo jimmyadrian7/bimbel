@@ -4,9 +4,9 @@
     angular.module('app.layout')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['req', '$rootScope', '$state'];
+    LoginController.$inject = ['req', '$rootScope', '$state', '$window'];
 
-    function LoginController(req, $rootScope, state)
+    function LoginController(req, $rootScope, state, $window)
     {
         let vm = this;
 
@@ -16,6 +16,7 @@
         };
         vm.login = login;
         vm.errorMsg = "";
+        vm.backTowebsite = backTowebsite;
 
         function login()
         {
@@ -31,8 +32,14 @@
                 $rootScope.loggedIn = true;
                 state.go('profile');
             }).catch(err => {
-                vm.errorMsg = err.data.exception.message;
+                vm.errorMsg = err;
             });
+        }
+
+        function backTowebsite()
+        {
+            let baseUrl = $window.location.pathname.split('/admin')[0];
+            $window.location = baseUrl;
         }
     }
 })()
