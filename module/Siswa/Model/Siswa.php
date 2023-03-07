@@ -27,10 +27,10 @@ class Siswa extends BaseModel
     ];
     protected $table = 'siswa';
 
-    public $required_field = [
-        ['name' => 'iuran', 'label' => 'Iuran'],
-        ['name' => 'jadwal', 'label' => 'Jadwal']
-    ];
+    // public $required_field = [
+    //     ['name' => 'iuran', 'label' => 'Iuran'],
+    //     ['name' => 'jadwal', 'label' => 'Jadwal']
+    // ];
 
     protected $status_enum = [
         ["value" => "b", "label" => "Baru"],
@@ -329,6 +329,11 @@ class Siswa extends BaseModel
         $tagihan = new Tagihan();
         $tagihan_detail = [];
 
+        if (count($this->iuran_terbuat) == 0)
+        {
+            return;
+        }
+
         foreach ($this->iuran_terbuat as $iuran_terbuat)
         {
             if (!$iuran_terbuat->validateDate())
@@ -429,8 +434,11 @@ class Siswa extends BaseModel
 
         $log = new \Bimbel\Master\Model\Log();
 
-        $log->where('user_id', $user->id)->delete();
-        $user->delete();
+        if ($user)
+        {
+            $log->where('user_id', $user->id)->delete();
+            $user->delete();
+        }
         $this->orang()->delete();
 
         return $result;

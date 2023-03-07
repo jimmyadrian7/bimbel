@@ -124,10 +124,11 @@ import form from "./form.html";
 
             function checkValidation(isValid)
             {
-                if (isValid)
-                {
-                    saveData();
-                }
+                // if (isValid)
+                // {
+                //     saveData();
+                // }
+                saveData();
             }
 
             function cancelEdit()

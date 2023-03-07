@@ -95,6 +95,6 @@
 }
   
 
-.ng-invalid.ng-touched, .ng-submitted .ng-invalid {
+/* .ng-invalid.ng-touched, .ng-submitted .ng-invalid {
     border-color: #ea0606 !important;
-}
+} */
