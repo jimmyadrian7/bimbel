@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col-12 my-3">
         <div class="float-start d-flex">
-            <button class="btn btn-link text-dark text-gradient px-3 mb-0 mr-3" ng-click="vm.back()" ng-if="!vm.noback">
+            <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0 mr-3" ng-click="vm.back()" ng-if="!vm.noback">
                 <i class="fas fa-chevron-left text-dark me-2"></i>
             </button>
-            <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.editData()" ng-if="vm.editable && vm.data.editable">
+            <button type="button" class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.editData()" ng-if="vm.editable && vm.data.editable">
                 <i class="fas fa-pencil-alt text-primary me-2"></i> Edit
             </button>
-            <button class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.deleteData()" ng-if="vm.deleteable && vm.data.deleteable">
+            <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.deleteData()" ng-if="vm.deleteable && vm.data.deleteable">
                 <i class="far fa-trash-alt me-2"></i> Delete
             </button>
         </div>
@@ -52,6 +52,7 @@
 
                                     <span>
                                         <button
+                                            type="button"
                                             ng-if="field.type == 'file'"
                                             class="btn btn-link text-gradient text-info p-0 mb-0"
                                             ng-bind="vm.getValue(field)"

@@ -14,8 +14,8 @@ import iuran_detail from "./html/modal/iuran_detail.html";
 
         vm.dataId = stateParams.dataId;
         vm.fields = [
-            {name: "Nama", value: "nama", table: true},
-            {name: "Bulan", value: "bulan", type: 'number', table: true}
+            {name: "Nama", value: "nama", table: true, required: true},
+            {name: "Bulan", value: "bulan", type: 'number', table: true, required: true}
         ];
 
         vm.iuranDetailFields = [

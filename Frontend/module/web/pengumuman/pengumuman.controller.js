@@ -12,10 +12,10 @@
 
         vm.dataId = stateParams.dataId;
         vm.fields = [
-            {name: "Judul", value: "judul", table: true},
-            {name: "Isi", value: "isi", type: 'textarea'},
-            {name: "Gambar", value: "gambar", type: "file", table: true},
-            {name: "Tanggal", value: "tanggal", type: "date", table: true}
+            {name: "Judul", value: "judul", table: true, required: true},
+            {name: "Isi", value: "isi", type: 'textarea', required: true},
+            {name: "Gambar", value: "gambar", type: "file", table: true, required: true},
+            {name: "Tanggal", value: "tanggal", type: "date", table: true, required: true}
         ];
     }
 })()

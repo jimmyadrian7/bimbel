@@ -9,7 +9,7 @@
         <div class="tab-content text-justify">
             <div class="tab-pane fade show active" id="menu">
                 <div class="mt-3">
-                    <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahMenu()">
+                    <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahMenu()">
                         <i class="fa fa-plus me-2"></i> Tambah
                     </button>
                 </div>
@@ -51,7 +51,7 @@
                                     <td><app-form-input type="boolean" expr="vm.data.role_menu[$index].update"></app-form-input></td>
                                     <td><app-form-input type="boolean" expr="vm.data.role_menu[$index].delete"></app-form-input></td>
                                     <td>
-                                        <button class="btn btn-link text-primary text-gradient mb-0 px-3" ng-click="vm.removeMenu($index)">
+                                        <button type="button" class="btn btn-link text-primary text-gradient mb-0 px-3" ng-click="vm.removeMenu($index)">
                                             <i class="far fa-trash-alt me-2"></i> Delete
                                         </button>
                                     </td>

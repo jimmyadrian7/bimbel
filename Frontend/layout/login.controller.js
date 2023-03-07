@@ -31,7 +31,7 @@
                 $rootScope.loggedIn = true;
                 state.go('profile');
             }).catch(err => {
-                vm.errorMsg = err;
+                vm.errorMsg = err.data.exception.message;
             });
         }
     }

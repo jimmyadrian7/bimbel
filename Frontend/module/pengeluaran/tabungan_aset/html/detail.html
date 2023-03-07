@@ -1,9 +1,9 @@
 <app-detail table="tabungan_aset" id="vm.dataId" fields="vm.fields" list="pengeluaran.tabungan_aset" edit="pengeluaran.tabungan_aset_form">
     <app-detail-button>
-        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()" ng-if="vm.data.status != 'a'">
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()" ng-if="vm.data.status != 'a'">
             <i class="fa fa-print me-2"></i> Invoice
         </button>
-        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahCicilan()" ng-if="vm.data.status != 'l'">
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahCicilan()" ng-if="vm.data.status != 'l'">
             <i class="fa fa-usd me-2"></i> Bayar
         </button>
     </app-detail-button>
@@ -49,6 +49,7 @@
                                     </td>
                                     <td>
                                         <button 
+                                            type="button"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0" 
                                             ng-click="vm.editData($index)">
                                             <i class="fa fa-edit me-2"></i> Edit

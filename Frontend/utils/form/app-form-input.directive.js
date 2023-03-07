@@ -21,6 +21,8 @@ import formInput from "./form-input.html";
         {
             scope.type = attrs.type;
             scope.expr = attrs.expr;
+            scope.required = (attrs.required?.toLowerCase?.() === 'true');
+            scope.name = attrs.name;
         }
     }
 })()

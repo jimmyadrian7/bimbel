@@ -1,9 +1,9 @@
-<div class="row">
+<form class="row" name="appForm" novalidate ng-submit="vm.checkValidation(appForm.$valid)">
     <div class="col-12 my-3 d-flex">
-        <button class="btn btn-link text-primary text-gradient px-3 mb-0" ng-click="vm.saveData()">
+        <button type="submit" class="btn btn-link text-primary text-gradient px-3 mb-0">
             <i class="fas fa-save text-primary me-2"></i> Simpan
         </button>
-        <button class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.cancelEdit()">
+        <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" ng-click="vm.cancelEdit()">
             <i class="fas fa-times"></i> Batal
         </button>
     </div>
@@ -22,7 +22,7 @@
                                 <td class="text-xs" ng-bind="field.name"></td>
                                 <td class="px-3">:</td>
                                 <td class="font-weight-bolder text-dark py-2">
-                                    <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
+                                    <app-form-input name="{{field.name}}" type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}" required="{{field.required}}"></app-form-input>
                                 </td>
                             </tr>
                         </table>
@@ -36,4 +36,4 @@
 
         </div>
     </div>
-</div>
+</form>

@@ -13,6 +13,12 @@ class Iuran extends BaseModel
     protected $table = 'iuran';
     protected $with = ['iuran_detail'];
 
+    public $required_field = [
+        ['name' => 'nama', 'label' => 'Nama'],
+        ['name' => 'bulan', 'label' => 'Bulan'],
+        ['name' => 'iuran_detail', 'label' => 'Pembiayaan']
+    ];
+
     
     public function iuran_detail()
     {
@@ -83,6 +89,13 @@ class Iuran extends BaseModel
         $this->handleIuranDetail($iuran_details);
 
         return parent::update($attributes, $options);
+    }
+
+    public function delete()
+    {
+        $this->iuran_detail()->delete();
+
+        return parent::delete();
     }
 
 

@@ -27,6 +27,11 @@ class Siswa extends BaseModel
     ];
     protected $table = 'siswa';
 
+    public $required_field = [
+        ['name' => 'iuran', 'label' => 'Iuran'],
+        ['name' => 'jadwal', 'label' => 'Jadwal']
+    ];
+
     protected $status_enum = [
         ["value" => "b", "label" => "Baru"],
         ["value" => "a", "label" => "Aktif"],

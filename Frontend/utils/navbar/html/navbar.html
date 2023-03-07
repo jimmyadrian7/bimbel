@@ -6,6 +6,7 @@
                 <div class="row text-center">
                     <div class="col-md-auto" ng-repeat="menu in vm.menus">
                         <button
+                            type="button"
                             ng-click="vm.goState(menu)"
                             class="btn btn-link text-gradient px-3 my-0"
                             ng-class="vm.isCurrent(menu)"

@@ -29,17 +29,17 @@ import modal from "../konfigurasi/user/html/modal.html";
 
         vm.fields = [
             [
-                {name: "Nama", value: "nama"},
-                {name: "Jenis Kelamin", value: "jenis_kelamin", type: 'selection', selection: jenisKelamin},
-                {name: "Agama", value: "agama_id", type: 'selection', selection: agamaOptions},
-                {name: "Tempat Lahir", value: "tempat_lahir"},
-                {name: "Tanggal Lahir", value: "tanggal_lahir", type: 'date'},
-                {name: "Profile Picture", value: "pp", type: "file", hideDetail: true}
+                {name: "Nama", value: "nama", required: true},
+                {name: "Jenis Kelamin", value: "jenis_kelamin", type: 'selection', selection: jenisKelamin, required: true},
+                {name: "Agama", value: "agama_id", type: 'selection', selection: agamaOptions, required: true},
+                {name: "Tempat Lahir", value: "tempat_lahir", required: true},
+                {name: "Tanggal Lahir", value: "tanggal_lahir", type: 'date', required: true},
+                {name: "Profile Picture", value: "pp", type: "file", hideDetail: true, required: true}
             ],
             [
-                {name: "No. HP", value: "no_hp"},
-                {name: "Email", value: "email"},
-                {name: "Alamat", value: "alamat"},
+                {name: "No. HP", value: "no_hp", required: true},
+                {name: "Email", value: "email", required: true},
+                {name: "Alamat", value: "alamat", required: true},
                 {name: "Hobi", value: "hobi"}
             ]
         ];
@@ -58,13 +58,13 @@ import modal from "../konfigurasi/user/html/modal.html";
         ];
         vm.ortuFields = [
             [
-                {name: "Nama Ayah", value: "orang.nama_ayah"},
-                {name: "Nama Ibu", value: "orang.nama_ibu"},
-                {name: "No. HP Orang Tua", value: "orang.no_hp_ortu"}
+                {name: "Nama Ayah", value: "orang.nama_ayah", required: true},
+                {name: "Nama Ibu", value: "orang.nama_ibu", required: true},
+                {name: "No. HP Orang Tua", value: "orang.no_hp_ortu", required: true}
             ],
             [
-                {name: "Pekerjaan Ayah", value: "orang.pekerjaan_ayah"},
-                {name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu"}
+                {name: "Pekerjaan Ayah", value: "orang.pekerjaan_ayah", required: true},
+                {name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu", required: true}
             ]
         ];
 
@@ -73,6 +73,7 @@ import modal from "../konfigurasi/user/html/modal.html";
         vm.saveData = saveData;
         vm.gantiPass = gantiPass;
         vm.saveUser = saveUser;
+        vm.checkValidation = checkValidation;
 
         vm.getValue = getValue;
 
@@ -166,6 +167,14 @@ import modal from "../konfigurasi/user/html/modal.html";
             req.get('pengumumans').then(response => {
                 vm.pengumuman = response.data;
             });
+        }
+
+        function checkValidation(isValid)
+        {
+            if (isValid)
+            {
+                saveData();
+            }
         }
     }
 })()

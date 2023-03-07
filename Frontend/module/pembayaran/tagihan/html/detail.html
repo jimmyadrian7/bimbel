@@ -1,6 +1,7 @@
 <app-detail table="tagihan" id="vm.dataId" fields="vm.fields" list="pembayaran.tagihan" edit="pembayaran.tagihan_form">
     <app-detail-button>
         <button 
+            type="button"
             class="btn btn-link text-gradient text-primary px-3 mb-0" 
             ng-click="vm.notify()"
             ng-if="vm.data.status != 'l'">
@@ -8,13 +9,14 @@
         </button>
 
         <button 
+            type="button"
             class="btn btn-link text-gradient text-primary px-3 mb-0" 
             ng-click="vm.bayarTagihan()" 
             ng-if="vm.data.status != 'l'">
             <i class="fa fa-usd me-2"></i> Bayar
         </button>
 
-        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()">
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()">
             <i class="fa fa-print me-2"></i> Invoice
         </button>
     </app-detail-button>
@@ -78,17 +80,20 @@
                                     <td><app-form-preview type="date" value="data.tanggal"></app-form-preview></td>
                                     <td>
                                         <button 
+                                            type="button"
                                             ng-if="data.status != 'v' && !vm.isSiswa"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0" 
                                             ng-click="vm.verif(data)">
                                             <i class="fa fa-check me-2"></i> Verif
                                         </button>
                                         <button
+                                            type="button"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0"
                                             ng-click="vm.editTransaksi(data)">
                                             <i class="fa fa-edit me-2"></i> Edit
                                         </button>
                                         <button
+                                            type="button"
                                             ng-if="data.status != 'v'"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0"
                                             ng-click="vm.deleteTransaksi(data)">

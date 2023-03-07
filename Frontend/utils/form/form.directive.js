@@ -42,6 +42,7 @@ import form from "./form.html";
 
             vm.saveData = saveData;
             vm.cancelEdit = cancelEdit;
+            vm.checkValidation = checkValidation;
 
             scope.$watch(() => vm.table, watchTable);
 
@@ -118,6 +119,14 @@ import form from "./form.html";
                     req.post(vm.table, vm.data).then(data => {
                         state.go(vm.detail, {dataId: data.id});
                     });
+                }
+            }
+
+            function checkValidation(isValid)
+            {
+                if (isValid)
+                {
+                    saveData();
                 }
             }
 

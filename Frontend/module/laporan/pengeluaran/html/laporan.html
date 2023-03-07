@@ -4,7 +4,7 @@
             <div ng-repeat="field in vm.fields" class="me-2">
                 <app-form-input type="{{field.type}}" expr="vm.data.{{field.value}}"></app-form-input>
             </div>
-            <button class="btn bg-gradient-primary mb-0" ng-click="vm.generate()">
+            <button type="button" class="btn bg-gradient-primary mb-0" ng-click="vm.generate()">
                 <i class="fas fa-plus me-2"></i> Generate
             </button>
         </div>

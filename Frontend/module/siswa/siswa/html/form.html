@@ -1,209 +1,211 @@
 <app-form detail="siswa.siswa_detail" list="siswa.siswa" id="vm.dataId" table="siswa" fields="vm.fields" data="vm.data">
     <app-form-body>
-        <ul class="nav nav-tabs mt-5 text-xs">
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="list" href="#detail">Detail</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="list" href="#ortu">Orang Tua</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="list" href="#test">Test</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="list" href="#iuran">Iuran</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="list" href="#jadwal">Jadwal</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="list" href="#referal">Referensi</a>
-            </li>
-        </ul>
-    
-        <div class="tab-content text-justify">
-            <div class="tab-pane fade show active" id="detail">
-                <div class="row mt-4">
-                    <div class="col-md-6" ng-repeat="fields in vm.additional.detailFields">
-                        <table>
-                            <tr ng-repeat="field in fields track by $index">
-                                <td class="text-xs" ng-bind="field.name"></td>
-                                <td class="px-3">:</td>
-                                <td class="font-weight-bolder text-dark py-2">
-                                    <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
-                                </td>
-                            </tr>
-                        </table>
+        <form name="appForm" novalidate>
+            <ul class="nav nav-tabs mt-5 text-xs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="list" href="#detail">Detail</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#ortu">Orang Tua</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#test">Test</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#iuran">Iuran</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#jadwal">Jadwal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#referal">Referensi</a>
+                </li>
+            </ul>
+        
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="detail">
+                    <div class="row mt-4">
+                        <div class="col-md-6" ng-repeat="fields in vm.additional.detailFields">
+                            <table>
+                                <tr ng-repeat="field in fields track by $index">
+                                    <td class="text-xs" ng-bind="field.name"></td>
+                                    <td class="px-3">:</td>
+                                    <td class="font-weight-bolder text-dark py-2">
+                                        <app-form-input name="{{field.name}}" type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}" required="{{field.required}}"></app-form-input>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="tab-pane fade show" id="ortu">
-                <div class="row mt-4">
-                    <div class="col-md-6" ng-repeat="fields in vm.additional.ortuFields">
-                        <table>
-                            <tr ng-repeat="field in fields track by $index">
-                                <td class="text-xs" ng-bind="field.name"></td>
-                                <td class="px-3">:</td>
-                                <td class="font-weight-bolder text-dark py-2">
-                                    <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
-                                </td>
-                            </tr>
-                        </table>
+                
+                <div class="tab-pane fade show" id="ortu">
+                    <div class="row mt-4">
+                        <div class="col-md-6" ng-repeat="fields in vm.additional.ortuFields">
+                            <table>
+                                <tr ng-repeat="field in fields track by $index">
+                                    <td class="text-xs" ng-bind="field.name"></td>
+                                    <td class="px-3">:</td>
+                                    <td class="font-weight-bolder text-dark py-2">
+                                        <app-form-input name="{{field.name}}" type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}" required="{{field.required}}"></app-form-input>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="tab-pane fade show" id="test">
-                <div class="row mt-4">
-                    <div class="col-md-6" ng-repeat="fields in vm.additional.testFields">
-                        <table>
-                            <tr ng-repeat="field in fields track by $index">
-                                <td class="text-xs" ng-bind="field.name"></td>
-                                <td class="px-3">:</td>
-                                <td class="font-weight-bolder text-dark py-2">
-                                    <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+                <div class="tab-pane fade show" id="test">
+                    <div class="row mt-4">
+                        <div class="col-md-6" ng-repeat="fields in vm.additional.testFields">
+                            <table>
+                                <tr ng-repeat="field in fields track by $index">
+                                    <td class="text-xs" ng-bind="field.name"></td>
+                                    <td class="px-3">:</td>
+                                    <td class="font-weight-bolder text-dark py-2">
+                                        <app-form-input name="{{field.name}}" type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}" required="{{field.required}}"></app-form-input>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
 
-                    <hr class="horizontal dark mt-4">
+                        <hr class="horizontal dark mt-4">
 
-                    <div class="col-12">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="my-3" ng-repeat="field in vm.additional.responFields">
-                                    <div class="text-xs" ng-bind="field.name"></div>
-                                    <div class="font-weight-bolder text-dark py-2">
-                                        <app-form-input type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}"></app-form-input>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="my-3" ng-repeat="field in vm.additional.responFields">
+                                        <div class="text-xs" ng-bind="field.name"></div>
+                                        <div class="font-weight-bolder text-dark py-2">
+                                            <app-form-input name="{{field.name}}" type="{{field.type}}" expr="{{ 'vm.data.' + field.value }}" required="{{field.required}}"></app-form-input>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="tab-pane fade show" id="iuran">
-                <div class="mt-3">
-                    <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahIuran()">
-                        <i class="fa fa-pencil me-2"></i> Edit
-                    </button>
+                <div class="tab-pane fade show" id="iuran">
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahIuran()">
+                            <i class="fa fa-pencil me-2"></i> Edit
+                        </button>
+                    </div>
+
+                    <div class="my-3">
+                        <div class="table-responsive mb-3">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Nama
+                                        </th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Bulan
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="!vm.data.iuran || vm.data.iuran.length == 0">
+                                        <td colspan="2" class="text-center">
+                                            <span class="text-xs font-weight-bold">No data Available</span>
+                                        </td>
+                                    </tr>
+                        
+                                    <tr ng-repeat="data in vm.data.iuran track by $index" ng-if="vm.data.iuran.length > 0 && data.action != 'delete'">
+                                        <td><span class="text-xs font-weight-bold" ng-bind="data.nama"></span></td>
+                                        <td><span class="text-xs font-weight-bold" app-number-format="data.bulan"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="my-3">
-                    <div class="table-responsive mb-3">
-                        <table class="table align-items-center mb-0">
-                            <thead>
+                <div class="tab-pane fade show" id="jadwal">
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.formJadwal()">
+                            <i class="fa fa-plus me-2"></i> Tambah
+                        </button>
+                    </div>
+
+                    <div class="my-3">
+                        <div class="table-responsive mb-3">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Hari
+                                        </th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Waktu
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="!vm.data.jadwal || vm.data.jadwal.length == 0">
+                                        <td colspan="2" class="text-center">
+                                            <span class="text-xs font-weight-bold">No data Available</span>
+                                        </td>
+                                    </tr>
+                        
+                                    <tr ng-repeat="data in vm.data.jadwal track by $index">
+                                        <td><span class="text-xs font-weight-bold" ng-bind="vm.getHari(data)"></span></td>
+                                        <td><span class="text-xs font-weight-bold" ng-bind="data.waktu"></span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-link text-gradient text-primary p-0 mb-0 me-2" ng-click="vm.formJadwal($index)">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-link text-gradient text-danger p-0 mb-0" ng-click="vm.removeJadwal($index)">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade show" id="referal">
+                    <div class="row my-4">
+                        <div class="col-md-6">
+                            <table>
                                 <tr>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Nama
-                                    </th>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Bulan
-                                    </th>
+                                    <td class="text-xs">Mengetahui kursus ini dari : </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-if="!vm.data.iuran || vm.data.iuran.length == 0">
-                                    <td colspan="2" class="text-center">
-                                        <span class="text-xs font-weight-bold">No data Available</span>
-                                    </td>
-                                </tr>
-                    
-                                <tr ng-repeat="data in vm.data.iuran track by $index" ng-if="vm.data.iuran.length > 0 && data.action != 'delete'">
-                                    <td><span class="text-xs font-weight-bold" ng-bind="data.nama"></span></td>
-                                    <td><span class="text-xs font-weight-bold" app-number-format="data.bulan"></span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade show" id="jadwal">
-                <div class="mt-3">
-                    <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.formJadwal()">
-                        <i class="fa fa-plus me-2"></i> Tambah
-                    </button>
-                </div>
-
-                <div class="my-3">
-                    <div class="table-responsive mb-3">
-                        <table class="table align-items-center mb-0">
-                            <thead>
                                 <tr>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Hari
-                                    </th>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Waktu
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-if="!vm.data.jadwal || vm.data.jadwal.length == 0">
-                                    <td colspan="2" class="text-center">
-                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    <td class="font-weight-bolder text-dark py-2">
+                                        <div class="form-check" ng-repeat="opt in vm.referalOptions">
+                                            <label class="custom-control-label">
+                                                <input 
+                                                type="checkbox"
+                                                class="form-check-input"
+                                                ng-model="vm.data.ref[opt.value]">
+                                                {{opt.label}}
+                                            </label>
+                                        </div>
                                     </td>
                                 </tr>
-                    
-                                <tr ng-repeat="data in vm.data.jadwal track by $index">
-                                    <td><span class="text-xs font-weight-bold" ng-bind="vm.getHari(data)"></span></td>
-                                    <td><span class="text-xs font-weight-bold" ng-bind="data.waktu"></span></td>
-                                    <td>
-                                        <button class="btn btn-link text-gradient text-primary p-0 mb-0 me-2" ng-click="vm.formJadwal($index)">
-                                            <i class="fa fa-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-link text-gradient text-danger p-0 mb-0" ng-click="vm.removeJadwal($index)">
-                                            <i class="far fa-trash-alt"></i>
-                                        </button>
+                            </table>
+                        </div>
+
+                        <div class="col-md-6">
+                            <table>
+                                <tr>
+                                    <td class="text-xs">Sebutkan referensi dari</td>
+                                    <td class="px-3">:</td>
+                                    <td class="font-weight-bolder text-dark py-2">
+                                        <app-form-input type="" expr="vm.data.referal_other"></app-form-input>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="tab-pane fade show" id="referal">
-                <div class="row my-4">
-                    <div class="col-md-6">
-                        <table>
-                            <tr>
-                                <td class="text-xs">Mengetahui kursus ini dari : </td>
-                            </tr>
-                            <tr>
-                                <td class="font-weight-bolder text-dark py-2">
-                                    <div class="form-check" ng-repeat="opt in vm.referalOptions">
-                                        <label class="custom-control-label">
-                                            <input 
-                                            type="checkbox"
-                                            class="form-check-input"
-                                            ng-model="vm.data.ref[opt.value]">
-                                            {{opt.label}}
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="col-md-6">
-                        <table>
-                            <tr>
-                                <td class="text-xs">Sebutkan referensi dari</td>
-                                <td class="px-3">:</td>
-                                <td class="font-weight-bolder text-dark py-2">
-                                    <app-form-input type="" expr="vm.data.referal_other"></app-form-input>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
     </app-form-body>
 </app-form>

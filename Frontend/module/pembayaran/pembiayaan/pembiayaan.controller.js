@@ -27,12 +27,12 @@
         vm.dataId = stateParams.dataId;
         vm.data = {};
         vm.fields = [
-            {name: "Kategori", value: "kategori_pembiayaan", type: "selection", selection: kategoriOpt, table: true},
-            {name: "kode", value: "kode", table: true},
-            {name: "nama", value: "nama", table: true},
-            {name: "Harga", value: "harga", type: 'number', table: true},
+            {name: "Kategori", value: "kategori_pembiayaan", type: "selection", selection: kategoriOpt, table: true, required: true},
+            {name: "kode", value: "kode", table: true, required: true},
+            {name: "nama", value: "nama", table: true, required: true},
+            {name: "Harga", value: "harga", type: 'number', table: true, required: true},
             {name: "Stok", value: "stok", type: 'boolean'},
-            {name: "Jenis Pembagian", value: "jenis_komisi", type: "selection", selection: jenisKomisiOpt}
+            {name: "Jenis Pembagian", value: "jenis_komisi", type: "selection", selection: jenisKomisiOpt, required: true}
         ];
     }
 })()

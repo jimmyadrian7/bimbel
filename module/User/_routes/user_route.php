@@ -3,7 +3,7 @@
 $app->post("/api/user/authenticate", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\User\Controller\UserController");
-    $result = $controller->authenticateUser($request, $args);
+    $result = $controller->authenticateUser($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));
@@ -13,7 +13,7 @@ $app->post("/api/user/authenticate", function ($request, $response, $args) {
 $app->get("/api/user/current/login", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\User\Controller\UserController");
-    $result = $controller->getCurrentUser($request, $args);
+    $result = $controller->getCurrentUser($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));

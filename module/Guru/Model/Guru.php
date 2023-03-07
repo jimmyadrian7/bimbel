@@ -26,6 +26,10 @@ class Guru extends BaseModel
         ["value" => "n", "label" => "Nonaktif"]
     ];
 
+    public $required_field = [
+        ['name' => 'kursus', 'label' => 'Tempat Kursus']
+    ];
+
 
     public function orang()
     {

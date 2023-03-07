@@ -1,9 +1,9 @@
 <app-table table="gurus" fields="vm.fields" detail="guru_detail" form="guru_form">
     <app-table-button>
-        <button class="btn btn-link text-primary text-gradient px-3 py-0 mb-0" ng-click="vm.liatGuru()">
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 py-0 mb-0" ng-click="vm.liatGuru()">
             <i class="fas fa-eye me-2"></i> Guru
         </button>
-        <button class="btn btn-link text-primary text-gradient px-3 py-0 mb-0" ng-click="vm.generateGaji()" ng-if="vm.isSuperUser">
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 py-0 mb-0" ng-click="vm.generateGaji()" ng-if="vm.isSuperUser">
             <i class="fas fa-file me-2"></i> Gaji
         </button>
     </app-table-button>

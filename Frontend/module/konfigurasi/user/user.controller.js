@@ -22,8 +22,8 @@ import modal from "./html/modal.html";
         ];
 
         vm.fields = [
-            {name: "Username", value: "username", table: true},
-            {name: "Nama", value: "orang.nama", table: true, hideDetail: true},
+            {name: "Username", value: "username", table: true, required: true},
+            {name: "Nama", value: "orang.nama", table: true, hideDetail: true, required: true},
             {name: "Password", value: "unenpass", hidden: true},
             {name: "Status", value: "status", type: 'selection', selection: statusOpt, hidden: true, table: true, hideDetail: true}
         ];

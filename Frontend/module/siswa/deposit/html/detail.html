@@ -1,9 +1,10 @@
 <app-detail table="deposit" id="vm.dataId" fields="vm.fields" list="siswa.deposit">
     <app-detail-button class="d-flex">
-        <button class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.uploadBukti()" ng-if="vm.data.status == 'a'">
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.uploadBukti()" ng-if="vm.data.status == 'a'">
             <i class="fa fa-upload me-2"></i> Upload Bukti
         </button>
         <button 
+            type="button"
             class="btn btn-link text-gradient text-primary px-3 mb-0"
             ng-if="vm.data.siswa.status == 'p' && !vm.isSiswa"
             ng-click="vm.updateStatus()">

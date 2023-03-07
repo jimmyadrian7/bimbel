@@ -12,7 +12,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class UserController extends Controller
 {
-    public function authenticateUser($request, $args)
+    public function authenticateUser($request, $args, &$response)
     {
         $result = false;
 
@@ -53,7 +53,13 @@ class UserController extends Controller
         }
         catch(\Error $e) 
         {
-            throw new \Exception($e->getMessage());
+            // throw new \Exception($e->getMessage());
+            $response = $response->withStatus(500);
+            $result = [
+                'exception' => [
+                    'message' => $e->getMessage()
+                ]
+            ];
         }
 
         return $result;

@@ -28,6 +28,7 @@
                                         <td class="text-xs font-weight-bold" app-number-format="iuran.bulan"></td>
                                         <td>
                                             <button
+                                                type="button"
                                                 ng-if="!vm.isAdded(iuran)"
                                                 class="btn btn-link text-primary text-gradient px-3 my-0" 
                                                 ng-click="vm.addIuran(iuran)">
@@ -56,7 +57,7 @@
                                     <span class="text-xs" app-number-format="iuran.bulan"></span>
                                 </div>
                                 <div class="d-flex align-items-center text-sm">
-                                    <button class="btn btn-link text-primary text-gradient p-0 my-0" ng-click="vm.removeIuran($index)" title="delete">
+                                    <button type="button" class="btn btn-link text-primary text-gradient p-0 my-0" ng-click="vm.removeIuran($index)" title="delete">
                                         <i class="far fa-trash-alt"></i>
                                     </button>
                                 </div>

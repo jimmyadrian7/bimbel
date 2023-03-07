@@ -51,8 +51,8 @@ import tagihan_modal from "./html/modal/tagihan.html";
 
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [
-            {name: "No. Formulir", value: "no_formulir", table: true},
-            {name: "Tanggal Pendaftaran", value: "tanggal_pendaftaran", table: true, type: "date"},
+            {name: "No. Formulir", value: "no_formulir", table: true, required: true},
+            {name: "Tanggal Pendaftaran", value: "tanggal_pendaftaran", table: true, type: "date", required: true},
             {
                 name: "Guru", 
                 value: "guru_id", 
@@ -60,43 +60,44 @@ import tagihan_modal from "./html/modal/tagihan.html";
                 url: 'guru/search/autocomplete',
                 valueName: 'guru_data',
                 table: true,
-                hidden: !vm.hideGuru
+                hidden: !vm.hideGuru,
+                required: true
             },
-            {name: "Nama", value: "orang.nama", table: true},
-            {name: "Nama Mandarin", value: "orang.nama_mandarin", table: true},
-            {name: "Komisi", value: "komisi", type: 'number', table: true},
-            {name: "Program", value: "program"},
-            {name: "Paket Belajar", value: "paket_belajar"},
-            {name: "Tempat Kursus", value: "kursus_id", table: true, type: "selection", selection: kursusOptions},
+            {name: "Nama", value: "orang.nama", table: true, required: true},
+            {name: "Nama Mandarin", value: "orang.nama_mandarin", table: true, required: true},
+            {name: "Komisi", value: "komisi", type: 'number', table: true, required: true},
+            {name: "Program", value: "program", required: true},
+            {name: "Paket Belajar", value: "paket_belajar", required: true},
+            {name: "Tempat Kursus", value: "kursus_id", table: true, type: "selection", selection: kursusOptions, required: true},
             vm.status_field,
-            {name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true}
+            {name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true, required: true}
         ];
 
         vm.additional = {};
         vm.additional.detailFields = [
             [
-                {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin},
-                {name: "Agama", value: "orang.agama_id", type: 'selection', selection: agamaOptions},
-                {name: "Tempat Lahir", value: "orang.tempat_lahir"},
-                {name: "Tanggal Lahir", value: "orang.tanggal_lahir", type: 'date'},
+                {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, required: true},
+                {name: "Agama", value: "orang.agama_id", type: 'selection', selection: agamaOptions, required: true},
+                {name: "Tempat Lahir", value: "orang.tempat_lahir", required: true},
+                {name: "Tanggal Lahir", value: "orang.tanggal_lahir", type: 'date', required: true},
             ],
             [
-                {name: "No. HP", value: "orang.no_hp", table: true},
-                {name: "Email", value: "orang.email"},
-                {name: "Alamat", value: "orang.alamat"},
-                {name: "Sekolah", value: "sekolah"},
-                {name: "Kelas", value: "kelas"}
+                {name: "No. HP", value: "orang.no_hp", table: true, required: true},
+                {name: "Email", value: "orang.email", required: true},
+                {name: "Alamat", value: "orang.alamat", required: true},
+                {name: "Sekolah", value: "sekolah", required: true},
+                {name: "Kelas", value: "kelas", required: true}
             ]
         ];
         vm.additional.ortuFields = [
             [
-                {name: "Nama Ayah", value: "orang.nama_ayah"},
-                {name: "Nama Ibu", value: "orang.nama_ibu"},
-                {name: "No. HP Orang Tua", value: "orang.no_hp_ortu"}
+                {name: "Nama Ayah", value: "orang.nama_ayah", required: true},
+                {name: "Nama Ibu", value: "orang.nama_ibu", required: true},
+                {name: "No. HP Orang Tua", value: "orang.no_hp_ortu", required: true}
             ],
             [
-                {name: "Pekerjaan Ayah", value: "orang.pekerjaan_ayah"},
-                {name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu"}
+                {name: "Pekerjaan Ayah", value: "orang.pekerjaan_ayah", required: true},
+                {name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu", required: true}
             ]
         ];
         vm.additional.testFields = [

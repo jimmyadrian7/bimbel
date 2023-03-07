@@ -16,6 +16,11 @@ class Tagihan extends BaseModel
     protected $table = 'tagihan';
     protected $appends = ['siswa_data'];
 
+    public $required_field = [
+        ['name' => 'siswa_id', 'label' => 'Siswa'],
+        ['name' => 'tagihan_detail', 'label' => 'Tagihan Detail']
+    ];
+
     protected $status_enum = [
         ["value" => "p", "label" => "Proses"],
         ["value" => "c", "label" => "Cicil"],

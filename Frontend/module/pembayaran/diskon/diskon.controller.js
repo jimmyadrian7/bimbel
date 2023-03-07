@@ -16,8 +16,8 @@
 
         vm.dataId = stateParams.dataId;
         vm.fields = [
-            {name: "Diskon", value: "diskon", type: 'number', table: true},
-            {name: "Tipe Diskon", value: "tipe_diskon", type: 'selection', selection: diksonOption, table: true}
+            {name: "Diskon", value: "diskon", type: 'number', table: true, required: true},
+            {name: "Tipe Diskon", value: "tipe_diskon", type: 'selection', selection: diksonOption, table: true, required: true}
         ];
     }
 })()

@@ -8,6 +8,7 @@ class BaseModel extends Model
 {
     public $timestamps = false;
     public $searchField = "nama";
+    public $required_field = [];
     
     public function getFillable()
     {

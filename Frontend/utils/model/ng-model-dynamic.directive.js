@@ -22,6 +22,7 @@
             {
                 element.removeAttr('input-number');
                 element.attr('app-number-input', attrs.inputNumber);
+                element.attr('app-number-validation', attrs.inputNumber);
             }
 
             if (attrs.inputDate)
@@ -53,6 +54,12 @@
             {
                 element.removeAttr('input-file');
                 element.attr('base-sixty-four-input', attrs.inputFile);
+                element.attr('app-file-validation', attrs.inputFile);
+            }
+
+            if (attrs.ngRequired)
+            {
+                element.attr('ng-required', attrs.ngRequired);
             }
 
             $compile(element)(scope);

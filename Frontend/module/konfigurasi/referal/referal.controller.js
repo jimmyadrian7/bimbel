@@ -12,7 +12,7 @@
 
         vm.dataId = stateParams.dataId;
         vm.fields = [
-            {name: "Nama", value: "nama", table: true}
+            {name: "Nama", value: "nama", table: true, required: true}
         ];
     }
 })()

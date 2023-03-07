@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-12 my-3" ng-if="vm.addable">
-        <button class="btn btn-link text-primary text-gradient px-3 py-0 mb-0" ng-click="vm.tambahData()">
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 py-0 mb-0" ng-click="vm.tambahData()">
             <i class="fas fa-plus me-2"></i> Tambah
         </button>
 
@@ -33,13 +33,15 @@
             <div class="card-body pt-0">
                 <div class="table-responsive">
                     <div class="text-start">
-                        <button 
+                        <button
+                            type="button"
                             class="btn btn-link text-primary text-gradient py-0 mb-0 px-1" 
                             title="Filter"
                             ng-click="vm.showFilter()">
                             <i class="fa fa-filter"></i> Filter
                         </button>
                         <button 
+                            type="button"
                             class="btn btn-link text-primary text-gradient py-0 mb-0 px-1" 
                             title="Sort"
                             ng-click="vm.showSort()">

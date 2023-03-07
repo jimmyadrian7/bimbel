@@ -42,7 +42,8 @@ import modalDiskon from "./html/modal/modal-diskon.html";
                 type: "autocomplete",
                 url: 'siswa/search/autocomplete',
                 valueName: 'siswa_data',
-                table: true, 
+                table: true,
+                required: true 
             },
             {name: "Sub Total", value: "sub_total", type: 'number', table: true, hidden: true},
             {name: "Potongan", value: "potongan", type: 'number', table: true, hidden: true},

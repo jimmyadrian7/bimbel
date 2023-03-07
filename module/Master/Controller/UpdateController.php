@@ -17,6 +17,7 @@ class UpdateController extends Controller
             $data = $request->getParsedBody();
             $model = $this->getModel($args["model"]);
             $fields = $model->getFillable();
+            $required_fields = $model->required_field;
             $model_values = [];
 
             if(!array_key_exists("id", $data))
@@ -26,6 +27,17 @@ class UpdateController extends Controller
 
             foreach($fields as $field)
             {
+                foreach ($required_fields as $required_field)
+                {
+                    if ($field === $required_field['name'])
+                    {
+                        if (!array_key_exists($field, $data) || empty($data[$field]))
+                        {
+                            throw new \Error($required_field['label'] . " wajib diisi.");
+                        }
+                    }
+                }
+
                 if(array_key_exists($field, $data))
                 {
                     $model_values[$field] = $data[$field];

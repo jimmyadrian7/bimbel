@@ -23,14 +23,14 @@ import transaksi from "./html/modal/transaksi.html";
         
 
         vm.fields = [
-            {name: "Tempat Kursus", value: "kursus_id", type: 'selection', selection: kursusOptions, table: true},
-            {name: "Nama", value: "nama", table: true},
-            {name: "Keterangan", value: "keterangan"},
-            {name: "Jumlah", value: "jumlah", type: 'number', table: true},
-            {name: "Harga", value: "harga", type: 'number', table: true},
+            {name: "Tempat Kursus", value: "kursus_id", type: 'selection', selection: kursusOptions, table: true, required: true},
+            {name: "Nama", value: "nama", table: true, required: true},
+            {name: "Keterangan", value: "keterangan", required: true},
+            {name: "Jumlah", value: "jumlah", type: 'number', table: true, required: true},
+            {name: "Harga", value: "harga", type: 'number', table: true, required: true},
             {name: "Total", value: "total", type: 'number', table: true, hidden: true},
             {name: "Sisa", value: "sisa", type: 'number', table: true, hidden: true},
-            {name: "Lama Cicil", value: "cicil", type: 'number'},
+            {name: "Lama Cicil", value: "cicil", type: 'number', required: true},
             {name: "Status", value: "status", type: 'selection', selection: statusOpt, table: true, hidden: true, hideDetail: true}
 
         ];
