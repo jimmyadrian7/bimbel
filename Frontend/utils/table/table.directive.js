@@ -86,8 +86,8 @@ import sortHtml from "./modal/sort.html";
 
             
             vm.sortOptions = [
-                {label: "Ascending", value: "ASC"},
-                {label: "Descending", value: "DESC"}
+                {label: "Ascending (A-Z/1-10)", value: "ASC"},
+                {label: "Descending (Z-A/10-1)", value: "DESC"}
             ];
 
 

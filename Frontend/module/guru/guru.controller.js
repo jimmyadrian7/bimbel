@@ -222,10 +222,8 @@ import kursusHtml from "./html/modal/kursus.html";
 
         function nonaktif()
         {
-            let data = {
-                id: vm.dataId,
-                status: 'n'
-            };
+            let data = vm.data;
+            data['status'] = 'n';
             req.put('guru', data).then(response => {
                 state.reload();
             });
@@ -233,10 +231,12 @@ import kursusHtml from "./html/modal/kursus.html";
 
         function aktif()
         {
-            let data = {
-                id: vm.dataId,
-                status: 'a'
-            };
+            let data = vm.data;
+            data['status'] = 'a';
+            req.put('guru', data).then(response => {
+                state.reload();
+            });
+
             req.put('guru', data).then(response => {
                 state.reload();
             });
