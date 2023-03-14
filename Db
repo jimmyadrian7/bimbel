@@ -36,7 +36,6 @@ class Db {
                 case "seed":
                     $this->runSeed();
                     break;
-                case "help":
                 case "import":
                     $this->importData();
                     break;

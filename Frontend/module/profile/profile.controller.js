@@ -171,10 +171,11 @@ import modal from "../konfigurasi/user/html/modal.html";
 
         function checkValidation(isValid)
         {
-            // if (isValid)
-            // {
-            //     saveData();
-            // }
+            // @need to uncoment
+            if (isValid)
+            {
+                saveData();
+            }
             saveData();
         }
     }

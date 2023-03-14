@@ -94,7 +94,7 @@
     }
 }
   
-
-/* .ng-invalid.ng-touched, .ng-submitted .ng-invalid {
+/* // @need to uncoment */
+.ng-invalid.ng-touched, .ng-submitted .ng-invalid {
     border-color: #ea0606 !important;
-} */
+}

@@ -151,4 +151,37 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function resetDataSiswa($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        try
+        {
+            $tagihans = new \Bimbel\Pembayaran\Model\Tagihan();
+            $tagihans = $tagihans->get();
+
+            foreach ($tagihans as $tagihan)
+            {
+                $tagihan->delete();
+            }
+
+            $siswas = new \Bimbel\Siswa\Model\Siswa();
+            $siswas = $siswas->get();
+
+            foreach ($siswas as $siswa)
+            {
+                $siswa->iuran_terbuat()->delete();
+                $siswa->iuran()->detach();
+                $siswa->deposit()->delete();
+                $siswa->update(['status' => 'b']);
+            }
+        }
+        catch(\Error $e) 
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
 }

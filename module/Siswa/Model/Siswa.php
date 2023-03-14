@@ -27,10 +27,11 @@ class Siswa extends BaseModel
     ];
     protected $table = 'siswa';
 
-    // public $required_field = [
-    //     ['name' => 'iuran', 'label' => 'Iuran'],
-    //     ['name' => 'jadwal', 'label' => 'Jadwal']
-    // ];
+    // @need to uncoment
+    public $required_field = [
+        ['name' => 'iuran', 'label' => 'Iuran'],
+        ['name' => 'jadwal', 'label' => 'Jadwal']
+    ];
 
     protected $status_enum = [
         ["value" => "b", "label" => "Baru"],
@@ -468,10 +469,11 @@ class Siswa extends BaseModel
         $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp');
         $data = parent::fetchDetail($id, $obj);
 
-        // if ($data->status != 'b')
-        // {
-        //     $data->deleteable = false;
-        // }
+        // @need to uncoment
+        if ($data->status != 'b')
+        {
+            $data->deleteable = false;
+        }
 
         $user = new \Bimbel\User\Model\User();
         $user = $user->where('orang_id', $data->orang_id)->first();

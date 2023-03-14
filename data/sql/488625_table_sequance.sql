@@ -17,6 +17,6 @@ CREATE TABLE `sequance` (
 --
 
 INSERT INTO `sequance` (`id`, `kode`, `nama`, `nomor`) VALUES
-(1, 'PMB-', 'pembiayaan', 221),
+(1, 'PMB-', 'pembiayaan', 341),
 (2, 'PNDF-', 'pendaftaran', 1),
 (3, 'TA-', 'tabungan_aset', 1);
