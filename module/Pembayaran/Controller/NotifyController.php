@@ -184,4 +184,34 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function deleteDataPembayaran($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        try
+        {
+            $iurans = new \Bimbel\Pembayaran\Model\Iuran();
+            $iurans = $iurans->get();
+
+            foreach ($iurans as $iuran)
+            {
+                $iuran->delete();
+            }
+
+            $pembiayaans = new \Bimbel\Pembayaran\Model\Pembiayaan();
+            $pembiayaans = $pembiayaans->get();
+
+            foreach ($pembiayaans as $pembiayaan)
+            {
+                $pembiayaan->delete();
+            }
+        }
+        catch(\Error $e) 
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
 }

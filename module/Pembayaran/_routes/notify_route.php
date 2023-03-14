@@ -39,3 +39,13 @@ $app->get("/api/reset/data/siswa", function ($request, $response, $args) {
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->get("/api/delete/data/pembayaran", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+    $result = $controller->deleteDataPembayaran($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});

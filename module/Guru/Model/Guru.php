@@ -218,16 +218,23 @@ class Guru extends BaseModel
     {
         $this->tunjangan_guru()->delete();
         $this->rekaman()->delete();
+        $this->gaji()->delete();
+        $this->kursus()->detach();
         
         $user = new \Bimbel\User\Model\User();
+        $log = new \Bimbel\Master\Model\Log();
         $user = $user->where('orang_id', $this->orang_id)->first();
-        $user->delete();
+
+        if ($user)
+        {
+            $log->where('user_id', $user->id)->delete();
+            $user->delete();
+        }
 
         $result = parent::delete();
         $this->orang()->delete();
         $this->rekaman()->delete();
         $this->pp()->delete();
-        $this->kursus()->delete();
 
         return $result;
     }
