@@ -71,7 +71,7 @@ import tagihan_modal from "./html/modal/tagihan.html";
             {name: "Paket Belajar", value: "paket_belajar", required: true},
             {name: "Tempat Kursus", value: "kursus_id", table: true, type: "selection", selection: kursusOptions, required: true},
             vm.status_field,
-            {name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true, required: true}
+            {name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true}
         ];
 
         vm.additional = {};
