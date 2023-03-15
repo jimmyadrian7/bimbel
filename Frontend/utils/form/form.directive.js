@@ -129,7 +129,6 @@ import form from "./form.html";
                 {
                     saveData();
                 }
-                saveData();
             }
 
             function cancelEdit()
