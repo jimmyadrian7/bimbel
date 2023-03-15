@@ -47,6 +47,7 @@ import tagihan_modal from "./html/modal/tagihan.html";
         vm.dataId = stateParams.dataId;
         vm.activeIndex = -1;
         vm.hideGuru = session.isSuperUser() || session.isAdminCabang();
+        vm.isSuperUser = session.isSuperUser() || session.isAdminCabang();
         vm.referalOptions = referalOptions;
 
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
@@ -204,10 +205,8 @@ import tagihan_modal from "./html/modal/tagihan.html";
 
         function updateStatus()
         {
-            let data = {
-                id: vm.data.id,
-                status: 'p'
-            };
+            let data = vm.data;
+            data['status'] = 'p';
 
             req.put('siswa', data).then(response => state.reload());
         }
@@ -283,10 +282,7 @@ import tagihan_modal from "./html/modal/tagihan.html";
             vm.data.iuran[vm.activeIndex].id = iuran.id;
             vm.data.iuran[vm.activeIndex].action = "edit";
 
-            let data = {
-                id: vm.data.id,
-                iuran: vm.data.iuran
-            };
+            let data = vm.data;
 
             req.put('siswa', data).then(response => {
                 vm.activeIndex = -1;
