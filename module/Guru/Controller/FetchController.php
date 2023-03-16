@@ -64,21 +64,30 @@ class FetchController extends Controller
         return $result;
     }
 
-    public function getGuruAvailable($args, &$response)
+    public function getGuruAvailable($request, $args, &$response)
     {
         $session = new Session();
         $result = [];
+        $getData = $request->getQueryParams();
 
         try {
             $additionalQuery = "1 = 1";
-            $query = "
-                SELECT guru.id AS guru_id FROM guru
-                LEFT JOIN siswa ON siswa.guru_id = guru.id
-                LEFT JOIN jadwal ON jadwal.siswa_id = siswa.id AND jadwal.hari = :hari
-                WHERE guru.status = 'a' AND %s
-                GROUP BY siswa.guru_id, guru.id
-                HAVING COUNT(guru_id) <= :limit
-            ";
+            $query = '
+                SELECT 
+                    guru.id AS guru_id
+                FROM guru
+                    LEFT JOIN (
+                        SELECT 
+                            siswa.guru_id AS guru_id, siswa.id AS siswa_id 
+                        FROM jadwal
+                            INNER JOIN siswa ON siswa.id = jadwal.siswa_id
+                        WHERE jadwal.hari = :hari AND 
+                            jadwal.waktu = :waktu
+                    ) X ON X.guru_id = guru.id
+                WHERE guru.status = :status
+                GROUP BY guru.id
+                    HAVING COUNT(guru_id) <= :limit
+            ';
 
             if (!$session->isSuperUser())
             {
@@ -91,7 +100,9 @@ class FetchController extends Controller
             $guru_ids = DB::select(
                 DB::raw($query), 
                 [
-                    'hari' => $args['hari'],
+                    'hari' => $getData['hari'],
+                    'waktu' => $getData['waktu'],
+                    'status' => 'a',
                     'limit' => 7
                 ]
             );

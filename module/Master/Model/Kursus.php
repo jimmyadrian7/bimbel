@@ -28,7 +28,7 @@ class Kursus extends BaseModel
 
         if (count($total) > 0)
         {
-            $data->editable = false;
+            // $data->editable = false;
             $data->deleteable = false;
         }
 

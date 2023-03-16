@@ -27,7 +27,7 @@ class Jadwal extends BaseModel
 
     public function checkHari($attributes)
     {
-        if (!array_key_exists('hari', $attributes) || !array_key_exists('siswa_id', $attributes))
+        if (!array_key_exists('waktu', $attributes) || !array_key_exists('hari', $attributes) || !array_key_exists('siswa_id', $attributes))
         {
             return;
         }
@@ -36,13 +36,19 @@ class Jadwal extends BaseModel
         $siswa = $siswa->find($attributes['siswa_id']);
         $guru_id = $siswa->guru_id;
         $jadwal = new Jadwal();
-        $jadwal = $jadwal->where('hari', $attributes['hari'])->whereHas('siswa', function($q) use ($guru_id) {
-            $q->where('guru_id', $guru_id);
-        })->where('siswa_id', '<>', $attributes['siswa_id'])->get()->count();
+        $jadwal = $jadwal
+            ->where('hari', $attributes['hari'])
+            ->where('waktu', $attributes['waktu'])
+            ->whereHas('siswa', function($q) use ($guru_id) {
+                $q->where('guru_id', $guru_id);
+            })
+            ->where('siswa_id', '<>', $attributes['siswa_id'])
+            ->get()
+            ->count();
 
         if ($jadwal > 7)
         {
-            throw new \Error("This guru already reach the limit");
+            throw new \Error("Guru telah mengajar 7 murid pada hari dan waktu yang sama");
         }
     }
 

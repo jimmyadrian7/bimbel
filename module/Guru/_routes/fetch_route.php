@@ -20,10 +20,10 @@ $app->get("/api/guru/data/siswa/{guru_id}", function ($request, $response, $args
     return $response;
 });
 
-$app->get("/api/guru/available/{hari}", function ($request, $response, $args) {
+$app->get("/api/guru/available", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\Guru\Controller\FetchController");
-    $result = $controller->getGuruAvailable($args, $response);
+    $result = $controller->getGuruAvailable($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));

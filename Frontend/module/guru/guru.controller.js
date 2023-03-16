@@ -109,7 +109,8 @@ import kursusHtml from "./html/modal/kursus.html";
             {name: "Menurut Anda, bagaimana baru dapat dikategorikan sebagai guru yang ideal?", value: "ideal", type: "textarea", required: true},
         ];
         vm.jadwalFields = [
-            {name: "Hari", value: "hari", type: "selection", selection: hariOpt}
+            {name: "Hari", value: "hari", type: "selection", selection: hariOpt},
+            {name: 'Waktu', value: 'waktu', type: 'time'}
         ];
 
         vm.getValue = getValue;
@@ -212,7 +213,7 @@ import kursusHtml from "./html/modal/kursus.html";
 
         function previewGuru()
         {
-            let url = `guru/available/${vm.modal.hari}`;
+            let url = `guru/available?hari=${vm.modal.hari}&waktu=${vm.modal.waktu}`;
             req.get(url).then(data => {
                 Modal.getInstance(vm.modalElement[0]).hide();
                 vm.modal.listGuru = data;
