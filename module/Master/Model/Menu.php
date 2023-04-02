@@ -5,6 +5,6 @@ use Bimbel\Core\Model\BaseModel;
 
 class Menu extends BaseModel
 {
-    protected $fillable = ['kode', 'nama'];
+    protected $fillable = ['kode', 'nama', 'parent'];
     protected $table = 'menu';
 }

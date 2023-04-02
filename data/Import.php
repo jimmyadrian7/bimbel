@@ -24,14 +24,14 @@ class Import {
 
         // Drop if exist then create database
         echo "Drop if exist then create database.... \r\n";
-        exec('../../bin/mysql -u '.$db_user.' -e "DROP DATABASE IF EXISTS '.$db_name.'; create database '.$db_name.'"');
+        exec('mysql -u '.$db_user.' -e "DROP DATABASE IF EXISTS '.$db_name.'; create database '.$db_name.'"');
         
         // Run prepared script to create table and the relation
         echo "Run prepared script to create table and the relation.... \r\n";
 
         $sql_file = scandir(__DIR__ . '/sql');
         $extra = "";
-        $cmd = '../../bin/mysql -u '.$db_user.' '.$db_name.' < ' . __DIR__ . '/sql/';
+        $cmd = 'mysql -u '.$db_user.' '.$db_name.' < ' . __DIR__ . '/sql/';
 
         foreach ($sql_file as $key => $file) {
 

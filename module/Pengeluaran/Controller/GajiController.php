@@ -62,6 +62,9 @@ class GajiController extends Controller
                 
                 $total_gaji += $gaji->total;
             }
+
+            $log = $this->getModel('log');
+            $log = $log->log("", "Generate Gaji", "Generate", $data);
             
             $result = true;
 

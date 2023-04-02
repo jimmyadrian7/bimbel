@@ -47,38 +47,8 @@ class InsertController extends Controller
             $model = $model->create($model_values);
             $result = ["id" => $model->id];
 
-
-            function removeBase64(&$data)
-            {
-                if (gettype($data) == "array")
-                {
-                    foreach($data as $key => &$value)
-                    {
-                        if (gettype($value) == "array")
-                        {
-                            removeBase64($value);
-                        }
-                        else
-                        {
-                            if ($key == "base64")
-                            {
-                                unset($data[$key]);
-                            }
-                        }
-                    }
-                }
-            }
-            removeBase64($model_values);
-
-            $session = new \Bimbel\Master\Model\Session();
             $log = $this->getModel('log');
-            $log = $log->create([
-                "target_id" => $model->id,
-                "target_table" => $args['model'],
-                "operation" => "Create",
-                "data" => json_encode($model_values),
-                "user_id" => $session->getCurrentUser()->id
-            ]);
+            $log = $log->log($model->id, $args['model'], "Create", $model_values);
 
             DB::commit();
         }

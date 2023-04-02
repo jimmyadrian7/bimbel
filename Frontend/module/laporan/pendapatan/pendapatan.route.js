@@ -1,4 +1,4 @@
-import laporan from "./html/laporan.html";
+import laporan from "../html/laporan_template.html";
 
 (() => {
     "use strict";

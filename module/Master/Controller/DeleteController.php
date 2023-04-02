@@ -33,14 +33,8 @@ class DeleteController extends Controller
             $model->delete();
             $result = ["id" => $model_id];
 
-            $session = new \Bimbel\Master\Model\Session();
             $log = $this->getModel('log');
-            $log = $log->create([
-                "target_id" => $model_id,
-                "target_table" => $args['model'],
-                "operation" => "Delete",
-                "user_id" => $session->getCurrentUser()->id
-            ]);
+            $log = $log->log($model_id, $args['model'], "Delete", "");
 
             DB::commit();
         }

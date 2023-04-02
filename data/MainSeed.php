@@ -71,11 +71,11 @@ class MainSeed {
 
         // Drop if exist then create database
         echo "Drop if exist then create database.... \r\n";
-        exec('../../bin/mysql -u root -e "DROP DATABASE IF EXISTS '.$db_name.'; create database '.$db_name.'"');
+        exec('mysql -u root -e "DROP DATABASE IF EXISTS '.$db_name.'; create database '.$db_name.'"');
         
         // Run prepared script to create table and the relation
         echo "Run prepared script to create table and the relation.... \r\n";
-        exec('../../bin/mysql -u root '.$db_name.' < ' . __DIR__ . '/Bimbel.sql');
+        exec('mysql -u root '.$db_name.' < ' . __DIR__ . '/Bimbel.sql');
 
         // import data
         echo "Import data from excel.... \r\n";

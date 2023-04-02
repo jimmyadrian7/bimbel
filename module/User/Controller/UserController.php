@@ -93,6 +93,27 @@ class UserController extends Controller
             $role_ids = $user->role->pluck('id')->toArray();
             $query = sprintf($query, join(", ", $role_ids));
             $menu = DB::select(DB::raw($query));
+            $menus = [];
+            
+            foreach ($menu as $m)
+            {
+                $is_exists = false;
+                foreach($menus as $mn)
+                {
+                    if ($m->kode == $mn->kode && $m->parent == $mn->parent)
+                    {
+                        $is_exists = true;
+                        $mn->create = $mn->create == 1 ?: $m->create;
+                        $mn->update = $mn->update == 1 ?: $m->update;
+                        $mn->delete = $mn->delete == 1 ?: $m->delete;
+                    }
+                }
+
+                if (!$is_exists)
+                {
+                    $menus[] = $m;
+                }
+            }
 
             $guru = new Guru();
             $guru = $guru
@@ -103,7 +124,7 @@ class UserController extends Controller
             $siswa = new Siswa();
             $siswa = $siswa->with('orang', 'jadwal')->where('orang_id', $user->orang_id)->first();
 
-            $user->{'menu'} = $menu;
+            $user->{'menu'} = $menus;
             $user->{'guru'} = $guru;
             $user->{'siswa'} = $siswa;
 

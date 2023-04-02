@@ -17,6 +17,27 @@ class Log extends BaseModel
 	}
 
 
+    public function log($id, $table, $operation, $data, $user_id = false)
+    {
+        $this->removeBase64($data);
+
+        if (!$user_id)
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            $user_id = $session->getCurrentUser()->id;
+        }
+
+        $log = $this->create([
+            "target_id" => $id,
+            "target_table" => $table,
+            "operation" => $operation,
+            "data" => json_encode($data),
+            "user_id" => $user_id
+        ]);
+
+        return $log;
+    }
+
     public function fetchAllData($condition, $obj, $pagination = false, $page = 1, $sort = [])
     {
         $obj = $this->with('user', 'user.orang');
@@ -28,5 +49,27 @@ class Log extends BaseModel
 		$obj = $obj->with('user', 'user.orang');
         $data = parent::fetchDetail($id, $obj);
         return $data;
+    }
+
+
+    function removeBase64(&$data)
+    {
+        if (gettype($data) == "array")
+        {
+            foreach($data as $key => &$value)
+            {
+                if (gettype($value) == "array")
+                {
+                    removeBase64($value);
+                }
+                else
+                {
+                    if ($key == "base64")
+                    {
+                        unset($data[$key]);
+                    }
+                }
+            }
+        }
     }
 }

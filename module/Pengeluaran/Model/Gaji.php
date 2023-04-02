@@ -25,60 +25,13 @@ class Gaji extends BaseModel
     }
     
 
-    public function getPotongan($guru, &$attributes)
-    {
-        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
-        $siswa_ids = $guru->siswa->pluck('id');
-        $year = date("Y");
-        $month = date("m");
-        $potongan = 0;
-        $sub_total = 0;
-        $total = 0;
-        $total_komisi = 0;
-
-        $tagihans = $tagihan
-            ->whereYear('tanggal', $year)
-            ->whereMonth('tanggal', $month)
-            ->whereIn('siswa_id', $siswa_ids)->get();
-
-        foreach ($tagihans as $tagihan)
-        {
-            foreach ($tagihan->tagihan_detail as $tagihan_detail)
-            {
-                if ($tagihan_detail->komisi_guru === 0)
-                {
-                    continue;
-                }
-
-                $komisi = $tagihan_detail->total * $tagihan_detail->komisi_guru / 100;
-                
-                $sub_total += $tagihan_detail->sub_total;
-                $potongan += $tagihan_detail->potongan;
-                $total += $tagihan_detail->total;
-                $total_komisi += $komisi;
-            }
-        }
-
-        $attributes['sub_total'] = $sub_total;
-        $attributes['potongan'] = $potongan;
-        $attributes['total'] = $total;
-        $attributes['komisi'] = $total_komisi;
-    }
-
     /*
         @potongan => total potongan
         @sub_total => total sebelum potongan
         @komisi => total komisi yang diterima
     */
-    public function hitungTagihan($siswa_ids, $year, $month)
+    public function hitungTagihan($guru_id, $year, $month)
     {
-        /*
-            case untuk iuran:
-            1. lunas sebelum bulannya
-            2. lunas tepat pada bulannya
-            3. lunas telat
-        */
-
         $tagihans = new \Bimbel\Pembayaran\Model\Tagihan();
 
         $result = [
@@ -94,91 +47,15 @@ class Gaji extends BaseModel
         $year = $tanggal[0];
         $month = $tanggal[1];
 
-        $tagihans = $tagihans
-            ->whereYear('tanggal_lunas', $year)
-            ->whereMonth('tanggal_lunas', $month)
-            ->whereIn('siswa_id', $siswa_ids)
-            ->where('status', 'l')
-            ->get();
+        $tds1 = $this->getTagihanDetailDll($guru_id, $year, $month);
+        $result["potongan"] += $tds1->sum("potongan");
+        $result["sub_total"] += $tds1->sum("sub_total");
+        $result["komisi"] += $tds1->sum("komisi");
 
-        foreach ($tagihans as $tagihan)
-        {
-            foreach ($tagihan->tagihan_detail as $tagihan_detail)
-            {
-                if ($tagihan_detail->komisi === 0)
-                {
-                    continue;
-                }
-
-                if (!$tagihan_detail->system)
-                {
-                    // komisi selain iuran
-                    $result['potongan'] += $tagihan_detail->potongan;
-                    $result['sub_total'] += $tagihan_detail->sub_total;
-                    $result['komisi'] += $tagihan_detail->komisi;
-                }
-                else
-                {
-                    // case ke 2 (lunas tepat pada bulannya)
-                    $tanggal_lunas = $tagihan->tanggal_lunas;
-                    $tanggal_lunas = explode("-", $tanggal_lunas);
-                    $tanggal_lunas = (int) ($tanggal_lunas[0] . $tanggal_lunas[1] . "01");
-
-                    $start_iuran = $tagihan_detail->tanggal_iuran_mulai;
-                    $start_iuran = (int) str_replace("-", "", $start_iuran);
-
-                    if ($tanggal_lunas == $start_iuran)
-                    {
-                        $result['potongan'] += $tagihan_detail->potongan;
-                        $result['sub_total'] += $tagihan_detail->sub_total;
-                        $result['komisi'] += ($tagihan_detail->komisi / $tagihan_detail->bulan);
-                    }
-                }
-            }
-        }
-
-        $tanggal_gaji = $year . "-" . $month . "-1";
-        $tanggal_gaji = new \DateTime($tanggal_gaji);
-        $tanggal_gaji = $tanggal_gaji->format("Y-m-d");
-
-        $tagihan_details = new \Bimbel\Pembayaran\Model\TagihanDetail();
-        $tagihan_details = $tagihan_details
-            ->whereDate("tanggal_iuran_mulai", "<=", $tanggal_gaji)
-            ->whereDate("tanggal_iuran_berakhir", ">=", $tanggal_gaji)
-            ->whereHas('tagihan', function($q) {
-                $q->where('status', 'l');
-            })
-            ->get();
-
-        foreach($tagihan_details as $tagihan_detail)
-        {
-            $tanggal_lunas = $tagihan_detail->tagihan->tanggal_lunas;
-            $int_tanggal_lunas = explode("-", $tanggal_lunas);
-            $int_tanggal_lunas = (int) ($int_tanggal_lunas[0] . $int_tanggal_lunas[1] . "01");
-
-            $int_tanggal_gaji = (int) str_replace("-", "", $tanggal_gaji);
-
-            // case 1 (lunas sebelum bulannya)
-            if ($int_tanggal_lunas < $int_tanggal_gaji)
-            {
-                $result['potongan'] += $tagihan_detail->potongan;
-                $result['sub_total'] += $tagihan_detail->sub_total;
-                $result['komisi'] += ($tagihan_detail->komisi / $tagihan_detail->bulan);
-            }
-            else
-            {
-                // case 3 (lunas telat)
-                $tanggal_lunas = new \DateTime($tanggal_lunas);
-                $tanggal_gajian = new \DateTime($tanggal_gaji);
-                
-                $interval = $tanggal_lunas->diff($tanggal_gajian);
-                $interval = $interval->m + 12 * $interval->y;
-
-                $result['potongan'] += $tagihan_detail->potongan;
-                $result['sub_total'] += $tagihan_detail->sub_total;
-                $result['komisi'] += (($tagihan_detail->komisi / $tagihan_detail->bulan) * $interval);
-            }
-        }
+        $tds1 = $this->getTagihanDetailIuran($guru_id, $year, $month);
+        $result["potongan"] += $tds1->sum("potongan");
+        $result["sub_total"] += $tds1->sum("sub_total");
+        $result["komisi"] += $tds1->sum("komisi");
 
         return $result;
     }
@@ -194,13 +71,12 @@ class Gaji extends BaseModel
     {
         $guru = new Guru();
         $guru = $guru->find($attributes['guru_id']);
-        $siswa_ids = $guru->siswa->pluck('id');
 
         $tanggal = explode("-", $attributes['tanggal']);
         $year = $tanggal[0];
         $month = $tanggal[1];
 
-        $komisi = $this->hitungTagihan($siswa_ids, $year, $month);
+        $komisi = $this->hitungTagihan($guru->id, $year, $month);
         $tunjangan = $this->hitungTunjangan($guru);
 
         $attributes['total_siswa'] = $guru->siswa->count();
@@ -234,5 +110,76 @@ class Gaji extends BaseModel
         $this->validateData($attributes);
         $this->autoFillData($attributes);
         return parent::update($attributes, $options);
+    }
+
+
+    public function getTagihanDetailDll($guru_id, $year, $month)
+    {
+        $tagihan_detail = new \Bimbel\Pembayaran\Model\TagihanDetail();
+        $tagihan_detail = $tagihan_detail
+            ->where('komisi', '>', 0)
+            ->whereHas("tagihan", function($q) use ($guru_id, $year, $month)
+            {
+                $q->whereMonth('tanggal_lunas', '<=', $month)
+                    ->whereYear('tanggal_lunas', '>=', $year)
+                    ->whereHas('siswa', function($query) use ($guru_id) {
+                        $query->where('guru_id', $guru_id);
+                    })
+                    ->where('status', 'l');
+            })
+            ->where('system', false)
+            ->get();
+
+        return $tagihan_detail;
+    }
+
+    /*
+        case untuk iuran:
+        1. lunas sebelum bulannya
+        2. lunas tepat pada bulannya
+        3. lunas telat
+    */
+    public function getTagihanDetailIuran($guru_id, $year, $month)
+    {
+        $tagihan_detail = new \Bimbel\Pembayaran\Model\TagihanDetail();
+
+        $tanggal_gaji = $year . "-" . $month . "-1";
+        $tanggal_gaji = new \DateTime($tanggal_gaji);
+        $tanggal_gaji = $tanggal_gaji->format("Y-m-d");
+
+        $tagihan_detail = $tagihan_detail
+            ->where('komisi', '>', 0)
+            ->where('system', true)
+            ->whereDate("tanggal_iuran_mulai", ">=", $tanggal_gaji)
+            ->whereDate("tanggal_iuran_berakhir", "<=", $tanggal_gaji)
+            ->whereHas('tagihan', function($q) {
+                $q->where('status', 'l');
+            })
+            ->get();
+
+        foreach ($tagihan_detail as $td)
+        {
+            $tanggal_lunas = $td->tagihan->tanggal_lunas;
+            $tanggal_lunas = new \DateTime($tanggal_lunas);
+            $tanggal_gajian = new \DateTime($tanggal_gaji);
+            
+            $interval = $tanggal_lunas->diff($tanggal_gajian);
+            $interval = $interval->m + 12 * $interval->y;
+
+            if ($interval > 0)
+            {
+                $td->komisi = $td->komisi * $interval;
+            }
+        }
+
+        return $tagihan_detail;
+    }
+
+    public function getTunjangan($guru_id)
+    {
+        $tunjangan = new \Bimbel\Guru\Model\TunjanganGuru();
+        $tunjangan = $tunjangan->where('guru_id', $guru_id)->get();
+
+        return $tunjangan;
     }
 }
