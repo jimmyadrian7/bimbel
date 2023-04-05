@@ -160,6 +160,8 @@ class Gaji extends BaseModel
         foreach ($tagihan_detail as $td)
         {
             $tanggal_lunas = $td->tagihan->tanggal_lunas;
+            $tanggal_lunas = explode("-", $tanggal_lunas);
+            $tanggal_lunas = $tanggal_lunas[0] . "-" . $tanggal_lunas[1] . "-01";
             $tanggal_lunas = new \DateTime($tanggal_lunas);
 
             $tanggal_gajian = new \DateTime($tanggal_gaji);
@@ -167,10 +169,10 @@ class Gaji extends BaseModel
             $tanggal_iuran_mulai = $td->tanggal_iuran_mulai;
             $tanggal_iuran_mulai = new \DateTime($tanggal_iuran_mulai);
             
-            $interval = $tanggal_lunas->diff($tanggal_iuran_mulai);
+            $interval = $tanggal_iuran_mulai->diff($tanggal_lunas);
             $interval = $interval->m + 12 * $interval->y;
 
-            if ($interval > 0 && $tanggal_lunas->format("Y-m-01") == $tanggal_gaji)
+            if ($interval > 0 && $tanggal_lunas->format("Y-m-d") == $tanggal_gaji)
             {
                 $td->komisi = $td->komisi * ($interval + 1);
             }
