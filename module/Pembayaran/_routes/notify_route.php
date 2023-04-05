@@ -10,42 +10,52 @@ $app->get("/api/notify/tagihan/wa/{tagihan_id}", function ($request, $response, 
     return $response;
 });
 
-$app->get("/api/fix/data/old/tagihan", function ($request, $response, $args) {
+$app->get("/api/hapus/gaji/guru", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
-    $result = $controller->fixData($request, $args, $response);
+    $result = $controller->hapusGaji($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));
     return $response;
 });
 
-$app->get("/api/fix/data/old/guru", function ($request, $response, $args) {
+// $app->get("/api/fix/data/old/tagihan", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
-    $result = $controller->fixDataGuru($request, $args, $response);
+//     $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+//     $result = $controller->fixData($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->get("/api/reset/data/siswa", function ($request, $response, $args) {
+// $app->get("/api/fix/data/old/guru", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
-    $result = $controller->resetDataSiswa($request, $args, $response);
+//     $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+//     $result = $controller->fixDataGuru($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->get("/api/delete/data/pembayaran", function ($request, $response, $args) {
+// $app->get("/api/reset/data/siswa", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
-    $result = $controller->deleteDataPembayaran($request, $args, $response);
+//     $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+//     $result = $controller->resetDataSiswa($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
+
+// $app->get("/api/delete/data/pembayaran", function ($request, $response, $args) {
+
+//     $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+//     $result = $controller->deleteDataPembayaran($request, $args, $response);
+
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });

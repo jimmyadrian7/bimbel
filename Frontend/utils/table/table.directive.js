@@ -139,11 +139,6 @@ import sortHtml from "./modal/sort.html";
                 let data = {};
                 let method = "get";
 
-                if (vm.searchValue)
-                {
-                    url = `${url}&search=${vm.searchValue}`;
-                }
-
                 if (vm.isFilter || vm.isSort)
                 {
                     method = "post";
@@ -161,6 +156,11 @@ import sortHtml from "./modal/sort.html";
                 }
 
                 url = `${url}?pagination=1&page=${vm.currentPage}`;
+
+                if (vm.searchValue)
+                {
+                    url = `${url}&search=${vm.searchValue}`;
+                }
 
                 if (method == "get")
                 {
@@ -373,7 +373,8 @@ import sortHtml from "./modal/sort.html";
                     vm.isFilter = true;
                 }
 
-                $timeout(() => {getData();}, 500);
+                // $timeout(() => {getData();}, 500);
+                $timeout(() => changePage(1), 500);
             }
 
 
@@ -430,7 +431,7 @@ import sortHtml from "./modal/sort.html";
 
                 
 
-                $timeout(() => {getData();}, 500);
+                $timeout(() => changePage(1), 500);
             }
         }
     }

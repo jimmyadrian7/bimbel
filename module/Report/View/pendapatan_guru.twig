@@ -2,49 +2,84 @@
     
     <head>
         {% include "/Report/View/partial/style.twig" %}
+
+        <style>
+            header {
+                position: fixed;
+                top: 0cm;
+                left: 0cm;
+                right: 0cm;
+                height: 200px;
+            }
+
+            body {
+                margin-top: 210px;
+            }
+
+            #background {
+                background-image:url({{background}});
+                display: block;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: -1000;
+                background-repeat: repeat;
+            }
+        </style>
     </head>
 
-    <body style="background-image:url({{background}})">
-        
-        <div class="container">
-            {% include "Report/View/partial/header.twig" %}
-            
-            <div class="content">
-                <div class="mb-10">
-                    <span class="table-title">Pendapatan Guru</span>
-                </div>
-                <table class="table-content">
-                    <tr>
-                        <th>No.</th>
-                        <th>Nama Siswa</th>
-                        <th>Kode Tagihan</th>
-                        <th>Tanggal Tagihan</th>
-                        <th>Tanggal Lunas</th>
-                        <th>Nama Item</th>
-                        <th>Harga Total</th>
-                        <th>% Komisi</th>
-                        <th>Komisi</th>
-                    </tr>
-                    {% for tagihan_detail in data %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ tagihan_detail.nama_siswa }}</td>
-                            <td>{{ tagihan_detail.kode_tagihan }}</td>
-                            <td>{{ tagihan_detail.tanggal_tagihan|date("d/m/Y") }}</td>
-                            <td>{{ tagihan_detail.tanggal_lunas|date("d/m/Y") }}</td>
-                            <td>{{ tagihan_detail.nama_item }}</td>
-                            <td>{{ tagihan_detail.harga_total|number_format(0, ',', '.') }}</td>
-                            <td>{{ tagihan_detail.persen_komisi }}%</td>
-                            <td>{{ tagihan_detail.komisi|number_format(0, ',', '.') }}</td>
-                        </tr>
-                    {% endfor %}
-                    <tr class="bold">
-                        <td class="bg-transparent" colspan="7"></td>
-                        <td class="bg-red">Total Pendapatan</td>
-                        <td class="bg-red">{{ total_pendapatan|number_format(0, ',', '.') }}</td>
-                    </tr>
-                </table>
+    <body>
+        <div id="background"></div>
+
+        <header>
+            <div class="container">
+                {% include "Report/View/partial/header.twig" %}
             </div>
-        </div>
+        </header>
+        
+        <main>
+            <div class="container">
+                <div class="content">
+                    <div class="mb-10">
+                        <span class="table-title">Pendapatan Guru</span>
+                    </div>
+                    <table class="table-content">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Nama Siswa</th>
+                                <th>Kode Tagihan</th>
+                                <th>Tanggal Tagihan</th>
+                                <th>Tanggal Lunas</th>
+                                <th>Nama Item</th>
+                                <th>Harga Total</th>
+                                <th>% Komisi</th>
+                                <th>Komisi</th>
+                            </tr>
+                        </thead>
+                        {% for tagihan_detail in data %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ tagihan_detail.nama_siswa }}</td>
+                                <td>{{ tagihan_detail.kode_tagihan }}</td>
+                                <td>{{ tagihan_detail.tanggal_tagihan|date("d/m/Y") }}</td>
+                                <td>{{ tagihan_detail.tanggal_lunas|date("d/m/Y") }}</td>
+                                <td>{{ tagihan_detail.nama_item }}</td>
+                                <td>{{ tagihan_detail.harga_total|number_format(0, ',', '.') }}</td>
+                                <td>{{ tagihan_detail.persen_komisi }}%</td>
+                                <td>{{ tagihan_detail.komisi|number_format(0, ',', '.') }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="bold">
+                            <td class="bg-transparent" colspan="7"></td>
+                            <td class="bg-red">Total Pendapatan</td>
+                            <td class="bg-red">{{ total_pendapatan|number_format(0, ',', '.') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </main>
     </body>
 </html>

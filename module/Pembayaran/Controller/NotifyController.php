@@ -232,4 +232,22 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function hapusGaji($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        try
+        {
+            $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
+
+            $gaji->truncate();
+        }
+        catch(\Error $e) 
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
 }

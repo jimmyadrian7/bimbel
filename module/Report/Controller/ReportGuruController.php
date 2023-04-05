@@ -14,6 +14,7 @@ class ReportGuruController extends BaseReportController
             $postData = $request->getParsedBody();
             $data_row = [];
 
+            $guru = new \Bimbel\Guru\Model\Guru();
             $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
             $tagihans = new \Bimbel\Pembayaran\Model\Tagihan();
             $tagihan_details = new \Bimbel\Pembayaran\Model\TagihanDetail();
@@ -23,6 +24,7 @@ class ReportGuruController extends BaseReportController
             $month = $tanggal[1];
             $total_pendapatan = 0;
             
+            $guru = $guru->find($postData['guru_id']);
 
             // Komisi selain iuran
             $tagihan_details = $gaji->getTagihanDetailDll($postData['guru_id'], $year, $month);
@@ -42,7 +44,7 @@ class ReportGuruController extends BaseReportController
             $data_row = array_merge($data_row, $tagihan_details->toArray());
 
             $data = [
-                'judul' => "Pendapatan Guru",
+                'judul' => "Pendapatan " . $guru->orang->nama,
                 'periode' => $this->convertDate($postData['start_date'], "F Y"),
                 "data" => $data_row,
                 "total_pendapatan" => $total_pendapatan

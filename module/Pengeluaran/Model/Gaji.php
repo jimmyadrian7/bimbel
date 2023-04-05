@@ -150,8 +150,8 @@ class Gaji extends BaseModel
         $tagihan_detail = $tagihan_detail
             ->where('komisi', '>', 0)
             ->where('system', true)
-            ->whereDate("tanggal_iuran_mulai", ">=", $tanggal_gaji)
-            ->whereDate("tanggal_iuran_berakhir", "<=", $tanggal_gaji)
+            ->whereDate("tanggal_iuran_mulai", "<=", $tanggal_gaji)
+            ->whereDate("tanggal_iuran_berakhir", ">=", $tanggal_gaji)
             ->whereHas('tagihan', function($q) {
                 $q->where('status', 'l');
             })
@@ -161,14 +161,18 @@ class Gaji extends BaseModel
         {
             $tanggal_lunas = $td->tagihan->tanggal_lunas;
             $tanggal_lunas = new \DateTime($tanggal_lunas);
+
             $tanggal_gajian = new \DateTime($tanggal_gaji);
+
+            $tanggal_iuran_mulai = $td->tanggal_iuran_mulai;
+            $tanggal_iuran_mulai = new \DateTime($tanggal_iuran_mulai);
             
-            $interval = $tanggal_lunas->diff($tanggal_gajian);
+            $interval = $tanggal_lunas->diff($tanggal_iuran_mulai);
             $interval = $interval->m + 12 * $interval->y;
 
-            if ($interval > 0)
+            if ($interval > 0 && $tanggal_lunas->format("Y-m-01") == $tanggal_gaji)
             {
-                $td->komisi = $td->komisi * $interval;
+                $td->komisi = $td->komisi * ($interval + 1);
             }
         }
 

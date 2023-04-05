@@ -45,6 +45,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
                 table: true,
                 required: true 
             },
+            {name: "Siswa (mandarin)", value: "siswa.orang.nama_mandarin", table: true, hidden: true},
             {name: "Sub Total", value: "sub_total", type: 'number', table: true, hidden: true},
             {name: "Potongan", value: "potongan", type: 'number', table: true, hidden: true},
             {name: "Total", value: "total", type: 'number', table: true, hidden: true},
