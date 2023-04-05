@@ -52,7 +52,7 @@ class Log extends BaseModel
     }
 
 
-    function removeBase64(&$data)
+    public function removeBase64(&$data)
     {
         if (gettype($data) == "array")
         {
@@ -60,7 +60,7 @@ class Log extends BaseModel
             {
                 if (gettype($value) == "array")
                 {
-                    removeBase64($value);
+                    $this->removeBase64($value);
                 }
                 else
                 {
