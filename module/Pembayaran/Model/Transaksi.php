@@ -152,7 +152,7 @@ class Transaksi extends BaseModel
             return;
         }
 
-        if ($this->tagihan->hutang < $this->nominal)
+        if ($this->tagihan->hutang < $this->nominal && $this->status != "v")
         {
             throw new \Error("Pembayaran tidak dapat lebih besar dari hutang");
         }
@@ -175,9 +175,24 @@ class Transaksi extends BaseModel
         $this->handleFile($attributes);
         $this->cekStatus($attributes);
 
-        if (array_key_exists('tagihan_id', $attributes) && array_key_exists('nominal', $attributes))
+        if (array_key_exists('tagihan_id', $attributes) && array_key_exists('nominal', $attributes) && $this->status != "v")
         {
             $this->validateData($attributes);
+        }
+
+        if ($this->status == "v" && array_key_exists('tanggal', $attributes))
+        {
+            $tanggal_transaksi = $this->tanggal;
+            $tanggal_transaksi = new \DateTime($tanggal_transaksi);
+            $tanggal_transaksi = $tanggal_transaksi->format("Y-m-d");
+
+            if ($this->tagihan->tanggal_lunas == $tanggal_transaksi)
+            {
+                $this->tagihan->update([
+                    'tanggal_lunas' => $attributes['tanggal'],
+                    'siswa_id' => $this->tagihan->siswa_id
+                ]);
+            }
         }
 
 

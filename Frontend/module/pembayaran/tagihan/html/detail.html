@@ -90,7 +90,7 @@
                                             type="button"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0"
                                             ng-click="vm.editTransaksi(data)"
-                                            ng-if="data.status != 'v'">
+                                            ng-if="data.status != 'v' || !vm.isSiswa">
                                             <i class="fa fa-edit me-2"></i> Edit
                                         </button>
                                         <button
