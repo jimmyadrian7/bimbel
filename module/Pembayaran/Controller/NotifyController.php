@@ -280,7 +280,7 @@ class NotifyController extends Controller
                 $tanggal = new \DateTime($tagihan->tanggal);
                 $tanggal = $tanggal->format("Y-m-01");
                 $tanggal = new \DateTime($tanggal);
-                $tanggal->modify("+". ($it->iuran->bulan - 1) . "month");
+                $tanggal->modify("+". ($it->iuran->bulan) . "month");
                 $tanggal = $tanggal->format("Y-n");
                 $tanggal = explode("-", $tanggal);
 

@@ -138,7 +138,7 @@ class IuranTerbuat extends BaseModel
             $latestDate = new \DateTime($tanggal);
         }
 
-        $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
+        $latestDate->modify('+'. ($this->iuran->bulan) .' month');
         $latestDate = $latestDate->format('Y-n');
         $latestDate = explode("-", $latestDate);
 
