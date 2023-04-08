@@ -330,4 +330,7 @@ INSERT INTO `orang` (`id`, `nama`, `nama_mandarin`, `jenis_kelamin`, `agama_id`,
 (452, 'CHERLYN CLEVANIA', '符家琪', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (453, 'VANESSA JOVITA HENA', '王秋恩', 'p', 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (454, 'STEVE GAO', '高诗杰', 'l', 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(455, 'KELLYN', '郭欣亦', 'p', 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(455, 'KELLYN', '郭欣亦', 'p', 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(456, 'Alvin Tia', '榭邦照', 'l', 7, 'Baloi Blok II Jl.Mangga 1 No.13C', '-', 'Batam', '2015-05-01 00:00:00', NULL, '-', 'Wilfrid', 'Yuliana', '082171588128', 'Wiraswasta', 'IRT', NULL),
+(457, 'Marcella A.T', '陈筱昀', 'p', 4, 'Kezia Residence Blok B-12', '-', 'Batam', '2011-04-11 00:00:00', NULL, '-', 'Johan Antoni', 'Herni', '082362283888/08117007188', 'Jual Motor', 'IRT', NULL),
+(458, 'Nicholas D.', '丁伟杰', 'l', 4, 'Permata Baloi blok F6/05', 'bisi_huang@gmail.com', 'Batam', '2009-03-05 00:00:00', NULL, '-', 'Budi', 'Bisi', '08566568863', 'Wiraswasta', '-', NULL);

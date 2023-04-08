@@ -99,4 +99,7 @@ INSERT INTO `user` (`id`, `username`, `password`, `unenpass`, `jenis_user`, `ora
 (95, '9ca316', '$2y$10$keEarwQZOHxaifZDuhToF.Cga3kpse4LZp.DdhBEm4PJRVDCiHXEq', '3e680eb2', 'u', 24, 'a'),
 (96, '0cdf3d', '$2y$10$Ngy2s05Y3u/NhyluENUrrerSUG4mce0o1ZiLTK0bR/PPSpRaoRrMq', 'd7d8542b', 'u', 232, 'a'),
 (97, '0c67b0', '$2y$10$fih/f.9f2FnvssPJRSKc0ubCzz5iz.tGPHwZeFu1QqfmXXKw35EqO', '7e03e588', 'u', 151, 'a'),
-(98, '237da8', '$2y$10$XX5Sz5Vis/kzbTBj4X4X2eIRXwc09ib2PTqft4.cy2oHzTbZxidXi', '7b654e34', 'u', 231, 'a');
+(98, '237da8', '$2y$10$XX5Sz5Vis/kzbTBj4X4X2eIRXwc09ib2PTqft4.cy2oHzTbZxidXi', '7b654e34', 'u', 231, 'a'),
+(100, 'f14824', '$2y$10$a3oom60xPsxbQgG.PngTaunO6VSqy4u6xgVCiO4bLUZOtx2kMpF5C', 'efec482e', 'u', 456, 'a'),
+(101, 'e12aaa', '$2y$10$ks53AA8JxHYjHUworE32nuJOaDoGVssjtVPrjk.908x3ftg5v.wCq', '171aae4c', 'u', 457, 'a'),
+(102, '0ef9e1', '$2y$10$WUBaS9PwAZO7cQHdC3aRsOIRpGuxEBmOWEZK9oFE/e4rdfMQWbZia', '6de9470d', 'u', 458, 'a');

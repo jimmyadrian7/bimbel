@@ -35,4 +35,5 @@ INSERT INTO `pembiayaan` (`id`, `kategori_pembiayaan`, `kode`, `nama`, `harga`, 
 (15, 's', 'Biaya Iuran 400', 'Biaya Iuran 400', 400000, NULL, NULL, 's', NULL),
 (16, 's', 'Biaya Iuran 350', 'Biaya Iuran 350', 350000, NULL, NULL, 's', NULL),
 (17, 's', 'Biaya Iuran 300', 'Biaya Iuran 300', 300000, NULL, NULL, 's', NULL),
-(18, 's', 'Biaya Iuran 250', 'Biaya Iuran 250', 250000, NULL, NULL, 's', NULL);
+(18, 's', 'Biaya Iuran 250', 'Biaya Iuran 250', 250000, NULL, NULL, 's', NULL),
+(19, 's', 'Biaya Iuran 250 / Cuti', 'Biaya Iuran 250 / Cuti', 250000, NULL, NULL, 's', NULL);

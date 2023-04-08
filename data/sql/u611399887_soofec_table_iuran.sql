@@ -53,4 +53,5 @@ INSERT INTO `iuran` (`id`, `nama`, `bulan`) VALUES
 (35, 'Biaya Iuran 250 / 1 Tahun', 12),
 (36, 'Biaya Iuran 250 / 6 Bulan', 6),
 (37, 'Biaya Iuran 250 / 3 Bulan', 3),
-(38, 'Biaya Iuran 250 / 1 Bulan', 1);
+(38, 'Biaya Iuran 250 / 1 Bulan', 1),
+(45, 'Biaya Iuran 250 (Cuti) / 1 Bulan', 1);

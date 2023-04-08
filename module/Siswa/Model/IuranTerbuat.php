@@ -40,7 +40,7 @@ class IuranTerbuat extends BaseModel
         $bulan = $latestDate[1];
         $tahun = $latestDate[0];
         $total_tanggal = (int) ($tahun .  $bulan);
-        $total_current_tanggal = (int) ($this->tahun . $this->bulan);
+        $total_current_tanggal = (int) ($this->tahun . sprintf('%02d', $this->bulan));
 
         $tanggal_start = $tahun . "-" . $bulan . "-1";
         $tanggal_end = new \DateTime($tanggal_start);

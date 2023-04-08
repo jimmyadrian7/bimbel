@@ -59,11 +59,11 @@ INSERT INTO `siswa` (`id`, `no_formulir`, `guru_id`, `orang_id`, `status`, `tang
 (68, '11', 3, 71, 'a', '2019-10-27', 50, '-', '-', '-', '-', '-', '-', '-', '基础', 'Bahasa Mandarin', '学校教材', NULL, 1, 'Charitas', '-'),
 (70, '12', 3, 73, 'a', '2023-02-08', 50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Bahasa Mandarin', '中文', NULL, 1, '-', '-'),
 (71, '13', 3, 74, 'a', '2020-09-28', 50, '不会', '可以', '可以', '人字不会', '不会', '动', '慢慢学习', '教拼音、写汉字、认字、阅读', 'Bahasa Mandarin', '中文1', NULL, 1, 'Djuwita', '1D'),
-(83, '14', 3, 86, 'b', '2021-11-03', 50, '刚开始', '可以+加强', '可以+加强', '没问题', '不大会', '不太会专注、容易生气、加强道德观念', '父母向新老师', '写字较差、阅读加强、认字加强、孩子属于聪明、多鼓励引导', 'Bahasa Mandarin', '中文1', NULL, 1, 'Pelita Utama', '3'),
+(83, '14', 3, 86, 'a', '2021-11-03', 50, '刚开始', '可以+加强', '可以+加强', '没问题', '不大会', '不太会专注、容易生气、加强道德观念', '父母向新老师', '写字较差、阅读加强、认字加强、孩子属于聪明、多鼓励引导', 'Bahasa Mandarin', '中文1', NULL, 1, 'Pelita Utama', '3'),
 (84, '15', 3, 87, 'a', '2022-08-01', 50, '-', '-', '-', '-', '-', '-', '-', '-', 'Bahasa Mandarin', '华文', NULL, 1, 'Permata Harapan', '2'),
 (85, '16', 4, 88, 'b', '2022-01-11', 52, '-', '-', '-', '-', '-', NULL, '-', '-', 'Bahasa Mandarin', '华文', NULL, 1, 'Djuwita', '2'),
-(86, '17', 3, 89, 'b', '2022-02-12', 52, '-', '-', '-', '-', '-', '-', '-', '-', 'Bahasa Mandarin', '华文、学校教材', NULL, 1, 'Permata Harapan', '2'),
-(93, '18', 3, 96, 'b', '2023-02-08', 52, NULL, NULL, NULL, NULL, NULL, '基础能力', '希望孩子们能掌握中文能力', '多多关注', 'Bahasa Mandarin', '华文', NULL, 1, 'Permata Harapan', '1'),
+(86, '17', 3, 89, 'a', '2022-02-12', 52, '-', '-', '-', '-', '-', '-', '-', '-', 'Bahasa Mandarin', '华文、学校教材', NULL, 1, 'Permata Harapan', '2'),
+(93, '18', 3, 96, 'a', '2023-02-08', 52, NULL, NULL, NULL, NULL, NULL, '基础能力', '希望孩子们能掌握中文能力', '多多关注', 'Bahasa Mandarin', '华文', NULL, 1, 'Permata Harapan', '1'),
 (94, '19', 3, 97, 'a', '2022-02-19', 52, '-', '-', '-', '-', '-', NULL, '-', '基础课', 'Bahasa Mandarin', '华文、学校教材', NULL, 1, 'Tagbha Education Centre', '6'),
 (95, '20', 3, 98, 'a', '2022-04-01', 52, '-', '-', '-', '-', '-', '-', '-', '-', 'Bahasa Mandarin', '汉语3', NULL, 1, 'Permata Harapan', '5'),
 (104, '21', 3, 107, 'a', '2023-04-12', 52, '-', '-', '-', '-', '-', '-', '-', '-', 'Bahasa Mandarin', '汉语', '-', 1, 'Maitreyawira', '7'),
@@ -325,4 +325,7 @@ INSERT INTO `siswa` (`id`, `no_formulir`, `guru_id`, `orang_id`, `status`, `tang
 (443, '00058', 6, 452, 'b', '2023-03-10', 53, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'MANDARIN', NULL, NULL, 2, NULL, NULL),
 (444, '00059', 6, 453, 'b', '2023-03-10', 53, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Mandarin', NULL, NULL, 2, NULL, NULL),
 (445, '00060', 6, 454, 'b', '2023-03-10', 53, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'MANDARIN', NULL, NULL, 2, NULL, NULL),
-(446, '00061', 6, 455, 'b', '2023-02-27', 53, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'MANDARIN', '中文课本第七册', NULL, 2, NULL, NULL);
+(446, '00061', 6, 455, 'b', '2023-02-27', 53, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'MANDARIN', '中文课本第七册', NULL, 2, NULL, NULL),
+(447, '46', 3, 456, 'a', '2022-09-12', 54, '不太会', '会一点点', '会以点点', '不太会', '笔顺要加强', '-', '好', '好', 'Bahasa Mandarin', '中文', NULL, 1, 'Maitreyawira', '2D'),
+(448, '47', 3, 457, 'a', '2018-09-03', 50, '拼音需要加强', '听力很好', '还需要努力', '需要', '需要', '很好', '-', '-', 'Bahasa Mandarin', '汉语6', NULL, 1, 'Maitreyawira', '2J'),
+(449, '47', 3, 458, 'a', '2020-03-02', 50, '-', '-', '-', '-', '-', '-', '-', '-', 'Bahasa Mandarin', '汉语89', NULL, 1, 'Maitreyawira', '5');

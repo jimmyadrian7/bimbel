@@ -47,4 +47,4 @@ INSERT INTO `menu` (`id`, `kode`, `nama`, `parent`) VALUES
 (28, 'user', 'User', 'konfigurasi'),
 (29, 'referal', 'Referensi', 'konfigurasi'),
 (30, 'kursus', 'Tempat Kursus', 'konfigurasi'),
-(31, 'broadcast', 'Broadcast', NULL);
+(32, 'pendapatan_guru', 'Pendapatan Guru', 'laporan');

@@ -48,5 +48,4 @@ INSERT INTO `role_menu` (`id`, `role_id`, `menu_id`, `create`, `update`, `delete
 (27, 4, 20, NULL, NULL, NULL),
 (28, 4, 21, 1, 1, 1),
 (29, 4, 27, 1, 1, 1),
-(30, 4, 29, 1, 1, 1),
-(31, 4, 31, 1, 1, 1);
+(30, 4, 29, 1, 1, 1);
