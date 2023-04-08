@@ -55,6 +55,8 @@ import modalDiskon from "./html/modal/modal-diskon.html";
 
         vm.tagihanDetailFields = [
             {name: "Nama", value: "nama"},
+            {name: "Periode Mulai", value: "tanggal_iuran_mulai", type: 'date'},
+            {name: "Periode Akhir", value: "tanggal_iuran_berakhir", type: 'date'},
             {name: "Nominal", value: "nominal", type: 'number'},
             {name: "Qty", value: "qty", type: 'number'},
             {name: "Sub Total", value: "sub_total", type: 'number'},
