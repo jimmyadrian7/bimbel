@@ -291,12 +291,12 @@ import sortHtml from "./modal/sort.html";
                     }
 
 
-                    if (opt.type == "selection" || opt.type == "date" || opt.type == "boolean")
+                    if (opt.type == "selection" || opt.type == "boolean")
                     {
                         opt.operation = [{value: "=", label: "="}];
                     }
 
-                    if (opt.type == "number")
+                    if (opt.type == "number" || opt.type == "date")
                     {
                         opt.operation = [
                             {value: "=", label: "="},
