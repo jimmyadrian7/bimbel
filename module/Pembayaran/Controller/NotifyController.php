@@ -250,4 +250,53 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function fixTanggalIuran($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        try
+        {
+            $iuran_terbuat = new \Bimbel\Siswa\Model\IuranTerbuat();
+            $iuran_terbuat = $iuran_terbuat->get();
+
+            foreach($iuran_terbuat as $it)
+            {
+                $pembiayaan_ids = $it->iuran->iuran_detail->pluck("pembiayaan_id")->toArray();
+                $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+                $tagihan = $tagihan
+                    ->where("siswa_id", $it->siswa_id)
+                    ->whereHas("tagihan_detail", function($q) use ($pembiayaan_ids) {
+                        $q->whereIn('pembiayaan_id', $pembiayaan_ids);
+                    })
+                    ->first();
+
+                if (!$tagihan)
+                {
+                    echo "iuran terbuat id: " . $it->id . PHP_EOL;
+                    continue;
+                }
+
+                $tanggal = new \DateTime($tagihan->tanggal);
+                $tanggal = $tanggal->format("Y-m-01");
+                $tanggal = new \DateTime($tanggal);
+                $tanggal->modify("+". ($it->iuran->bulan - 1) . "month");
+                $tanggal = $tanggal->format("Y-n");
+                $tanggal = explode("-", $tanggal);
+
+                $update_value = [
+                    "bulan" => $tanggal[1],
+                    "tahun" => $tanggal[0]
+                ];
+
+                $it->update($update_value);
+            }
+        }
+        catch(\Error $e) 
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
 }

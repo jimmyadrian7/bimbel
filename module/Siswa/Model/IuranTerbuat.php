@@ -32,14 +32,14 @@ class IuranTerbuat extends BaseModel
         }else
         {
             $latestDate = new \DateTime('now');
-            $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
+            // $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
             $latestDate = $latestDate->format('Y-n');
             $latestDate = explode("-", $latestDate);
         }
         
         $bulan = $latestDate[1];
         $tahun = $latestDate[0];
-        $total_tanggal = (int) (((int) $tahun) . ((int) $bulan));
+        $total_tanggal = (int) ( $tahun .  $bulan);
         $total_current_tanggal = (int) (((int) $this->tahun) . ((int) $this->bulan));
 
         $tanggal_start = $tahun . "-" . $bulan . "-1";
@@ -120,9 +120,6 @@ class IuranTerbuat extends BaseModel
         if (!$tanggal)
         {
             $latestDate = new \DateTime('now');
-            $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
-            $latestDate = $latestDate->format('Y-n');
-            $latestDate = explode("-", $latestDate);
         }
         else
         {
@@ -137,7 +134,13 @@ class IuranTerbuat extends BaseModel
             {
                 throw new \Error("Tanggal telah tergenerate");
             }
+
+            $latestDate = new \DateTime($tanggal);
         }
+
+        $latestDate->modify('+'. ($this->iuran->bulan-1) .' month');
+        $latestDate = $latestDate->format('Y-n');
+        $latestDate = explode("-", $latestDate);
 
         $this->update([
             'bulan' => $latestDate[1],
