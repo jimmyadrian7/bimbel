@@ -219,7 +219,7 @@ class Tagihan extends BaseModel
         if ($data->status != 'p')
         {
             $data->editable = false;
-            $data->deleteable = false;
+            // $data->deleteable = false;
         }
 
         return $data;
