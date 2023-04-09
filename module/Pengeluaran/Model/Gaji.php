@@ -152,8 +152,11 @@ class Gaji extends BaseModel
             ->where('system', true)
             ->whereDate("tanggal_iuran_mulai", "<=", $tanggal_gaji)
             ->whereDate("tanggal_iuran_berakhir", ">=", $tanggal_gaji)
-            ->whereHas('tagihan', function($q) {
-                $q->where('status', 'l');
+            ->whereHas('tagihan', function($q) use ($guru_id) {
+                $q->where('status', 'l')
+                ->whereHas('siswa', function($query) use ($guru_id) {
+                    $query->where('guru_id', $guru_id);
+                });
             })
             ->get();
 
