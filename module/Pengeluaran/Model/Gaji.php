@@ -10,7 +10,7 @@ class Gaji extends BaseModel
     protected $fillable = [
         'guru_id', 'total_siswa', 
         'potongan', 'sub_total', 'tunjangan', 'komisi', 'total',
-        'tanggal', 'pengeluaran_id'
+        'tanggal', 'pengeluaran_id', "bulan", "tahun"
     ];
     protected $table = 'gaji';
 
@@ -79,12 +79,17 @@ class Gaji extends BaseModel
         $komisi = $this->hitungTagihan($guru->id, $year, $month);
         $tunjangan = $this->hitungTunjangan($guru);
 
+        $tanggal_gaji = $this->getTanggalGaji($attributes['tanggal']);
+        $tanggal_gaji = explode("-", $tanggal_gaji);
+
         $attributes['total_siswa'] = $guru->siswa->count();
         $attributes['potongan'] = $komisi['potongan'];
         $attributes['sub_total'] = $komisi['sub_total'];
         $attributes['komisi'] = $komisi['komisi'];
         $attributes['tunjangan'] = $tunjangan;
         $attributes['total'] = $komisi['komisi'] + $tunjangan;
+        $attributes['bulan'] = $tanggal_gaji[1];
+        $attributes['tahun'] = $tanggal_gaji[0];
     }
 
 
@@ -190,5 +195,13 @@ class Gaji extends BaseModel
         $tunjangan = $tunjangan->where('guru_id', $guru_id)->get();
 
         return $tunjangan;
+    }
+
+    public function getTanggalGaji($tanggal)
+    {
+        $tanggal = new \DateTime($tanggal);
+        $tanggal->modify("-1 month");
+        
+        return $tanggal->format("Y-m");
     }
 }
