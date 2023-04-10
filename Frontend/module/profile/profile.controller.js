@@ -50,7 +50,9 @@ import modal from "../konfigurasi/user/html/modal.html";
         vm.gajiFields = [
             {name: 'Total Siswa', value: 'total_siswa', type: 'number'},
             {name: 'Gaji', value: 'total', type: 'number'},
-            {name: 'Tanggal', value: 'tanggal', type: 'date'}
+            {name: 'Bulan', value: 'bulan'},
+            {name: 'Tahun', value: 'tahun'},
+            {name: 'Tanggal Gajian', value: 'tanggal', type: 'date'}
         ];
         vm.kursusFields = [
             {name: "Kode", value: "kode"},
