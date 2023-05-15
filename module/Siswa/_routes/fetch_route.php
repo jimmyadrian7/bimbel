@@ -19,3 +19,13 @@ $app->post("/api/siswa/generate/tagihan", function ($request, $response, $args) 
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/siswa/mass/generate/tagihan", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Siswa\Controller\FetchController");
+    $result = $controller->massGenerateTagihan($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});

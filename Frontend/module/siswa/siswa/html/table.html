@@ -1,5 +1,8 @@
 <app-table table="siswas" fields="vm.fields" detail="siswa.siswa_detail" form="siswa.siswa_form">
     <app-table-button>
+        <button type="button" class="btn btn-link text-gradient text-primary py-0 mb-0" ng-click="vm.modalTagihan()">
+            <i class="fa fa-cog me-2"></i> Tagihan
+        </button>
         <button type="button" class="btn btn-link text-gradient text-primary py-0 mb-0" ng-click="vm.getReportSiswa()">
             <i class="fa fa-file-excel-o me-2"></i> Siswa
         </button>

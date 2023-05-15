@@ -84,4 +84,32 @@ class FetchController extends Controller
 
         return $result;
     }
+
+    public function massGenerateTagihan($request, $args, &$response)
+    {
+        $result = true;
+
+        try 
+        {
+            $data = $request->getParsedBody();            
+            $siswas = new Siswa();
+            $siswas = $siswas->where('status', '=', 'a')->get();
+
+            foreach ($siswas as $siswa) {
+                try {
+                    $siswa->triggerIuran(false, $data['tanggal']);
+                }
+                catch(\Error $e)
+                {
+                    continue;
+                }
+            }
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
 }

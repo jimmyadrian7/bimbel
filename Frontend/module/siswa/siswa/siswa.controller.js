@@ -2,6 +2,7 @@ import iuran from "./html/modal/iuran.html";
 import edit_iuran from "./html/modal/edit_iuran.html";
 import jadwal from "./html/modal/jadwal.html";
 import tagihan_modal from "./html/modal/tagihan.html";
+import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
 
 (() => {
     "use strict";
@@ -149,6 +150,9 @@ import tagihan_modal from "./html/modal/tagihan.html";
         vm.resetTagihan = resetTagihan;
         vm.generateTagihan = generateTagihan;
         vm.buatTagihan = buatTagihan;
+
+        vm.modalTagihan = modalTagihan;
+        vm.genTagihan = genTagihan;
 
         activate();
 
@@ -368,6 +372,23 @@ import tagihan_modal from "./html/modal/tagihan.html";
             };
 
             req.post('siswa/generate/tagihan', data).then(response => {
+                Modal.getInstance(vm.myModal[0]).hide();
+                state.reload();
+            });
+        }
+        
+        function modalTagihan()
+        {
+            vm.myModal = $compile(generate_tagihan_modal)($scope);
+        }
+
+        function genTagihan()
+        {
+            let data = {
+                tanggal: vm.modal.tanggal_tagihan
+            };
+
+            req.post('siswa/mass/generate/tagihan', data).then(response => {
                 Modal.getInstance(vm.myModal[0]).hide();
                 state.reload();
             });
