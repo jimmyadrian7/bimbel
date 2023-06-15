@@ -72,6 +72,7 @@ class FetchController extends Controller
                     $tagihan->delete();
                 }
 
+                $siswa->update(['status' => 'b']);
                 $siswa->recreateIuran();
             }
 
