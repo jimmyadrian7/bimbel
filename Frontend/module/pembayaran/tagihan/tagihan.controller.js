@@ -34,7 +34,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         vm.dataId = stateParams.dataId;
         vm.activeDetail = -1;
         vm.fields = [
-            {name: "Tanggal", value: "tanggal", type: 'date', table: true, hidden: true},
+            {name: "Tanggal", value: "tanggal", type: 'date', table: true},
             {name: "Kode", value: "code", table: true, hidden: true},
             {
                 name: "Siswa", 
