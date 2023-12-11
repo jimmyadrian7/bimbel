@@ -12,7 +12,7 @@ CREATE TABLE `iuran_detail` (
   `skip` tinyint(1) DEFAULT NULL,
   `qty` int(11) DEFAULT NULL,
   `total` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `iuran_detail`
@@ -60,4 +60,14 @@ INSERT INTO `iuran_detail` (`id`, `iuran_id`, `pembiayaan_id`, `skip`, `qty`, `t
 (39, 36, 18, 0, 6, 1500000),
 (40, 37, 18, 0, 3, 750000),
 (41, 38, 18, 0, 1, 250000),
-(48, 45, 19, 0, 1, 250000);
+(48, 45, 19, 0, 1, 250000),
+(49, 46, 22, 0, 12, 12000000),
+(50, 47, 22, 0, 6, 6000000),
+(51, 48, 22, 0, 3, 3000000),
+(52, 49, 22, 0, 1, 1000000),
+(53, 50, 23, 0, 1, 225000),
+(54, 51, 1, 1, 1, 250000),
+(55, 51, 2, 1, 1, 20000),
+(56, 51, 3, 1, 1, 70000),
+(57, 51, 4, 1, 1, 300000),
+(58, 51, 24, 1, 1, 1000000);

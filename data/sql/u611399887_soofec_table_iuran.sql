@@ -9,7 +9,7 @@ CREATE TABLE `iuran` (
   `id` int(11) NOT NULL,
   `nama` varchar(255) DEFAULT NULL,
   `bulan` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `iuran`
@@ -54,4 +54,10 @@ INSERT INTO `iuran` (`id`, `nama`, `bulan`) VALUES
 (36, 'Biaya Iuran 250 / 6 Bulan', 6),
 (37, 'Biaya Iuran 250 / 3 Bulan', 3),
 (38, 'Biaya Iuran 250 / 1 Bulan', 1),
-(45, 'Biaya Iuran 250 (Cuti) / 1 Bulan', 1);
+(45, 'Biaya Iuran 250 (Cuti) / 1 Bulan', 1),
+(46, 'Biaya Iuran 1 Juta / 1 Tahun', 12),
+(47, 'Biaya Iuran 1 Juta / 6 Bulan', 6),
+(48, 'Biaya Iuran 1 Juta / 3 Bulan', 3),
+(49, 'Biaya Iuran 1 Juta / 1 Bulan', 1),
+(50, 'Biaya Iuran 1/2 Bulan', 1),
+(51, 'Biaya Iuran Pendaftaran Dewasa', 1);

@@ -2,6 +2,7 @@
 namespace Bimbel\Report\Controller;
 
 use \Bimbel\Report\Controller\BaseReportController;
+use Illuminate\Support\Collection;
 
 class ReportGuruController extends BaseReportController
 {
@@ -12,7 +13,7 @@ class ReportGuruController extends BaseReportController
         try
         {
             $postData = $request->getParsedBody();
-            $data_row = [];
+            $data_row = collect([]);
 
             $guru = new \Bimbel\Guru\Model\Guru();
             $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
@@ -29,20 +30,22 @@ class ReportGuruController extends BaseReportController
             // Komisi selain iuran
             $tagihan_details = $gaji->getTagihanDetailDll($postData['guru_id'], $year, $month);
             $tagihan_details = $tagihan_details->map->format();
-            $total_pendapatan += $tagihan_details->sum("komisi");
-            $data_row = array_merge($data_row, $tagihan_details->toArray());
+            $data_row = $data_row->merge($tagihan_details);
 
             // Komisi iuran
             $tagihan_details = $gaji->getTagihanDetailIuran($postData['guru_id'], $year, $month);
             $tagihan_details = $tagihan_details->map->format();
-            $total_pendapatan += $tagihan_details->sum("komisi");
-            $data_row = array_merge($data_row, $tagihan_details->toArray());
+            $data_row = $data_row->merge($tagihan_details);
 
             $tagihan_details = $gaji->getTunjangan($postData['guru_id']);
             $tagihan_details = $tagihan_details->map->format();
-            $total_pendapatan += $tagihan_details->sum("komisi");
-            $data_row = array_merge($data_row, $tagihan_details->toArray());
-
+            $data_row = $data_row->merge($tagihan_details);
+            
+            // Sort by Komisi
+            $data_row = $data_row->sortBy('persen_komisi');
+            $total_pendapatan = $data_row->sum('komisi');
+            $data_row = $data_row->toArray();
+            
             $data = [
                 'judul' => "Pendapatan " . $guru->orang->nama,
                 'periode' => $this->convertDate($postData['start_date'], "F Y"),

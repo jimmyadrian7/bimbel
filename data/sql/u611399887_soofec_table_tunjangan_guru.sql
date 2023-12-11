@@ -10,4 +10,4 @@ CREATE TABLE `tunjangan_guru` (
   `guru_id` int(11) DEFAULT NULL,
   `nama` varchar(255) DEFAULT NULL,
   `nominal` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

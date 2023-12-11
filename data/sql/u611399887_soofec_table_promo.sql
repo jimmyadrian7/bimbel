@@ -10,7 +10,7 @@ CREATE TABLE `promo` (
   `tanggal` datetime DEFAULT current_timestamp(),
   `judul` varchar(255) DEFAULT NULL,
   `gambar_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `promo`

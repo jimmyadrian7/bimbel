@@ -9,7 +9,7 @@ CREATE TABLE `guru_kursus` (
   `id` int(11) NOT NULL,
   `guru_id` int(11) DEFAULT NULL,
   `kursus_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `guru_kursus`
@@ -25,4 +25,10 @@ INSERT INTO `guru_kursus` (`id`, `guru_id`, `kursus_id`) VALUES
 (7, 7, 3),
 (8, 7, 2),
 (9, 8, 3),
-(10, 9, 2);
+(10, 9, 2),
+(14, 13, 1),
+(15, 4, 5),
+(16, 14, 2),
+(17, 14, 5),
+(18, 15, 1),
+(19, 13, 2);

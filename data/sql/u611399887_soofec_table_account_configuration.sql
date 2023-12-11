@@ -17,7 +17,7 @@ CREATE TABLE `account_configuration` (
   `mail_port` varchar(255) DEFAULT NULL,
   `mail_user` varchar(255) DEFAULT NULL,
   `mail_pass` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `account_configuration`

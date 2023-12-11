@@ -299,4 +299,24 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function resetSequanceTagihan($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+        $tagihan = $tagihan->orderBy('code', 'ASC')->get();
+        $seq = new \Bimbel\Master\Model\Kursus();
+
+        $kursus = new \Bimbel\Master\Model\Kursus();
+        $kursus->whereRaw('1=1')->update(['sequance' => 0]);
+
+        foreach($tagihan as $p)
+        {
+            $p->code = $seq->getnextCode($p->kursus_id);
+            $p->save();
+        }
+
+        return $result;
+    }
 }

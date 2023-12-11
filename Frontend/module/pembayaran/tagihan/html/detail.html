@@ -59,6 +59,9 @@
                                         Nominal
                                     </th>
                                     <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Jenis Pembayaran
+                                    </th>
+                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Bukti pembayaran
                                     </th>
                                     <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -76,12 +79,13 @@
                     
                                 <tr ng-repeat="data in vm.data.transaksi track by $index" ng-if="vm.data.transaksi.length > 0">
                                     <td><app-form-preview type="number" value="data.nominal"></app-form-preview></td>
+                                    <td><app-form-preview value="vm.getLabel(data.jenis_pembayaran, vm.jenisOption)"></app-form-preview></td>
                                     <td><app-form-preview type="file" value="data.bukti_pembayaran"></app-form-preview></td>
                                     <td><app-form-preview type="date" value="data.tanggal"></app-form-preview></td>
                                     <td>
                                         <button 
                                             type="button"
-                                            ng-if="data.status != 'v' && !vm.isSiswa"
+                                            ng-if="data.status != 'v' && !vm.isSiswa && (data.jenis_pembayaran == 'c' && vm.isAdmin)"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0" 
                                             ng-click="vm.verif(data)">
                                             <i class="fa fa-check me-2"></i> Verif

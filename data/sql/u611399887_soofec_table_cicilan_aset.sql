@@ -12,4 +12,4 @@ CREATE TABLE `cicilan_aset` (
   `pengeluaran_id` int(11) DEFAULT NULL,
   `nominal` int(11) DEFAULT NULL,
   `tanggal` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

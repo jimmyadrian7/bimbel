@@ -10,13 +10,13 @@ CREATE TABLE `sequance` (
   `kode` varchar(255) DEFAULT NULL,
   `nama` varchar(255) DEFAULT NULL,
   `nomor` int(11) DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sequance`
 --
 
 INSERT INTO `sequance` (`id`, `kode`, `nama`, `nomor`) VALUES
-(1, 'PMB-', 'pembiayaan', 65),
+(1, 'PMB-', 'pembiayaan', 1362),
 (2, 'PNDF-', 'pendaftaran', 1),
 (3, 'TA-', 'tabungan_aset', 1);

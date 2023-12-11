@@ -17,4 +17,4 @@ CREATE TABLE `tabungan_aset` (
   `cicil` int(11) DEFAULT NULL,
   `kursus_id` int(11) DEFAULT NULL,
   `status` enum('a','c','l') DEFAULT 'a'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

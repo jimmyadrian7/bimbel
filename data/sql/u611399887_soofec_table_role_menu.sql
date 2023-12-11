@@ -12,7 +12,7 @@ CREATE TABLE `role_menu` (
   `create` tinyint(1) DEFAULT NULL,
   `update` tinyint(1) DEFAULT NULL,
   `delete` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role_menu`

@@ -155,12 +155,12 @@ class Tagihan extends BaseModel
         $this->validateData($attributes);
 
         $tagihan_details = self::getValue($attributes, 'tagihan_detail');
-
-        $seq = new \Bimbel\Master\Model\Sequance();
-        $attributes['code'] = $seq->getnextCode('pembiayaan');
         $this->autoFillData($attributes);
-		$tagihan = parent::create($attributes);
+
+        $seq = new \Bimbel\Master\Model\Kursus();
+        $attributes['code'] = $seq->getnextCode($attributes['kursus_id']);
         
+		$tagihan = parent::create($attributes);
         $tagihan->handleTagihanDetail($tagihan_details);
 
         return $tagihan;

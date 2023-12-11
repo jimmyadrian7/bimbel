@@ -56,7 +56,9 @@
 
             <div class="col-12">
                 <table>
-                    <tr ng-repeat="field in vm.transaksiFields" ng-if="!field.hidden && !(field.value == 'nominal' && vm.modal.form.status == 'v')">
+                    <tr 
+                        ng-repeat="field in vm.transaksiFields" 
+                        ng-if="!field.hidden && !(field.value == 'nominal' && vm.modal.form.status == 'v') && !(field.value == 'bukti_pembayaran' && vm.modal.form.jenis_pembayaran != 'tf')">
                         <td class="text-xs" ng-bind="field.name"></td>
                         <td class="px-3">:</td>
                         <td>

@@ -15,7 +15,7 @@ CREATE TABLE `konfigurasi_web` (
   `whatsapp` text DEFAULT NULL,
   `instagram` text DEFAULT NULL,
   `tiktok` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `konfigurasi_web`

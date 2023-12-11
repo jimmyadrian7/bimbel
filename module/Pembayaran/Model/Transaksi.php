@@ -8,13 +8,18 @@ use Bimbel\Master\Model\File;
 
 class Transaksi extends BaseModel
 {
-    protected $fillable = ['tagihan_id', 'nominal', 'bukti_pembayaran_id', 'bukti_pembayaran', 'tanggal', 'status'];
+    protected $fillable = ['tagihan_id', 'nominal', 'bukti_pembayaran_id', 'bukti_pembayaran', 'tanggal', 'jenis_pembayaran', 'status'];
     protected $table = 'transaksi';
     protected $with = ['bukti_pembayaran'];
 
     protected $status_enum = [
         ["value" => "p", "label" => "Proses"],
         ["value" => "v", "label" => "Verif"]
+    ];
+
+    protected $jenis_pembayaran_enum = [
+        ["value" => "c", "label" => "Tunai"],
+        ["value" => "tf", "label" => "Transfer"]
     ];
 
 

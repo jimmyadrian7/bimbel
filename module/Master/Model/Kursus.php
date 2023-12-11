@@ -6,7 +6,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class Kursus extends BaseModel
 {
-    protected $fillable = ['kode', 'nama', 'user'];
+    protected $fillable = ['kode', 'nama', 'user', 'sequance'];
     protected $table = 'kursus';
 
 
@@ -34,4 +34,20 @@ class Kursus extends BaseModel
 
         return $data;
     }
+
+    public function getnextCode($id)
+	{
+		$kursus = $this->find($id);
+
+		if (empty($kursus))
+		{
+			return "-";
+		}
+        
+        $kursus->refresh();
+		$kode = $kursus->kode . "-". sprintf('%03d', $kursus->sequance + 1);
+		$kursus->update(['sequance' => $kursus->sequance + 1]);
+
+		return $kode;
+	}
 }

@@ -11,4 +11,4 @@ CREATE TABLE `kontak` (
   `email` varchar(255) DEFAULT NULL,
   `subject` varchar(255) DEFAULT NULL,
   `message` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

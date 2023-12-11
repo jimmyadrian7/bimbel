@@ -10,7 +10,7 @@ CREATE TABLE `testimoni` (
   `gambar_id` int(11) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
   `tipe` enum('g','l') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `testimoni`

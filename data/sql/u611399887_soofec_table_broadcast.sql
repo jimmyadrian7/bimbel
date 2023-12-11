@@ -10,4 +10,4 @@ CREATE TABLE `broadcast` (
   `template_name` varchar(255) DEFAULT NULL,
   `content` varchar(255) DEFAULT NULL,
   `status` enum('n','s') DEFAULT 'n'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

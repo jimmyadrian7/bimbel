@@ -11,7 +11,7 @@ CREATE TABLE `pengumuman` (
   `isi` varchar(255) DEFAULT NULL,
   `gambar_id` int(11) DEFAULT NULL,
   `tanggal` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pengumuman`

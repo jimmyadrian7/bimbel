@@ -15,7 +15,7 @@ CREATE TABLE `pembiayaan` (
   `jumlah_stok` int(11) DEFAULT NULL,
   `jenis_komisi` enum('s','p','n') DEFAULT NULL,
   `nominal` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pembiayaan`
@@ -36,4 +36,9 @@ INSERT INTO `pembiayaan` (`id`, `kategori_pembiayaan`, `kode`, `nama`, `harga`, 
 (16, 's', 'Biaya Iuran 350', 'Biaya Iuran 350', 350000, NULL, NULL, 's', NULL),
 (17, 's', 'Biaya Iuran 300', 'Biaya Iuran 300', 300000, NULL, NULL, 's', NULL),
 (18, 's', 'Biaya Iuran 250', 'Biaya Iuran 250', 250000, NULL, NULL, 's', NULL),
-(19, 's', 'Biaya Iuran 250 / Cuti', 'Biaya Iuran 250 / Cuti', 250000, NULL, NULL, 's', NULL);
+(19, 's', 'Biaya Iuran 250 / Cuti', 'Biaya Iuran 250 / Cuti', 250000, NULL, NULL, 's', NULL),
+(20, 'd', 'deposit250', 'deposit', 250000, 1, -1, 'n', NULL),
+(21, 'd', 'deposit300', 'deposit', 300000, 0, NULL, 's', NULL),
+(22, 's', 'Biaya Iuran 1 Juta', 'Biaya Iuran 1 Juta', 1000000, NULL, NULL, 's', NULL),
+(23, 's', 'Biaya Iuran 225', 'Biaya Iuran 1/2 Bulan', 225000, NULL, NULL, 's', NULL),
+(24, 'd', 'Deposit Dewasa', 'Deposit Dewasa', 1000000, 1, -1, 's', NULL);

@@ -27,7 +27,15 @@ import modalDiskon from "./html/modal/modal-diskon.html";
             {label: "Nominal", value: "n"}
         ];
 
+        let jenisOption = [
+            {label: "Tunai", value: "c"},
+            {label: "Transfer", value: "tf"}
+        ];
+
         vm.isSiswa = session.isSiswa();
+        vm.isAdmin = session.isAdminCabang() || session.isSuperUser();
+
+        console.log(session.isAdminCabang(), session.isSuperUser());
 
         vm.data = {tagihan_detail: []};
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
@@ -76,9 +84,10 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         ];
 
         vm.transaksiFields = [
-            {name: "Tanggal", value: "tanggal", type: 'date'},
-            {name: "Nominal", value: "nominal", type: 'number'},
-            {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: 'file'}
+            {name: "Tanggal", value: "tanggal", type: 'date', required: true},
+            {name: "Nominal", value: "nominal", type: 'number', required: true},
+            {name: "Jenis Pembayaran", value: "jenis_pembayaran", type: 'selection', selection: jenisOption, required: true},
+            {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: 'file', required: true},
         ];
 
         vm.modal = {form: {tanggal: moment(new Date()).format("YYYY-MM-DD")}};
@@ -86,6 +95,9 @@ import modalDiskon from "./html/modal/modal-diskon.html";
         vm.myModalDiskon = false;
 
         vm.getValue = getValue;
+        vm.getLabel = getLabel;
+
+        vm.jenisOption = jenisOption;
 
         vm.bayarTagihan = bayarTagihan;
         vm.buatTransaksi = buatTransaksi;
@@ -142,7 +154,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
 
         function bayarTagihan()
         {
-            vm.modal.form = {tanggal: moment(new Date()).format("YYYY-MM-DD")};
+            vm.modal.form = {tanggal: moment(new Date()).format("YYYY-MM-DD"), jenis_pembayaran: 'tf'};
             vm.myModal = $compile(modal)($scope);
         }
         function buatTransaksi()
@@ -151,8 +163,36 @@ import modalDiskon from "./html/modal/modal-diskon.html";
                 nominal: vm.modal.form.nominal,
                 tagihan_id: vm.data.id,
                 bukti_pembayaran: vm.modal.form.bukti_pembayaran,
-                tanggal: vm.modal.form.tanggal
+                tanggal: vm.modal.form.tanggal,
+                jenis_pembayaran: vm.modal.form.jenis_pembayaran
             };
+
+            let isValid = true;
+            let invalid = [];
+
+            if (!data.nominal)
+            {
+                invalid.push("Nominal wajib diisi.");
+            }
+            if (data.jenis_pembayaran == 'tf' && !data.bukti_pembayaran)
+            {
+                invalid.push("Bukti Pembayaran wajib diisi.");
+
+            }
+            if (!data.tanggal)
+            {
+                invalid.push("Tanggal wajib diisi.");
+            }
+            if (!data.jenis_pembayaran)
+            {
+                invalid.push("Jenis Pembayaran wajib diisi.");
+            }
+
+            if (invalid.length > 0)
+            {
+                logger.error(invalid[0]);
+                return;
+            }
 
             if (vm.modal.form.id)
             {
