@@ -314,9 +314,9 @@ class Siswa extends BaseModel
 
         switch($attributes['status'])
         {
-            case "p":
-                $attributes['status'] = $this->cekDeposit();
-            break;
+            // case "p":
+            //     $attributes['status'] = $this->cekDeposit();
+            // break;
             
             case "a":
                 $this->createUser();

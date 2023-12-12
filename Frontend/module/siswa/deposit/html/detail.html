@@ -1,14 +1,28 @@
-<app-detail table="deposit" id="vm.dataId" fields="vm.fields" list="siswa.deposit">
+<app-detail table="deposit" id="vm.dataId" fields="vm.fields" list="siswa.deposit" edit="siswa.deposit_form">
     <app-detail-button class="d-flex">
-        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.uploadBukti()" ng-if="vm.data.status == 'a'">
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.uploadBukti()">
             <i class="fa fa-upload me-2"></i> Upload Bukti
         </button>
         <button 
             type="button"
             class="btn btn-link text-gradient text-primary px-3 mb-0"
-            ng-if="vm.data.siswa.status == 'p' && !vm.isSiswa"
-            ng-click="vm.updateStatus()">
-            <i class="fa fa-check me-2"></i> Kembalikan
+            ng-if="vm.data.status != 't'"
+            ng-click="vm.updateStatus('t')">
+            <i class="fa fa-arrow-left me-2"></i> Kembalikan
+        </button>
+        <button 
+            type="button"
+            class="btn btn-link text-gradient text-primary px-3 mb-0"
+            ng-if="vm.data.status != 'h'"
+            ng-click="vm.updateStatus('h')">
+            <i class="fa fa-times me-2"></i> Hangus
+        </button>
+        <button 
+            type="button"
+            class="btn btn-link text-gradient text-primary px-3 mb-0"
+            ng-if="vm.data.status != 'a'"
+            ng-click="vm.updateStatus('a')">
+            <i class="fa fa-check me-2"></i> Aktif
         </button>
     </app-detail-button>
     

@@ -108,8 +108,8 @@ class Deposit extends BaseModel
         $obj = $obj->with('siswa', 'siswa.orang', 'bukti_pembayaran');
         $data = parent::fetchDetail($id, $obj);
 
-        $data->editable = false;
-        $data->deleteable = false;
+        // $data->editable = false;
+        // $data->deleteable = false;
 
         return $data;
     }

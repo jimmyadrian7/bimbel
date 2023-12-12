@@ -25,9 +25,9 @@ import modal from "./html/modal.html";
 
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [
-            {name: "Tanggal", value: "tanggal", table: true, hidden: true, type: "date"},
-            {name: "Nominal", value: "nominal", table: true, hidden: true, type: "number"},
-            {name: "Siswa", value: "siswa.orang.nama", table: true},
+            {name: "Tanggal", value: "tanggal", table: true, type: "date"},
+            {name: "Nominal", value: "nominal", table: true, type: "number"},
+            {name: "Siswa", value: "siswa.orang.nama", table: true, hidden: true},
             {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: "file", table: true},
             vm.status_field
         ];
@@ -83,11 +83,11 @@ import modal from "./html/modal.html";
             }
         }
 
-        function updateStatus()
+        function updateStatus(status)
         {
             let data = {
                 id: vm.data.id,
-                status: 't'
+                status: status
             };
 
             req.put('deposit', data).then(response => state.reload());

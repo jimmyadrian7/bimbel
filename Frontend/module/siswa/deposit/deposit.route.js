@@ -1,5 +1,6 @@
 import table from "./html/table.html";
 import detail from "./html/detail.html";
+import form from "./html/form.html";
 
 (() => {
     "use strict";
@@ -37,6 +38,18 @@ import detail from "./html/detail.html";
                     controller: 'DepositController',
                     controllerAs: 'vm',
                     title: 'Detail Deposit',
+                    menu: 'siswa',
+                    nav: 'deposit'
+                }
+            },
+            {
+                state: 'siswa.deposit_form',
+                config: {
+                    url: '/Deposit/{dataId}',
+                    template: form,
+                    controller: 'DepositController',
+                    controllerAs: 'vm',
+                    title: 'Form Deposit',
                     menu: 'siswa',
                     nav: 'deposit'
                 }
