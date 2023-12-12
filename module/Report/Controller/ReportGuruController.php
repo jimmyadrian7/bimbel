@@ -19,6 +19,12 @@ class ReportGuruController extends BaseReportController
             $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
             $tagihans = new \Bimbel\Pembayaran\Model\Tagihan();
             $tagihan_details = new \Bimbel\Pembayaran\Model\TagihanDetail();
+            $transaksi = new \Bimbel\Pembayaran\Model\Transaksi();
+
+            $jenis_pembayaran_list = [];
+            foreach ($transaksi->jenis_pembayaran_enum as $key => $value) {
+                $jenis_pembayaran_list[$value['value']] = $value['label'];
+            }
 
             $tanggal = explode("-", $postData['start_date']);
             $year = $tanggal[0];
@@ -44,12 +50,15 @@ class ReportGuruController extends BaseReportController
             // Sort by Komisi
             $data_row = $data_row->sortBy('persen_komisi');
             $total_pendapatan = $data_row->sum('komisi');
-            $data_row = $data_row->toArray();
+
+            $data = $data_row->groupBy(['kursus', 'jenis_transaksi']);
+            // $data_row = $data_row->toArray();
             
             $data = [
                 'judul' => "Pendapatan " . $guru->orang->nama,
                 'periode' => $this->convertDate($postData['start_date'], "F Y"),
-                "data" => $data_row,
+                'jenis_pembayaran_list' => $jenis_pembayaran_list,
+                "data" => $data,
                 "total_pendapatan" => $total_pendapatan
             ];
 

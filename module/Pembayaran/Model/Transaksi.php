@@ -12,12 +12,12 @@ class Transaksi extends BaseModel
     protected $table = 'transaksi';
     protected $with = ['bukti_pembayaran'];
 
-    protected $status_enum = [
+    public $status_enum = [
         ["value" => "p", "label" => "Proses"],
         ["value" => "v", "label" => "Verif"]
     ];
 
-    protected $jenis_pembayaran_enum = [
+    public $jenis_pembayaran_enum = [
         ["value" => "c", "label" => "Tunai"],
         ["value" => "tf", "label" => "Transfer"]
     ];

@@ -24,11 +24,21 @@
                             <td class="pr-50">Laporan</td>
                             <td>{{judul}}</td>
                         </tr>
+
                         {% if periode %}
                             <tr>
                                 <td class="pr-50">Periode</td>
                                 <td>{{periode}}</td>
                             </tr>
+                        {% endif %}
+
+                        {% if additional %}
+                            {% for ad in additional %}
+                                <tr>
+                                    <td class="pr-50">{{ad.label}}</td>
+                                    <td>{{ad.value}}</td>
+                                </tr>
+                            {% endfor %}
                         {% endif %}
                     </table>
             {% else %}

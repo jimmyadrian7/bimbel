@@ -165,6 +165,8 @@ class TagihanDetail extends BaseModel
             $persen_komisi = $this->pembiayaan->nominal;
         }
 
+        $jenis_pembayaran = $this->tagihan->transaksi->last()->jenis_pembayaran;
+
         return [
             "nama_siswa" => $this->tagihan->siswa->orang->nama,
             "kode_tagihan" => $this->tagihan->code,
@@ -173,7 +175,9 @@ class TagihanDetail extends BaseModel
             "nama_item" => $this->nama,
             "harga_total" => $this->total,
             "persen_komisi" => $persen_komisi,
-            "komisi" => $this->komisi
+            "kursus" => $this->tagihan->kursus->nama,
+            "jenis_transaksi" => $jenis_pembayaran,
+            "komisi" => $this->komisi,
         ];
     }
 }
