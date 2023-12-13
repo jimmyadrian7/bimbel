@@ -16,7 +16,7 @@ class ReportController extends BaseReportController
             SELECT 
                 tagihan_detail.nama AS deskripsi,
                 SUM(tagihan_detail.qty) AS qty,
-                sum(tagihan_detail.total - tagihan_detail.komisi) AS total
+                sum(tagihan_detail.total) AS total
             FROM tagihan_detail
             LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
             WHERE 
@@ -48,10 +48,56 @@ class ReportController extends BaseReportController
         return $tagihan;
     }
 
+    public function queryTotalKomisi($postData)
+    {
+        $params = [
+            'start_date' => $postData['start_date'],
+            'end_date' => $postData['end_date']
+        ];
+
+        $start_date = date('d/m/Y', strtotime($postData['start_date']));
+        $end_date = date('d/m/Y', strtotime($postData['end_date']));
+
+        $query = "
+            SELECT
+                'Komisi Guru " . $start_date . " - " . $end_date . "' as nama,
+                '1' as jumlah,
+                sum(tagihan_detail.komisi) AS total
+            FROM tagihan_detail
+            LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
+            WHERE 
+                DATE(tagihan.tanggal) >= :start_date AND 
+                DATE(tagihan.tanggal) <= :end_date AND
+                %s
+        ";
+        $where_condition = "1=1";
+
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+        {
+            $where_condition = "tagihan.kursus_id = :tempat_kursus";
+            $params['tempat_kursus'] = $postData['tempat_kursus'];
+        }
+        else
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $where_condition = "tagihan.kursus_id IN (" . join(",", $kursus_ids) . ")";
+            }
+        }
+
+        $query = sprintf($query, $where_condition);
+        $komisi = DB::select(DB::raw($query), $params);
+
+        return $komisi;
+    }
+
     public function queryPengeluaran($postData)
     {
         $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
         $pengeluaran = $pengeluaran
+            ->select('nama', 'jumlah', 'total')
             ->whereDate('tanggal', '>=', $postData['start_date'])
             ->whereDate('tanggal', '<=', $postData['end_date']);
 
@@ -81,7 +127,6 @@ class ReportController extends BaseReportController
         try
         {
             $postData = $request->getParsedBody();
-            $tagihan = new \Bimbel\Pembayaran\Model\TagihanDetail();
 
             $tagihan = $this->queryPendapatan($postData);
             $total_pendapatan = array_reduce($tagihan, function($result, $array) {
@@ -89,7 +134,9 @@ class ReportController extends BaseReportController
                 return $result;
             }, 0);
 
-            $pengeluaran = $this->queryPengeluaran($postData);
+            $pengeluaran = collect($this->queryPengeluaran($postData)->toArray());
+            $total_komisi = $this->queryTotalKomisi($postData);
+            $pengeluaran = $pengeluaran->merge($total_komisi);
 
             $data = [
                 'judul' => "Laba Rugi",
