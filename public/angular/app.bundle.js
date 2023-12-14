@@ -558,7 +558,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _htm
   \*****************************************************************/
 /***/ (() => {
 
-eval("(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.konfigurasi.kursus')\r\n        .controller('KursusController', KursusController);\r\n\r\n    KursusController.$inject = ['$stateParams'];\r\n\r\n    function KursusController(stateParams)\r\n    {\r\n        let vm = this;\r\n\r\n        vm.dataId = stateParams.dataId;\r\n        vm.fields = [\r\n            {name: \"Kode\", value: \"kode\", table: true, required: true},\r\n            {name: \"Nama\", value: \"nama\", table: true, required: true}\r\n        ];\r\n    }\r\n})()\n\n//# sourceURL=webpack://bimbel/./Frontend/module/konfigurasi/kursus/kursus.controller.js?");
+eval("(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.konfigurasi.kursus')\r\n        .controller('KursusController', KursusController);\r\n\r\n    KursusController.$inject = ['$stateParams'];\r\n\r\n    function KursusController(stateParams)\r\n    {\r\n        let vm = this;\r\n\r\n        vm.dataId = stateParams.dataId;\r\n        vm.fields = [\r\n            {name: \"Kode\", value: \"kode\", table: true, required: true},\r\n            {name: \"Nama\", value: \"nama\", table: true, required: true},\r\n            {name: \"Sequance\", value: \"sequance\", table: true, required: true, hidden: true},\r\n        ];\r\n    }\r\n})()\n\n//# sourceURL=webpack://bimbel/./Frontend/module/konfigurasi/kursus/kursus.controller.js?");
 
 /***/ }),
 
