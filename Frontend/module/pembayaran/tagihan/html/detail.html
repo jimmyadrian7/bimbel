@@ -85,7 +85,7 @@
                                     <td>
                                         <button 
                                             type="button"
-                                            ng-if="data.status != 'v' && !vm.isSiswa && (data.jenis_pembayaran == 'c' && vm.isAdmin)"
+                                            ng-if="data.status != 'v' && !vm.isSiswa && !(data.jenis_pembayaran == 'c' && !vm.isAdmin)"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0" 
                                             ng-click="vm.verif(data)">
                                             <i class="fa fa-check me-2"></i> Verif
