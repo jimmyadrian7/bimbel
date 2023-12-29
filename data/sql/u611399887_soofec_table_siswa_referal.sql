@@ -202,4 +202,5 @@ INSERT INTO `siswa_referal` (`id`, `siswa_id`, `referal_id`) VALUES
 (234, 579, 1),
 (235, 580, 1),
 (236, 583, 1),
-(237, 586, 1);
+(237, 586, 1),
+(238, 588, 2);

@@ -17,4 +17,4 @@ CREATE TABLE `promo` (
 --
 
 INSERT INTO `promo` (`id`, `tanggal`, `judul`, `gambar_id`) VALUES
-(3, '2021-04-17 00:00:00', 'How a Little Bit of Hydra Regrows a Whole Animal', 7);
+(4, '2024-01-02 00:00:00', 'Promosi Siswa Baru 2024', 168);

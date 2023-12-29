@@ -18,4 +18,4 @@ CREATE TABLE `pengumuman` (
 --
 
 INSERT INTO `pengumuman` (`id`, `judul`, `isi`, `gambar_id`, `tanggal`) VALUES
-(1, 'Macquarie University, Sydney, Australia', 'Maiores voluptas laboriosam non dolorum perferendis fuga repellat aut. Blanditiis quos in minus. Voluptatum quia quia voluptas voluptatem vero ex possimus.', 1, '2022-12-23 00:00:00');
+(5, 'Libur NaTaRu', 'Selamat Hari Natal dan Tahun Baru', 167, '2023-12-24 00:00:00');

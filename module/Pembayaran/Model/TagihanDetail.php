@@ -177,7 +177,7 @@ class TagihanDetail extends BaseModel
             "persen_komisi" => $persen_komisi,
             "kursus" => $this->tagihan->kursus->nama,
             "jenis_transaksi" => $jenis_pembayaran,
-            "komisi" => $this->komisi,
+            "komisi" => $this->komisi_akhir,
         ];
     }
 }

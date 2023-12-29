@@ -95,9 +95,9 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade show" id="siswa">
+            <div class="tab-pane fade show" id="siswa" ng-init="vm.fetchSiswa()">
                 <app-table-template
-                    data="vm.data.siswa" 
+                    data="vm.customData.siswa" 
                     fields="vm.additional.siswaFields"></app-table-template>
             </div>
 

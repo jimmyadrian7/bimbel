@@ -35,12 +35,10 @@ class ReportGuruController extends BaseReportController
 
             // Komisi selain iuran
             $tagihan_details = $gaji->getTagihanDetailDll($postData['guru_id'], $year, $month);
-            $tagihan_details = $tagihan_details->map->format();
             $data_row = $data_row->merge($tagihan_details);
 
             // Komisi iuran
             $tagihan_details = $gaji->getTagihanDetailIuran($postData['guru_id'], $year, $month);
-            $tagihan_details = $tagihan_details->map->format();
             $data_row = $data_row->merge($tagihan_details);
 
             $tagihan_details = $gaji->getTunjangan($postData['guru_id']);
@@ -51,7 +49,7 @@ class ReportGuruController extends BaseReportController
             $data_row = $data_row->sortBy('persen_komisi');
             $total_pendapatan = $data_row->sum('komisi');
 
-            $data = $data_row->groupBy(['kursus', 'jenis_transaksi']);
+            $data = $data_row->groupBy(['kursus', 'jenis_pembayaran']);
             // $data_row = $data_row->toArray();
             
             $data = [

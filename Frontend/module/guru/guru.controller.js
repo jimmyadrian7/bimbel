@@ -39,6 +39,7 @@ import kursusHtml from "./html/modal/kursus.html";
         vm.siswa = [];
         vm.modalElement = false;
         vm.data = {kursus: []};
+        vm.customData = {siswa: []};
         vm.dataId = stateParams.dataId;
         vm.isSuperUser = session.isSuperUser();
 
@@ -136,6 +137,8 @@ import kursusHtml from "./html/modal/kursus.html";
         vm.isAdded = isAdded;
         vm.addKursus = addKursus;
         vm.removeKursus = removeKursus;
+
+        vm.fetchSiswa = fetchSiswa;
 
         function getValue(field)
         {
@@ -275,6 +278,15 @@ import kursusHtml from "./html/modal/kursus.html";
         function removeKursus(idx)
         {
             vm.data.kursus.splice(idx, 1);
+        }
+
+        function fetchSiswa()
+        {
+            vm.data.siswa = [];
+
+            req.get(`guru/data/siswa/${vm.dataId}`).then(response => {
+                vm.customData.siswa = response;
+            })
         }
     }
 })()

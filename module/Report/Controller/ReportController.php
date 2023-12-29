@@ -3,34 +3,22 @@ namespace Bimbel\Report\Controller;
 
 use \Bimbel\Report\Controller\BaseReportController;
 use Illuminate\Database\Capsule\Manager as DB;
+use \Bimbel\Pengeluaran\Model\Gaji;
 
 class ReportController extends BaseReportController
 {
     public function queryPendapatan($postData)
     {
-        $params = [
-            'start_date' => $postData['start_date'],
-            'end_date' => $postData['end_date']
-        ];
-        $query = "
-            SELECT 
-                tagihan_detail.nama AS deskripsi,
-                SUM(tagihan_detail.qty) AS qty,
-                sum(tagihan_detail.total) AS total
-            FROM tagihan_detail
-            LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
-            WHERE 
-                DATE(tagihan.tanggal) >= :start_date AND 
-                DATE(tagihan.tanggal) <= :end_date AND
-                %s
-            GROUP BY tagihan_detail.nama
-        ";
-        $where_condition = "1=1";
+        $gaji = new Gaji();
+        $pendapatan_iuran = $gaji->queryIuran($postData['start_date'] . "-01");
+        $pendapatan_dll = $gaji->queryLainLain($postData['start_date'] . "-01");
+        $pendapatan_iuran->unionAll($pendapatan_dll);
+
+        $query = DB::query()->fromSub($pendapatan_iuran, 'tagihan')->select('nama_item AS deskripsi', DB::raw('SUM(qty) AS qty'), DB::raw('SUM(harga_total) AS total'))->groupBy('nama_item');
 
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
-            $where_condition = "tagihan.kursus_id = :tempat_kursus";
-            $params['tempat_kursus'] = $postData['tempat_kursus'];
+            $query->where('kursus_id', $postData['tempat_kursus']);
         }
         else
         {
@@ -38,44 +26,30 @@ class ReportController extends BaseReportController
             if (!$session->isSuperUser())
             {
                 $kursus_ids = $session->getKursusIds();
-                $where_condition = "tagihan.kursus_id IN (" . join(",", $kursus_ids) . ")";
+                $query->whereIn('kursus_id', $kursus_ids);
             }
         }
 
-        $query = sprintf($query, $where_condition);
-        $tagihan = DB::select(DB::raw($query), $params);
-
-        return $tagihan;
+        return $query->get();
     }
 
-    public function queryTotalKomisi($postData)
+    public function queryGajiGuru($postData)
     {
-        $params = [
-            'start_date' => $postData['start_date'],
-            'end_date' => $postData['end_date']
-        ];
+        $gaji = new Gaji();
+        $start_date = $postData['start_date'] . "-01";
+        $pendapatan_iuran = $gaji->queryIuran($start_date);
+        $pendapatan_dll = $gaji->queryLainLain($start_date);
+        $pendapatan_iuran->unionAll($pendapatan_dll);
+        $kursus_ids = [];
 
-        $start_date = date('d/m/Y', strtotime($postData['start_date']));
-        $end_date = date('d/m/Y', strtotime($postData['end_date']));
-
-        $query = "
-            SELECT
-                'Komisi Guru " . $start_date . " - " . $end_date . "' as nama,
-                '1' as jumlah,
-                sum(tagihan_detail.komisi) AS total
-            FROM tagihan_detail
-            LEFT JOIN tagihan ON tagihan.id = tagihan_detail.tagihan_id
-            WHERE 
-                DATE(tagihan.tanggal) >= :start_date AND 
-                DATE(tagihan.tanggal) <= :end_date AND
-                %s
-        ";
-        $where_condition = "1=1";
+        $query = DB::query()
+            ->fromSub($pendapatan_iuran, 'tagihan')
+            ->select(DB::raw('"Gaji Guru ' . $this->convertDate($start_date, 'F Y') . '" AS nama'), DB::raw('1 AS jumlah'), DB::raw('SUM(komisi) AS total'));
 
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
-            $where_condition = "tagihan.kursus_id = :tempat_kursus";
-            $params['tempat_kursus'] = $postData['tempat_kursus'];
+            $query->where('kursus_id', $postData['tempat_kursus']);
+            $kursus_ids[] = $postData['tempat_kursus'];
         }
         else
         {
@@ -83,23 +57,35 @@ class ReportController extends BaseReportController
             if (!$session->isSuperUser())
             {
                 $kursus_ids = $session->getKursusIds();
-                $where_condition = "tagihan.kursus_id IN (" . join(",", $kursus_ids) . ")";
+                $query->whereIn('kursus_id', $kursus_ids);
             }
         }
 
-        $query = sprintf($query, $where_condition);
-        $komisi = DB::select(DB::raw($query), $params);
+        $iuran = $query->get();
 
-        return $komisi;
+        $tunjangan = new \Bimbel\Guru\Model\TunjanganGuru();
+        $tunjangan = $tunjangan->whereHas('guru', function($query) use ($kursus_ids) {
+            $query->whereHas('kursus', function($q) use ($kursus_ids) {
+                $q->whereIn('kursus.id', $kursus_ids);
+            });
+        })->sum('nominal');
+
+        $iuran[0]->total += $tunjangan;
+
+        return $iuran;
     }
 
     public function queryPengeluaran($postData)
     {
+        $start_date = new \DateTime($postData['start_date'] . "-01");
+        $month = $start_date->format('m');
+        $year = $start_date->format('Y');
+
         $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
         $pengeluaran = $pengeluaran
             ->select('nama', 'jumlah', 'total')
-            ->whereDate('tanggal', '>=', $postData['start_date'])
-            ->whereDate('tanggal', '<=', $postData['end_date']);
+            ->whereMonth('tanggal', '>=', $month)
+            ->whereYear('tanggal', '<=', $year);
 
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
@@ -115,9 +101,12 @@ class ReportController extends BaseReportController
             }
         }
 
-        $pengeluaran = $pengeluaran->get();
+        $gaji_guru = collect($this->queryGajiGuru($postData)->toArray());
+        $pengeluaran = collect($pengeluaran->get()->toArray());
 
-        return $pengeluaran;
+        $result = $gaji_guru->merge($pengeluaran);
+
+        return $result;
     }
 
     public function getLabaRugi($request, $args, &$response)
@@ -129,23 +118,16 @@ class ReportController extends BaseReportController
             $postData = $request->getParsedBody();
 
             $tagihan = $this->queryPendapatan($postData);
-            $total_pendapatan = array_reduce($tagihan, function($result, $array) {
-                $result += $array->total;
-                return $result;
-            }, 0);
-
-            $pengeluaran = collect($this->queryPengeluaran($postData)->toArray());
-            $total_komisi = $this->queryTotalKomisi($postData);
-            $pengeluaran = $pengeluaran->merge($total_komisi);
+            $pengeluaran = $this->queryPengeluaran($postData);
 
             $data = [
                 'judul' => "Laba Rugi",
                 'pendapatans' => $tagihan,
-                'total_pendapatan' => $total_pendapatan,
+                'total_pendapatan' => $tagihan->sum('total'),
                 'pengeluarans' => $pengeluaran,
                 'total_pengeluaran' => $pengeluaran->sum('total'),
-                'total_laba' => $total_pendapatan - $pengeluaran->sum('total'),
-                'periode' => $this->convertDate($postData['start_date']). " ~ " .$this->convertDate($postData['end_date'])
+                'total_laba' => $tagihan->sum('total') - $pengeluaran->sum('total'),
+                'periode' => $this->convertDate($postData['start_date'] . "-01", 'F Y')
             ];
 
             $result = $this->toPdf("Report/View/labarugi.twig", $data);
@@ -166,10 +148,15 @@ class ReportController extends BaseReportController
         {
             $session = new \Bimbel\Master\Model\Session();
             $postData = $request->getParsedBody();
-            $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
+            $gaji = new Gaji();
+
+            $start_date = explode('-', $postData['start_date']);
+            $year = $start_date[0];
+            $month = $start_date[1];
+
             $gaji = $gaji
-                ->whereDate('tanggal', '>=', $postData['start_date'])
-                ->whereDate('tanggal', '<=', $postData['end_date']);
+                ->whereMonth('tanggal', $month)
+                ->whereYear('tanggal', $year);
 
             if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
             {
@@ -198,7 +185,7 @@ class ReportController extends BaseReportController
                 'judul' => "Gaji Guru",
                 'gajis' => $gaji,
                 'total_gaji' => $gaji->sum('komisi'),
-                'periode' => $this->convertDate($postData['start_date']). " ~ " .$this->convertDate($postData['end_date'])
+                'periode' => $this->convertDate($postData['start_date'] . "-01", "F Y")
             ];
 
             $result = $this->toPdf("Report/View/gaji.twig", $data);
@@ -218,17 +205,15 @@ class ReportController extends BaseReportController
         try
         {
             $postData = $request->getParsedBody();
+
             $tagihan = $this->queryPendapatan($postData);
-            $total_pendapatan = array_reduce($tagihan, function($result, $value) {
-                $result += $value->total;
-                return $result;
-            }, 0);
+            $total_pendapatan = $tagihan->sum('total');
 
             $data = [
                 'judul' => "Pendapatan",
                 'pendapatans' => $tagihan,
                 'total_pendapatan' => $total_pendapatan,
-                'periode' => $this->convertDate($postData['start_date']). " ~ " .$this->convertDate($postData['end_date'])
+                'periode' => $this->convertDate($postData['start_date'] . '-01', 'F Y')
             ];
 
             $result = $this->toPdf("Report/View/pendapatan.twig", $data);
@@ -254,7 +239,7 @@ class ReportController extends BaseReportController
                 'judul' => "Pengeluaran",
                 'pengeluarans' => $pengeluaran,
                 'total_pengeluaran' => $pengeluaran->sum('total'),
-                'periode' => $this->convertDate($postData['start_date']). " ~ " .$this->convertDate($postData['end_date'])
+                'periode' => $this->convertDate($postData['start_date'] . "-01", "F Y")
             ];
 
             $result = $this->toPdf("Report/View/pengeluaran.twig", $data);
@@ -274,10 +259,14 @@ class ReportController extends BaseReportController
         try
         {
             $postData = $request->getParsedBody();
+            $start_date = explode("-", $postData['start_date']);
+            $year = $start_date[0];
+            $month = $start_date[1];
+
             $deposit = new \Bimbel\Siswa\Model\Deposit();
             $deposit = $deposit
-                ->whereDate('tanggal', '>=', $postData['start_date'])
-                ->whereDate('tanggal', '<=', $postData['end_date'])
+                ->whereYear('tanggal', '=', $year)
+                ->whereMonth('tanggal', '=', $month)
                 ->where('status', 'a');
 
             if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
@@ -304,7 +293,7 @@ class ReportController extends BaseReportController
                 'judul' => "Deposit",
                 'deposits' => $deposit,
                 'total' => $deposit->sum('nominal'),
-                'periode' => $this->convertDate($postData['start_date']). " ~ " .$this->convertDate($postData['end_date'])
+                'periode' => $this->convertDate($postData['start_date'] . "-01")
             ];
 
             $result = $this->toPdf("Report/View/deposit.twig", $data);

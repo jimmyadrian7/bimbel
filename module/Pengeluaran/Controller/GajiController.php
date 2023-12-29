@@ -64,7 +64,7 @@ class GajiController extends Controller
             }
 
             $log = $this->getModel('log');
-            $log = $log->log("", "Generate Gaji", "Generate", $data);
+            $log = $log->log(NULL, "Generate Gaji", "Generate", $data);
             
             $result = true;
 

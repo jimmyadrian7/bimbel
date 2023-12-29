@@ -4,6 +4,7 @@ namespace Bimbel\Pengeluaran\Model;
 use Bimbel\Core\Model\BaseModel;
 use Bimbel\Guru\Model\Guru;
 use Bimbel\Pengeluaran\Model\Pengeluaran;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class Gaji extends BaseModel
 {
@@ -120,73 +121,22 @@ class Gaji extends BaseModel
 
     public function getTagihanDetailDll($guru_id, $year, $month)
     {
-        $tagihan_detail = new \Bimbel\Pembayaran\Model\TagihanDetail();
-        $tagihan_detail = $tagihan_detail
-            ->where('komisi', '>', 0)
-            ->whereHas("tagihan", function($q) use ($guru_id, $year, $month)
-            {
-                $q->whereMonth('tanggal_lunas', '<=', $month)
-                    ->whereYear('tanggal_lunas', '>=', $year)
-                    ->whereHas('siswa', function($query) use ($guru_id) {
-                        $query->where('guru_id', $guru_id);
-                    })
-                    ->where('status', 'l');
-            })
-            ->where('system', false)
-            ->get();
+        $tanggal_gaji = $year . "-" . $month . "-1";
+        $query = $this->queryLainLain($tanggal_gaji);
+        $query->where('siswa.guru_id', $guru_id);
 
-        return $tagihan_detail;
+        return $query->get();
     }
 
-    /*
-        case untuk iuran:
-        1. lunas sebelum bulannya
-        2. lunas tepat pada bulannya
-        3. lunas telat
-    */
     public function getTagihanDetailIuran($guru_id, $year, $month)
     {
-        $tagihan_detail = new \Bimbel\Pembayaran\Model\TagihanDetail();
-
         $tanggal_gaji = $year . "-" . $month . "-1";
-        $tanggal_gaji = new \DateTime($tanggal_gaji);
-        $tanggal_gaji = $tanggal_gaji->format("Y-m-d");
 
-        $tagihan_detail = $tagihan_detail
-            ->where('komisi', '>', 0)
-            ->where('system', true)
-            ->whereDate("tanggal_iuran_mulai", "<=", $tanggal_gaji)
-            ->whereDate("tanggal_iuran_berakhir", ">=", $tanggal_gaji)
-            ->whereHas('tagihan', function($q) use ($guru_id) {
-                $q->where('status', 'l')
-                ->whereHas('siswa', function($query) use ($guru_id) {
-                    $query->where('guru_id', $guru_id);
-                });
-            })
-            ->get();
+        $query = $this->queryIuran($tanggal_gaji);
+        $query->where('siswa.guru_id', $guru_id);
+        $query = $query->get();
 
-        foreach ($tagihan_detail as $td)
-        {
-            $tanggal_lunas = $td->tagihan->tanggal_lunas;
-            $tanggal_lunas = explode("-", $tanggal_lunas);
-            $tanggal_lunas = $tanggal_lunas[0] . "-" . $tanggal_lunas[1] . "-01";
-            $tanggal_lunas = new \DateTime($tanggal_lunas);
-
-            $tanggal_gajian = new \DateTime($tanggal_gaji);
-
-            $tanggal_iuran_mulai = $td->tanggal_iuran_mulai;
-            $tanggal_iuran_mulai = new \DateTime($tanggal_iuran_mulai);
-            
-            $interval = $tanggal_iuran_mulai->diff($tanggal_lunas);
-            $interval = $interval->m + 12 * $interval->y;
-
-            if ($interval > 0 && $tanggal_lunas->format("Y-m-d") == $tanggal_gaji)
-            {
-                $td->komisi = $td->komisi * ($interval + 1);
-            }
-        }
-
-        return $tagihan_detail;
+        return $query;
     }
 
     public function getTunjangan($guru_id)
@@ -203,5 +153,86 @@ class Gaji extends BaseModel
         $tanggal->modify("-1 month");
         
         return $tanggal->format("Y-m");
+    }
+
+
+
+    public function baseQuery()
+    {
+        $query = DB::table('tagihan_detail')
+            ->select(
+                'orang.nama AS nama_siswa', 'tagihan.code AS kode_tagihan', 'tagihan.tanggal AS tanggal_tagihan',
+                'tagihan.tanggal_lunas AS tanggal_lunas', 'tagihan_detail.nama AS nama_item', 'tagihan_detail.total AS harga_total', 'tagihan_detail.qty AS qty',
+                'kursus.nama AS kursus', 'transaksi.jenis_pembayaran AS jenis_pembayaran', 'tagihan.kursus_id', 'tagihan_detail.potongan AS potongan',
+                'tagihan_detail.sub_total AS sub_total', 'siswa.guru_id',
+                DB::raw('
+                    CASE WHEN pembiayaan.jenis_komisi = "s" THEN
+                        siswa.komisi
+                    ELSE
+                        pembiayaan.nominal
+                    END
+                AS persen_komisi'),
+            )
+            ->join('tagihan', 'tagihan.id', 'tagihan_detail.tagihan_id')
+            ->join('siswa', 'siswa.id', 'tagihan.siswa_id')
+            ->join('orang', 'orang.id', 'siswa.orang_id')
+            ->join('kursus', 'kursus.id', 'tagihan.kursus_id')
+            ->join('pembiayaan', 'pembiayaan.id', 'tagihan_detail.pembiayaan_id')
+            ->join('transaksi', function($join) {
+                $join->on('transaksi.tagihan_id', 'tagihan.id')
+                    ->on('transaksi.id', DB::raw('(SELECT id FROM transaksi WHERE tagihan_id = tagihan.id ORDER BY id DESC LIMIT 1)'));
+            });
+
+        return $query;
+    }
+
+    /*
+        case untuk iuran:
+        1. lunas sebelum bulannya
+        2. lunas tepat pada bulannya
+        3. lunas telat
+    */
+    public function queryIuran($start_date)
+    {
+        $tanggal_gaji = new \DateTime($start_date);
+        $tanggal_gaji = $tanggal_gaji->format("Y-m-d");
+
+        $query = $this->baseQuery();
+        $query->addSelect(['komisi' => DB::raw('
+            CASE WHEN year(tagihan.tanggal_lunas) = year(' . $tanggal_gaji . ') AND month(tagihan.tanggal_lunas) = month(' . $tanggal_gaji . ')  THEN
+                (TIMESTAMPDIFF(MONTH, tagihan.tanggal_lunas, tagihan_detail.tanggal_iuran_mulai) + 1 ) * tagihan_detail.komisi
+            ELSE
+                tagihan_detail.komisi
+            END AS komisi
+        ')]);
+
+        $query
+            ->where('system', true)
+            ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
+            ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
+            ->where('tagihan.status', 'l')
+        ;
+
+        return $query;
+    }
+
+    public function queryLainLain($start_date)
+    {
+        $tanggal_gaji = new \DateTime($start_date);
+        $month = $tanggal_gaji->format('m');
+        $year = $tanggal_gaji->format('Y');
+
+        $query = $this->baseQuery();
+
+        $query->addSelect(['komisi' => DB::raw('tagihan_detail.komisi AS komisi')]);
+        
+        $query
+            ->where('system', false)
+            ->whereMonth("tagihan.tanggal_lunas", $month)
+            ->whereYear("tagihan.tanggal_lunas", $year)
+            ->where('tagihan.status', 'l')
+        ;
+
+        return $query;
     }
 }

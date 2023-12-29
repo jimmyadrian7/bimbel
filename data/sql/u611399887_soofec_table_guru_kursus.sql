@@ -31,4 +31,4 @@ INSERT INTO `guru_kursus` (`id`, `guru_id`, `kursus_id`) VALUES
 (16, 14, 2),
 (17, 14, 5),
 (18, 15, 1),
-(19, 13, 2);
+(20, 16, 2);

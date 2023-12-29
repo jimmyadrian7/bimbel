@@ -31,6 +31,12 @@
                 element.attr('app-date-picker', attrs.inputDate);
             }
 
+            if (attrs.inputMonth)
+            {
+                element.removeAttr('input-month');
+                element.attr('app-month-picker', attrs.inputMonth);
+            }
+
             if (attrs.inputTime)
             {
                 element.removeAttr('input-time');

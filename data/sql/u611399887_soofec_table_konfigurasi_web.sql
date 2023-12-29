@@ -22,4 +22,4 @@ CREATE TABLE `konfigurasi_web` (
 --
 
 INSERT INTO `konfigurasi_web` (`id`, `lokasi`, `email`, `gmap`, `no_hp`, `facebook`, `whatsapp`, `instagram`, `tiktok`) VALUES
-(1, 'A108 Adam Street, New York, NY 535022', 'info@example.com', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.0425529832182!2d104.00964599999999!3d1.1298839999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d98962d5db100d%3A0x35d0b6c82eb273a3!2zU3R1ZGVudHMgb2YgT25lIEZhbWlseSBFZHVjYXRpb24gQ2VudHJlIC8g5a2m55Sf5LiA5a62!5e0!3m2!1sid!2sid!4v1671653249807!5m2!1sid!2sid', '+1 5589 55488 55', 'https://www.facebook.com/xuesheng.yijia', NULL, 'https://www.instagram.com/xueshengyijia/', NULL);
+(1, 'Batam', 'soofmandarincentre@gmail.com', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1994.5105541173161!2d104.0376553!3d1.1453949!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d98bdd8e08f7a7%3A0x1e26da9f253eaa8e!2zU3R1ZGVudHMgb2YgT25lIEZhbWlseSBFZHVjYXRpb24gQ2VudHJlIC8g5a2m55Sf5LiA5a62!5e0!3m2!1sen!2sid!4v1703165602845!5m2!1sen!2sid', '+628126179612', 'https://www.facebook.com/xuesheng.yijia', 'https://wa.me/628126179612', 'https://www.instagram.com/learnchinesebtm/', NULL);

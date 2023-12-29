@@ -260,7 +260,7 @@ class Guru extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'orang.pp', 'kursus', 'siswa', 'siswa.orang');
+        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'orang.pp', 'kursus');
         $data = parent::fetchDetail($id, $obj);
         
         if ($data->status != 'a')
@@ -268,7 +268,7 @@ class Guru extends BaseModel
             $data->editable = false;
         }
 
-        if ($data->siswa->count() > 0)
+        if ($data->siswa()->count() > 0)
         {
             $data->deleteable = false;
         }

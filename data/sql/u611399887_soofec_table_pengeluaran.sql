@@ -30,4 +30,5 @@ INSERT INTO `pengeluaran` (`id`, `kursus_id`, `nama`, `jumlah`, `harga`, `total`
 (6, 1, 'Pengeluaran Augustus 2023', 1, 1774500, 1774500, NULL, NULL, '2023-08-31 00:00:00'),
 (7, 1, 'Pengeluaran September 2023', 1, 1866000, 1866000, NULL, NULL, '2023-09-30 00:00:00'),
 (8, 1, 'Pengeluaran Oktober 2023', 1, 963950, 963950, NULL, NULL, '2023-10-31 00:00:00'),
-(9, 1, 'Pengeluaran November 2023', 1, 969090, 969090, NULL, NULL, '2023-11-30 00:00:00');
+(9, 1, 'Pengeluaran November 2023', 1, 969090, 969090, NULL, NULL, '2023-11-30 00:00:00'),
+(10, 1, 'Pengeluaran Desember 2023', 1, 816000, 816000, NULL, NULL, '2023-12-31 00:00:00');

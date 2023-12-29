@@ -60,4 +60,8 @@ INSERT INTO `iuran` (`id`, `nama`, `bulan`) VALUES
 (48, 'Biaya Iuran 1 Juta / 3 Bulan', 3),
 (49, 'Biaya Iuran 1 Juta / 1 Bulan', 1),
 (50, 'Biaya Iuran 1/2 Bulan', 1),
-(51, 'Biaya Iuran Pendaftaran Dewasa', 1);
+(51, 'Biaya Iuran Pendaftaran Dewasa', 1),
+(52, 'Biaya Iuran Pendaftaran DP 500', 1),
+(53, 'Deposit 350', 1),
+(54, 'Deposit 400', 1),
+(55, 'Deposit 500', 1);

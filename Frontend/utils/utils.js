@@ -19,6 +19,7 @@ import "./number/app-number-input.directive";
 import "./date/app-date-format.directive";
 import "./date/app-date-picker.directive";
 import "./date/app-time-picker.directive";
+import "./date/app-month-picker.directive";
 
 import "./autocomplete/app-autocomplete.directive";
 

@@ -104,18 +104,20 @@
                                         <td class="bg-red">Total Pendapatan</td>
                                         <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
                                     </tr>
-
-                                    {% if loop.parent.loop.last and loop.last %}
-                                    <tr class="bold">
-                                        <td class="bg-transparent" colspan="7"></td>
-                                        <td class="bg-red">Total Semua Pendapatan</td>
-                                        <td class="bg-red">{{ total_pendapatan|number_format(0, ',', '.') }}</td>
-                                    </tr>
-                                    {% endif %}
                                 </table>
                             </div>
                         </div>
                     </main>
+
+                    {% if loop.parent.loop.last and loop.last %}
+                        <footer>
+                            <div class="border-black my-30"></div>
+        
+                            <div class="report-footer">
+                                <span>Total Semua Pendapatan</span><span>{{ total_pendapatan|number_format(0, ',', '.') }}</span>
+                            </div>
+                        </footer>
+                    {% endif %}
                 </div>
                 
             {% endfor %}

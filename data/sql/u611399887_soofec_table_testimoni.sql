@@ -17,5 +17,5 @@ CREATE TABLE `testimoni` (
 --
 
 INSERT INTO `testimoni` (`id`, `gambar_id`, `link`, `tipe`) VALUES
-(4, NULL, 'https://www.youtube.com/embed/xcVZdRSiVhU', 'l'),
-(5, 8, NULL, 'g');
+(5, 8, NULL, 'g'),
+(6, 169, 'https://www.youtube.com/embed/gOY5Uomgn_Y?si=Yv0Gdt_oDwIg3_I0', 'l');

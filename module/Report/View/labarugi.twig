@@ -2,24 +2,58 @@
     
     <head>
         {% include "/Report/View/partial/style.twig" %}
+
+        <style>
+            header {
+                position: fixed;
+                top: 0px;
+                left: 0;
+                right: 0;
+                height: 200px;
+            }
+
+            body {
+                margin-top: 210px;
+            }
+
+            #background {
+                background-image:url({{background}});
+                display: block;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: -1000;
+                background-repeat: repeat;
+            }
+        </style>
     </head>
 
-    <body style="background-image:url({{background}})">
+    <body>
         
+        <div id="background"></div>
+
         <div class="container">
-            {% include "Report/View/partial/header.twig" %}
+            <header>
+                <div class="container">
+                    {% include "Report/View/partial/header.twig" %}
+                </div>
+            </header>
             
             <div class="content">
                 <div class="mb-10">
                     <span class="table-title">Pendapatan</span>
                 </div>
                 <table class="table-content">
-                    <tr>
-                        <th>No</th>
-                        <th>Deskripsi</th>
-                        <th>Jumlah</th>
-                        <th>Total</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Deskripsi</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
                     {% for pendapatan in pendapatans %}
                         <tr>
                             <td>{{ loop.index }}</td>
@@ -39,12 +73,14 @@
                     <span class="table-title">Pengeluaran</span>
                 </div>
                 <table class="table-content">
-                    <tr>
-                        <th>No</th>
-                        <th>Deskripsi</th>
-                        <th>Jumlah</th>
-                        <th>Total</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Deskripsi</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
                     {% for pengeluaran in pengeluarans %}
                         <tr>
                             <td>{{ loop.index }}</td>

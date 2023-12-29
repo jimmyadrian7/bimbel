@@ -13,13 +13,11 @@
         vm.myPdf = true;
         vm.generate = generate;
         vm.data = {
-            start_date: moment(new Date()).format("YYYY-MM-DD"),
-            end_date: moment(new Date()).format("YYYY-MM-DD")
+            start_date: moment(new Date()).format("YYYY-MM")
         };
 
         vm.fields = [
-            {type: 'date', value: 'start_date'},
-            {type: 'date', value: 'end_date'},
+            {type: 'month', value: 'start_date'},
             {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
         ];
 

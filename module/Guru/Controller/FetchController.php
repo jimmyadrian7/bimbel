@@ -53,7 +53,7 @@ class FetchController extends Controller
         try
         {
             $siswa = new Siswa();
-            $siswa = $siswa->where('guru_id', $args['guru_id'])->get();
+            $siswa = $siswa->with('orang')->where('guru_id', $args['guru_id'])->get();
             $result = $siswa;
         }
         catch (\Error $e)

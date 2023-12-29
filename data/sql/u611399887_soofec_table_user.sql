@@ -117,7 +117,6 @@ INSERT INTO `user` (`id`, `username`, `password`, `unenpass`, `jenis_user`, `ora
 (115, 'cb9c79', '$2y$10$EfcbB7qBBZ6vhUmd91maSucfc42W16Ed1Z.2jzqUvNtaSP9LHs0..', 'bd85270b', 'u', 108, 'a'),
 (116, '7f201f', '$2y$10$xpralpX7CGq6jC7A0fHM8uV9n9tNC5S/stmpbb8gIWAcW5GgesSnq', '69ecb4ab', 'u', 469, 'a'),
 (117, '0550b1', '$2y$10$oQVWSKqvXQ.4MGI6P86Lq.aVM4ktCmZ6XT5FYwWZ4Tv/tZ1XSFXnO', 'a44a5340', 'u', 472, 'a'),
-(118, 'b65a80', '$2y$10$kduhehQ61yDQYK9ItCuuO.311VKS7jruEEX9ipuSqZxJ3HhbH4ApS', 'e172beb4', 'u', 473, 'a'),
 (119, '4218c9', '$2y$10$UZg3TVxVD9C70CJnw8YJW.jJ4ezdRI8YpDJFoATGpVZ18gu9.XWyO', 'dc9351df', 'u', 489, 'a'),
 (120, 'dd4c39', '$2y$10$p1MTEN2tQ3zQvykJmuxzNOZGHOlij7EMvIA7Ikp.Yjl54CPk4WGG.', '30d7821b', 'u', 468, 'a'),
 (121, 'e4474d', '$2y$10$Sf.8WJjrC6rQxoA29XjCduOEtElmOUDBnKqQ5eVq3Mw3pEVbLNjyS', '2d6aa14c', 'u', 463, 'a'),
@@ -320,4 +319,7 @@ INSERT INTO `user` (`id`, `username`, `password`, `unenpass`, `jenis_user`, `ora
 (324, 'c841ab', '$2y$10$Chs1M5ev2V3k5oO5.zsLn.hiWbrOKVOX4.nDn3mLxicANRnmA7TbW', '632c81b3', 'u', 599, 'a'),
 (325, 'b56529', '$2y$10$6maPo7cP2vTaayuid96ji.Xi2YoyllEeMDgbdp217shU4G2gZT4FC', '58d9028f', 'u', 595, 'a'),
 (326, '6cd915', '$2y$10$bq9eq8VDXayeJJVYf7Lute0tY.IZ7y1CSLCWslb.egasPfRTy4dE.', '18450c5e', 'u', 592, 'a'),
-(327, '7865eb', '$2y$10$ot..7Os41G/pTGQDMgFKeOi/jZyoRGkDsj70E/jREWdnorOfmn6k.', '82d6fc06', 'u', 598, 'a');
+(327, '7865eb', '$2y$10$ot..7Os41G/pTGQDMgFKeOi/jZyoRGkDsj70E/jREWdnorOfmn6k.', '82d6fc06', 'u', 598, 'a'),
+(328, 'Elvina', '$2y$10$4w/k9D2SmmwyhKzeE07flugx1qU2kvBwQ3v8.cAXX3DbI1D4WalbW', 'Elvina', 'u', 600, 'a'),
+(329, '3e1019', '$2y$10$rgdNTiaqNbCVV30588mga.c6Px6suWKfPw1FWPRkd82QR3LY.HY9K', '7ee9f4aa', 'u', 601, 'a'),
+(330, '5a9c27', '$2y$10$6B1gaUHrYIhE3LCSXhC43eMLmEWq0F4VP2mYpSusv3zzY3AFQpe4W', 'b87aea5b', 'u', 602, 'a');

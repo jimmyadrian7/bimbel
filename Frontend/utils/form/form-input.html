@@ -17,6 +17,15 @@
     ng-required="{{required}}">
 
 <input
+    ng-if="type == 'month'" 
+    type="text" 
+    ng-model-dynamic="{{ expr }}"
+    input-month="true"
+    class="form-control form-control-sm"]
+    name="{{expr}}"
+    ng-required="{{required}}">
+
+<input
     ng-if="type == 'time'" 
     type="text" 
     ng-model-dynamic="{{ expr }}"

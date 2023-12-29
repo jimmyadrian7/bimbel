@@ -2,34 +2,76 @@
     
     <head>
         {% include "/Report/View/partial/style.twig" %}
+
+        <style>
+            header {
+                position: fixed;
+                top: 0px;
+                left: 0;
+                right: 0;
+                height: 200px;
+            }
+
+            body {
+                margin-top: 210px;
+            }
+
+            #background {
+                background-image:url({{background}});
+                display: block;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: -1000;
+                background-repeat: repeat;
+            }
+        </style>
     </head>
 
-    <body style="background-image:url({{background}})">
+    <body>
+
+        <div id="background"></div>
         
         <div class="container">
-            {% include "Report/View/partial/header.twig" %}
+            <header>
+                <div class="container">
+                    {% include "Report/View/partial/header.twig" %}
+                </div>
+            </header>
             
-            <div class="content">
-                <table class="table-content">
-                    <tr>
-                        <th>No</th>
-                        <th>Siswa</th>
-                        <th>Nominal</th>
-                    </tr>
-                    {% for deposit in deposits %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ deposit.siswa.orang.nama }}</td>
-                            <td>{{ deposit.nominal|number_format(0, ',', '.') }}</td>
+            <main>
+                <div class="content">
+                    <table class="table-content">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Siswa</th>
+                                <th>Nominal</th>
+                            </tr>
+                        </thead>
+                        {% for deposit in deposits %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ deposit.siswa.orang.nama }}</td>
+                                <td>
+                                    {% if deposit.status == 'a' %}
+                                        {{ deposit.nominal|number_format(0, ',', '.') }}
+                                    {% else %}
+                                        {{ 0|number_format(0, ',', '.') }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="bold">
+                            <td class="bg-transparent" colspan="1"></td>
+                            <td class="bg-red">Total</td>
+                            <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
                         </tr>
-                    {% endfor %}
-                    <tr class="bold">
-                        <td class="bg-transparent" colspan="1"></td>
-                        <td class="bg-red">Total</td>
-                        <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
-                    </tr>
-                </table>
-            </div>
+                    </table>
+                </div>
+            </main>
         </div>
     </body>
 </html>
