@@ -67,8 +67,9 @@
                         </tr>
                     {% endfor %}
                     <tr class="bold">
-                        <td class="bg-transparent" colspan="2"></td>
+                        <td class="bg-transparent" colspan="1"></td>
                         <td class="bg-red">Total</td>
+                        <td class="bg-red">{{ total_qty|number_format(0, ',', '.') }}</td>
                         <td class="bg-red">{{ total_sub_total|number_format(0, ',', '.') }}</td>
                         <td class="bg-red">{{ total_potongan|number_format(0, ',', '.') }}</td>
                         <td class="bg-red">{{ total_pendapatan|number_format(0, ',', '.') }}</td>

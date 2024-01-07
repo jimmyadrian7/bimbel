@@ -132,6 +132,7 @@ class ReportController extends BaseReportController
             $data = [
                 'judul' => "Laba Rugi",
                 'pendapatans' => $tagihan,
+                'total_qty' => $tagihan->sum('qty'),
                 'total_pendapatan' => $tagihan->sum('total'),
                 'total_sub_total' => $tagihan->sum('sub_total'),
                 'total_potongan' => $tagihan->sum('potongan'),
@@ -226,6 +227,7 @@ class ReportController extends BaseReportController
             $data = [
                 'judul' => "Pendapatan",
                 'pendapatans' => $tagihan,
+                'total_qty' => $tagihan->sum('qty'),
                 'total_pendapatan' => $tagihan->sum('total'),
                 'total_sub_total' => $tagihan->sum('sub_total'),
                 'total_potongan' => $tagihan->sum('potongan'),
