@@ -42,6 +42,7 @@ import sortHtml from "./modal/sort.html";
             
             vm.title = `Tabel ${$state.current.title}`;
             vm.data = [];
+            vm.rawResponse = {};
             vm.oldFields = [];
             vm.filterData = [
                 {field: "", operation: "", value: "", selected: false}
@@ -165,6 +166,7 @@ import sortHtml from "./modal/sort.html";
                 if (method == "get")
                 {
                     req.get(url).then(response => {
+                        vm.rawResponse = response;
                         vm.data = response.data || [];
                         vm.lastPage = response.last_page;
                         generatePage(response.last_page);
@@ -173,6 +175,7 @@ import sortHtml from "./modal/sort.html";
                 else
                 {
                     req.post(url, data).then(response => {
+                        vm.rawResponse = response;
                         vm.data = response.data || [];
                         vm.lastPage = response.last_page;
                         generatePage(response.last_page);
