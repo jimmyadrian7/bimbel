@@ -17,7 +17,6 @@
         };
 
         vm.fields = [
-            {type: 'month', value: 'start_date'},
             {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
         ];
 

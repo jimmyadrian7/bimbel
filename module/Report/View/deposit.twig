@@ -47,6 +47,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Tanggal</th>
                                 <th>Siswa</th>
                                 <th>Status</th>
                                 <th>Nominal</th>
@@ -55,6 +56,7 @@
                         {% for deposit in deposits %}
                             <tr>
                                 <td>{{ loop.index }}</td>
+                                <td>{{ deposit.tanggal|date("d/m/Y") }}</td>
                                 <td>{{ deposit.siswa.orang.nama }}</td>
                                 <td>{{ status_deposit_list[deposit.status] }}</td>
                                 <td>
@@ -67,7 +69,7 @@
                             </tr>
                         {% endfor %}
                         <tr class="bold">
-                            <td class="bg-transparent" colspan="2"></td>
+                            <td class="bg-transparent" colspan="3"></td>
                             <td class="bg-red">Total</td>
                             <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
                         </tr>

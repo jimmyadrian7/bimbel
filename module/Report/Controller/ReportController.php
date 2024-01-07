@@ -275,9 +275,9 @@ class ReportController extends BaseReportController
         try
         {
             $postData = $request->getParsedBody();
-            $start_date = explode("-", $postData['start_date']);
-            $year = $start_date[0];
-            $month = $start_date[1];
+            // $start_date = explode("-", $postData['start_date']);
+            // $year = $start_date[0];
+            // $month = $start_date[1];
 
             $deposit = new \Bimbel\Siswa\Model\Deposit();
             $status_deposit_list = [];
@@ -285,10 +285,12 @@ class ReportController extends BaseReportController
                 $status_deposit_list[$value['value']] = $value['label'];
             }
 
-            $deposit = $deposit
-                ->whereYear('tanggal', '=', $year)
-                ->whereMonth('tanggal', '=', $month)
-                ->where('status', 'a');
+            // $deposit = $deposit
+            //     ->whereYear('tanggal', '=', $year)
+            //     ->whereMonth('tanggal', '=', $month)
+            //     ->where('status', 'a');
+
+            $deposit = $deposit->whereRaw(DB::raw('1 = 1'));
 
             if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
             {
@@ -314,7 +316,7 @@ class ReportController extends BaseReportController
                 'judul' => "Deposit",
                 'deposits' => $deposit,
                 'total' => $deposit->sum('nominal'),
-                'periode' => $this->convertDate($postData['start_date'] . "-01"),
+                // 'periode' => $this->convertDate($postData['start_date'] . "-01"),
                 'status_deposit_list' => $status_deposit_list
             ];
 
