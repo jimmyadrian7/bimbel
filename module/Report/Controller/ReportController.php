@@ -84,8 +84,8 @@ class ReportController extends BaseReportController
         $pengeluaran = new \Bimbel\Pengeluaran\Model\Pengeluaran();
         $pengeluaran = $pengeluaran
             ->select('nama', 'jumlah', 'total')
-            ->whereMonth('tanggal', '>=', $month)
-            ->whereYear('tanggal', '<=', $year);
+            ->whereMonth('tanggal', '=', $month)
+            ->whereYear('tanggal', '=', $year);
 
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
