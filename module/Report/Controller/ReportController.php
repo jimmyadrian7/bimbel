@@ -14,7 +14,16 @@ class ReportController extends BaseReportController
         $pendapatan_dll = $gaji->queryLainLain($postData['start_date'] . "-01");
         $pendapatan_iuran->unionAll($pendapatan_dll);
 
-        $query = DB::query()->fromSub($pendapatan_iuran, 'tagihan')->select('nama_item AS deskripsi', DB::raw('SUM(qty) AS qty'), DB::raw('SUM(harga_total) AS total'))->groupBy('nama_item');
+        $query = DB::query()
+            ->fromSub($pendapatan_iuran, 'tagihan')
+            ->select(
+                'nama_item AS deskripsi', 
+                DB::raw('SUM(qty) AS qty'), 
+                DB::raw('SUM(sub_total) AS sub_total'), 
+                DB::raw('SUM(potongan) AS potongan'),
+                DB::raw('SUM(harga_total) AS total')
+            )
+            ->groupBy('nama_item');
 
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
@@ -124,6 +133,8 @@ class ReportController extends BaseReportController
                 'judul' => "Laba Rugi",
                 'pendapatans' => $tagihan,
                 'total_pendapatan' => $tagihan->sum('total'),
+                'total_sub_total' => $tagihan->sum('sub_total'),
+                'total_potongan' => $tagihan->sum('potongan'),
                 'pengeluarans' => $pengeluaran,
                 'total_pengeluaran' => $pengeluaran->sum('total'),
                 'total_laba' => $tagihan->sum('total') - $pengeluaran->sum('total'),
@@ -211,12 +222,13 @@ class ReportController extends BaseReportController
             $postData = $request->getParsedBody();
 
             $tagihan = $this->queryPendapatan($postData);
-            $total_pendapatan = $tagihan->sum('total');
 
             $data = [
                 'judul' => "Pendapatan",
                 'pendapatans' => $tagihan,
-                'total_pendapatan' => $total_pendapatan,
+                'total_pendapatan' => $tagihan->sum('total'),
+                'total_sub_total' => $tagihan->sum('sub_total'),
+                'total_potongan' => $tagihan->sum('potongan'),
                 'periode' => $this->convertDate($postData['start_date'] . '-01', 'F Y')
             ];
 

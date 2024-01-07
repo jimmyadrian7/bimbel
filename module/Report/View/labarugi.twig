@@ -51,6 +51,8 @@
                             <th>No</th>
                             <th>Deskripsi</th>
                             <th>Jumlah</th>
+                            <th>Sub Total</th>
+                            <th>Potongan</th>
                             <th>Total</th>
                         </tr>
                     </thead>
@@ -59,12 +61,16 @@
                             <td>{{ loop.index }}</td>
                             <td>{{ pendapatan.deskripsi }}</td>
                             <td>{{ pendapatan.qty|number_format(0, ',', '.') }}</td>
+                            <td>{{ pendapatan.sub_total|number_format(0, ',', '.') }}</td>
+                            <td>{{ pendapatan.potongan|number_format(0, ',', '.') }}</td>
                             <td>{{ pendapatan.total|number_format(0, ',', '.') }}</td>
                         </tr>
                     {% endfor %}
                     <tr class="bold">
                         <td class="bg-transparent" colspan="2"></td>
-                        <td class="bg-red">Total Pendapatan</td>
+                        <td class="bg-red">Total</td>
+                        <td class="bg-red">{{ total_sub_total|number_format(0, ',', '.') }}</td>
+                        <td class="bg-red">{{ total_potongan|number_format(0, ',', '.') }}</td>
                         <td class="bg-red">{{ total_pendapatan|number_format(0, ',', '.') }}</td>
                     </tr>
                 </table>

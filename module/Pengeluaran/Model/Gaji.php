@@ -133,7 +133,7 @@ class Gaji extends BaseModel
         $tanggal_gaji = $year . "-" . $month . "-1";
 
         $query = $this->queryIuran($tanggal_gaji);
-        $query->where('siswa.guru_id', $guru_id);
+        $query->where('siswa.guru_id', $guru_id)->where('tagihan_detail.komisi', ">", 0);
         $query = $query->get();
 
         return $query;
