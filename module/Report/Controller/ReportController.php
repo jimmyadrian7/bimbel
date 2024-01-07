@@ -150,9 +150,13 @@ class ReportController extends BaseReportController
             $postData = $request->getParsedBody();
             $gaji = new Gaji();
 
-            $start_date = explode('-', $postData['start_date']);
-            $year = $start_date[0];
-            $month = $start_date[1];
+            // $start_date = explode('-', $postData['start_date']);
+            // $year = $start_date[0];
+            // $month = $start_date[1];
+            $date = new \DateTime($postData['start_date'] . "-01");
+            $date->modify("+1 month");
+            $year = $date->format("Y");
+            $month = $date->format("m");
 
             $gaji = $gaji
                 ->whereMonth('tanggal', $month)
