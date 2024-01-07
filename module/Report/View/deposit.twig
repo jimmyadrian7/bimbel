@@ -49,6 +49,7 @@
                                 <th>No</th>
                                 <th>Siswa</th>
                                 <th>Nominal</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         {% for deposit in deposits %}
@@ -62,10 +63,13 @@
                                         {{ 0|number_format(0, ',', '.') }}
                                     {% endif %}
                                 </td>
+                                <td>
+                                    {{ status_deposit_list[deposit.status] }}
+                                </td>
                             </tr>
                         {% endfor %}
                         <tr class="bold">
-                            <td class="bg-transparent" colspan="1"></td>
+                            <td class="bg-transparent" colspan="2"></td>
                             <td class="bg-red">Total</td>
                             <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
                         </tr>

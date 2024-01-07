@@ -11,7 +11,7 @@ class Deposit extends BaseModel
     protected $table = 'deposit';
     // protected $with = ['bukti_pembayaran', 'siswa'];
 
-    protected $status_enum = [
+    public $status_enum = [
         ["value" => "a", "label" => "Aktif"],
         ["value" => "t", "label" => "Terima"],
         ["value" => "h", "label" => "Hangus"]

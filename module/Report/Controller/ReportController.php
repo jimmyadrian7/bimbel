@@ -268,6 +268,11 @@ class ReportController extends BaseReportController
             $month = $start_date[1];
 
             $deposit = new \Bimbel\Siswa\Model\Deposit();
+            $status_deposit_list = [];
+            foreach ($deposit->status_enum as $key => $value) {
+                $status_deposit_list[$value['value']] = $value['label'];
+            }
+
             $deposit = $deposit
                 ->whereYear('tanggal', '=', $year)
                 ->whereMonth('tanggal', '=', $month)
@@ -297,7 +302,8 @@ class ReportController extends BaseReportController
                 'judul' => "Deposit",
                 'deposits' => $deposit,
                 'total' => $deposit->sum('nominal'),
-                'periode' => $this->convertDate($postData['start_date'] . "-01")
+                'periode' => $this->convertDate($postData['start_date'] . "-01"),
+                'status_deposit_list' => $status_deposit_list
             ];
 
             $result = $this->toPdf("Report/View/deposit.twig", $data);
