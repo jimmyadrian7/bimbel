@@ -230,7 +230,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
             for (let index = 0; index < vm.data.tagihan_detail.length; index++) {
                 const s = vm.data.tagihan_detail[index];
                 
-                if (s.kode == pembiayaan.kode)
+                if (s.pembiayaan_id == pembiayaan.id)
                 {
                     result = true;
                     break;
