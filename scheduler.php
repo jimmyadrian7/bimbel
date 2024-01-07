@@ -27,3 +27,5 @@ foreach ($siswas as $siswa)
         continue;
     }
 }
+
+echo "Berhasil";

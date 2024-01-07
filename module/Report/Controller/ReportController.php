@@ -18,10 +18,10 @@ class ReportController extends BaseReportController
             ->fromSub($pendapatan_iuran, 'tagihan')
             ->select(
                 'nama_item AS deskripsi', 
-                DB::raw('SUM(qty) AS qty'), 
+                DB::raw('COUNT(*) AS qty'), 
                 DB::raw('SUM(sub_total) AS sub_total'), 
                 DB::raw('SUM(potongan) AS potongan'),
-                DB::raw('SUM(harga_total) AS total')
+                DB::raw('SUM(total_terbagi) AS total')
             )
             ->groupBy('nama_item');
 
@@ -310,7 +310,7 @@ class ReportController extends BaseReportController
                 }
             }
 
-            $deposit = $deposit->get();
+            $deposit = $deposit->orderBy('tanggal', 'DESC')->get();
 
             $data = [
                 'judul' => "Deposit",

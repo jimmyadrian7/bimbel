@@ -171,7 +171,7 @@ class Gaji extends BaseModel
                     ELSE
                         pembiayaan.nominal
                     END
-                AS persen_komisi'),
+                AS persen_komisi'), DB::raw('(tagihan_detail.total / tagihan_detail.bulan) AS total_terbagi')
             )
             ->join('tagihan', 'tagihan.id', 'tagihan_detail.tagihan_id')
             ->join('siswa', 'siswa.id', 'tagihan.siswa_id')
