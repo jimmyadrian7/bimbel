@@ -3,6 +3,8 @@ namespace Bimbel\Pembayaran\Controller;
 
 use \Bimbel\Master\Controller\Controller;
 use \Slim\Exception\HttpNotFoundException;
+use Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Support\Facades\Schema;
 
 class NotifyController extends Controller
 {
@@ -318,5 +320,21 @@ class NotifyController extends Controller
         }
 
         return $result;
+    }
+
+    public function fixDataTagihan($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+        $isColExist = $tagihan->getConnection()->getSchemaBuilder()->hasColumn('tagihan','guru_id');
+        if (!$isColExist)
+        {
+            $tagihan->getConnection()->getSchemaBuilder()->table("tagihan", function($table) {
+                $table->integer('guru_id')->unsigned()->nullable()->after('tanggal_lunas');
+            });
+        }
+
+        DB::statement('UPDATE tagihan SET guru_id =  (SELECT guru_id FROM siswa WHERE siswa.id = tagihan.siswa_id LIMIT 1)');
     }
 }

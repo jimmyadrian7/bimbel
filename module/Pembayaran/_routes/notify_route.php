@@ -80,3 +80,13 @@ $app->post("/api/reset/sequance/tagihan", function ($request, $response, $args) 
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/fix/data/tagihan", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+    $result = $controller->fixDataTagihan($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});

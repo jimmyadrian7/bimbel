@@ -3,6 +3,7 @@ namespace Bimbel\Pembayaran\Model;
 
 use Bimbel\Core\Model\BaseModel;
 use Bimbel\Siswa\Model\Siswa;
+use Bimbel\Guru\Model\Guru;
 use Bimbel\Pembayaran\Model\TagihanDetail;
 use Bimbel\Pembayaran\Model\Transaksi;
 use Bimbel\Master\Model\Kursus;
@@ -11,7 +12,7 @@ class Tagihan extends BaseModel
 {
     protected $fillable = [
         'code', 'siswa_id', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal', 'kursus_id',
-        'tagihan_detail', 'tanggal_lunas'
+        'tagihan_detail', 'tanggal_lunas', 'guru_id'
     ];
     protected $table = 'tagihan';
     protected $appends = ['siswa_data'];
@@ -52,6 +53,10 @@ class Tagihan extends BaseModel
     public function kursus()
     {
         return $this->hasOne(Kursus::class, 'id', 'kursus_id');
+    }
+    public function guru()
+    {
+        return $this->hasOne(Guru::class, 'id', 'guru_id');
     }
 
 
@@ -140,6 +145,7 @@ class Tagihan extends BaseModel
         $siswa = new Siswa();
         $siswa = $siswa->find($attributes['siswa_id']);
         $attributes['kursus_id'] = $siswa->kursus_id;
+        $attributes['guru_id'] = $siswa->guru_id;
     }
 
     public function validateData($attributes)
@@ -195,6 +201,8 @@ class Tagihan extends BaseModel
 
     public function fetchAllData($condition, $obj, $pagination = false, $page = 1, $sort = [])
     {
+        $obj = $obj->with('guru', 'guru.orang');
+
         foreach($condition as $key => $con)
         {
             if ($con[0] == 'nama')
@@ -206,6 +214,16 @@ class Tagihan extends BaseModel
                 });
                 unset($condition[$key]);
             }
+
+            if ($con[0] == 'guru.orang.nama')
+            {
+                $obj = $obj->whereHas('guru', function($query) use ($con) {
+                    $query->whereHas('orang', function($q) use ($con) {
+                        $q->where("nama", $con[1], $con[2]);
+                    });
+                });
+                unset($condition[$key]);
+            }
         }
 
         return parent::fetchAllData($condition, $obj, $pagination, $page, $sort);
@@ -213,7 +231,7 @@ class Tagihan extends BaseModel
     
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('tagihan_detail', 'transaksi');
+        $obj = $obj->with('tagihan_detail', 'transaksi', 'guru', 'guru.orang');
         $data = parent::fetchDetail($id, $obj);
 
         if ($data->status != 'p')

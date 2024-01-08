@@ -323,6 +323,21 @@ class Siswa extends BaseModel
             break;
         }
     }
+    public function handleTagihan($attributes)
+    {
+        $changed_value = $this->getChanges();
+        if (array_key_exists("guru_id", $changed_value) || array_key_exists("komisi", $changed_value))
+        {
+            $tagihan = new Tagihan();
+            $tagihan = $tagihan->where("siswa_id", $this->id)->where('status', 'p')->get();
+            
+            foreach($tagihan as $t)
+            {
+                $tagihan_obj = new Tagihan();
+                $t->update($t->fetchDetail($t->id, $tagihan_obj)->toArray());
+            }
+        }
+    }
     
 
     public function triggerIuran($firstTime = false, $tanggal = false)
@@ -403,6 +418,8 @@ class Siswa extends BaseModel
         $this->handleJadwal($jadwals);
         $this->handleRef($refs);
         $this->handleIuran($iurans);
+
+        $this->handleTagihan($attributes);
 
         return $result;
     }

@@ -11,11 +11,19 @@
         let vm = this;
 
         vm.resetKodeTagihan = resetKodeTagihan;
+        vm.fixDataTagihan = fixDataTagihan;
 
         function resetKodeTagihan()
         {
             req.post('reset/sequance/tagihan').then(resp => {
                 logger.success("Berhasil reset sequance Tagihan");
+            });
+        }
+
+        function fixDataTagihan()
+        {
+            req.post('fix/data/tagihan').then(resp => {
+                logger.success("Berhasil perbaiki data Tagihan");
             });
         }
     }
