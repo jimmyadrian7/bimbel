@@ -42,8 +42,7 @@
     <body>
         <div id="background"></div>
 
-        {% for kursus, d in data %}
-            {% for jenis, d1 in d %}
+            {% for jenis, d1 in data %}
 
                 <div class="wrapper-page">
                     <header>
@@ -52,7 +51,7 @@
                                 "Report/View/partial/header.twig" 
                                 with {
                                     'additional': [
-                                        {'value': kursus, 'label': 'Kursus'},
+                                        {'value': kursus_lists[loop.index - 1], 'label': 'Kursus'},
                                         {'value': jenis_pembayaran_list[jenis], 'label': 'Jenis Pembayaran'}
                                     ] 
                                 } 
@@ -74,6 +73,7 @@
                                             <th>Kode Tagihan</th>
                                             <th>Tanggal Tagihan</th>
                                             <th>Tanggal Lunas</th>
+                                            <th>Kursus</th>
                                             <th>Nama Item</th>
                                             <th>Harga Total</th>
                                             <th>% Komisi</th>
@@ -91,6 +91,7 @@
                                                 <td>{{ tagihan_detail.kode_tagihan }}</td>
                                                 <td>{{ tagihan_detail.tanggal_tagihan|date("d/m/Y") }}</td>
                                                 <td>{{ tagihan_detail.tanggal_lunas|date("d/m/Y") }}</td>
+                                                <td>{{ tagihan_detail.kursus }}</td>
                                                 <td>{{ tagihan_detail.nama_item }}</td>
                                                 <td>{{ tagihan_detail.harga_total|number_format(0, ',', '.') }}</td>
                                                 <td>{{ tagihan_detail.persen_komisi }}%</td>
@@ -100,7 +101,7 @@
                                     </tbody>
 
                                     <tr class="bold">
-                                        <td class="bg-transparent" colspan="7"></td>
+                                        <td class="bg-transparent" colspan="8"></td>
                                         <td class="bg-red">Total Pendapatan</td>
                                         <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
                                     </tr>
@@ -109,7 +110,7 @@
                         </div>
                     </main>
 
-                    {% if loop.parent.loop.last and loop.last %}
+                    {% if loop.last %}
                         <footer>
                             <div class="border-black my-30"></div>
         
@@ -121,6 +122,5 @@
                 </div>
                 
             {% endfor %}
-        {% endfor %}
     </body>
 </html>

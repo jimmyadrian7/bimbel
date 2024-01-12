@@ -46,16 +46,24 @@ class ReportGuruController extends BaseReportController
             $data_row = $data_row->merge($tagihan_details);
             
             // Sort by Komisi
-            $data_row = $data_row->sortBy('persen_komisi');
+            $data_row = $data_row->sortBy('persen_komisi')->sortBy('kursus');
             $total_pendapatan = $data_row->sum('komisi');
 
-            $data = $data_row->groupBy(['kursus', 'jenis_pembayaran']);
+            $data = $data_row->groupBy(['jenis_pembayaran']);
             // $data_row = $data_row->toArray();
+
+            $kursus_lists = [];
+
+            foreach($data as $d)
+            {
+                $kursus_lists[] = join(", ", $d->pluck('kursus')->unique()->toArray());
+            }
             
             $data = [
                 'judul' => "Pendapatan " . $guru->orang->nama,
                 'periode' => $this->convertDate($postData['start_date'], "F Y"),
                 'jenis_pembayaran_list' => $jenis_pembayaran_list,
+                'kursus_lists' => $kursus_lists,
                 "data" => $data,
                 "total_pendapatan" => $total_pendapatan
             ];
