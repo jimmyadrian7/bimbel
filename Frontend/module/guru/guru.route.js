@@ -25,6 +25,14 @@ import form from "./html/form.html";
             });
         };
 
+        let getKursusOptions = (req) => {
+            return req.get('kursuss').then(response => {
+                return response.data.map((value) => {
+                    return {value: value.id, label: value.nama}
+                });
+            });
+        };
+
         return [
             {
                 state: 'guru',
@@ -50,7 +58,8 @@ import form from "./html/form.html";
                     title: 'Detail Guru',
                     menu: 'guru',
                     resolve: {
-                        agamaOptions: getAgaOptions
+                        agamaOptions: getAgaOptions,
+                        kursusOptions: getKursusOptions
                     }
                 }
             },

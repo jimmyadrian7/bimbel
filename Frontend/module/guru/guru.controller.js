@@ -12,12 +12,12 @@ import kursusHtml from "./html/modal/kursus.html";
 
     GuruController.$inject = [
         '$stateParams', 'agamaOptions', '$compile', '$scope', 'req', '$state', 
-        '$parse', 'Modal', 'logger', 'moment', 'session'
+        '$parse', 'Modal', 'logger', 'moment', 'session', 'kursusOptions'
     ];
 
     function GuruController(
         stateParams, agamaOptions, $compile, scope, 
-        req, state, $parse, Modal, logger, moment, session
+        req, state, $parse, Modal, logger, moment, session, kursusOptions
     )
     {
         let vm = this;
@@ -63,7 +63,8 @@ import kursusHtml from "./html/modal/kursus.html";
         vm.additional.siswaFields = [
             {name: 'No. Formulir', value: 'no_formulir'},
             {name: 'Tanggal Pendaftaran', value: 'tanggal_pendaftaran', type: 'date'},
-            {name: 'Nama', value: 'orang.nama'}
+            {name: 'Nama', value: 'orang.nama'},
+            {name: "Tempat Kursus", value: "kursus_id", type: "selection", selection: kursusOptions}
         ];
         vm.additional.gajiFields = [
             {name: 'Total Siswa', value: 'total_siswa', type: 'number'},

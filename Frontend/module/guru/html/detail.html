@@ -96,6 +96,7 @@
             </div>
 
             <div class="tab-pane fade show" id="siswa" ng-init="vm.fetchSiswa()">
+                <div class="small font-weight-bold mt-2 text-end">Total Siswa: {{ vm.customData.siswa.length }}</div>
                 <app-table-template
                     data="vm.customData.siswa" 
                     fields="vm.additional.siswaFields"></app-table-template>
