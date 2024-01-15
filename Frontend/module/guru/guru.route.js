@@ -44,7 +44,8 @@ import form from "./html/form.html";
                     title: 'Guru',
                     menu: 'guru',
                     resolve: {
-                        agamaOptions: getAgaOptions
+                        agamaOptions: getAgaOptions,
+                        kursusOptions: getKursusOptions
                     }
                 }
             },
@@ -73,7 +74,8 @@ import form from "./html/form.html";
                     title: 'Form Guru',
                     menu: 'guru',
                     resolve: {
-                        agamaOptions: getAgaOptions
+                        agamaOptions: getAgaOptions,
+                        kursusOptions: getKursusOptions
                     }
                 }
             }
