@@ -34,12 +34,22 @@ class ReportGuruController extends BaseReportController
             $guru = $guru->find($postData['guru_id']);
 
             // Komisi selain iuran
-            $tagihan_details = $gaji->getTagihanDetailDll($postData['guru_id'], $year, $month);
-            $data_row = $data_row->merge($tagihan_details);
+            $tagihan_details = $gaji->queryLainLain($postData['start_date'] . "-01");
+            $tagihan_details->where('tagihan.guru_id', $postData['guru_id']);
+            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            {
+                $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
+            }
+            $data_row = $data_row->merge($tagihan_details->get());
 
             // Komisi iuran
-            $tagihan_details = $gaji->getTagihanDetailIuran($postData['guru_id'], $year, $month);
-            $data_row = $data_row->merge($tagihan_details);
+            $tagihan_details = $gaji->queryIuran($postData['start_date'] . "-01");
+            $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.komisi', ">", 0);
+            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            {
+                $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
+            }
+            $data_row = $data_row->merge($tagihan_details->get());
 
             $tagihan_details = $gaji->getTunjangan($postData['guru_id']);
             $tagihan_details = $tagihan_details->map->format();

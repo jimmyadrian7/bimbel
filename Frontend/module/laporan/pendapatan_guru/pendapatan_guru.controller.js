@@ -4,9 +4,9 @@
     angular.module('app.module.laporan.pendapatan_guru')
         .controller('PendapatanGuruController', PendapatanGuruController);
 
-    PendapatanGuruController.$inject = ['req', '$element', 'moment', 'guruOpt', 'logger'];
+    PendapatanGuruController.$inject = ['req', '$element', 'moment', 'guruOpt', 'logger', 'kursusOpt'];
 
-    function PendapatanGuruController(req, $element, moment, guruOpt, logger)
+    function PendapatanGuruController(req, $element, moment, guruOpt, logger, kursusOpt)
     {
         let vm = this;
 
@@ -18,6 +18,7 @@
 
         vm.fields = [
             {type: 'month', value: 'start_date'},
+            {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'},
             {type: 'selection', selection: guruOpt, value: 'guru_id'}
         ];
 

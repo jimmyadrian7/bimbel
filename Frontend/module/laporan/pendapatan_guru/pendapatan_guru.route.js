@@ -23,6 +23,18 @@ import laporan from "../html/laporan_template.html";
             });
         };
 
+        let getKursusOptions = (req) => {
+            return req.get('kursuss').then(response => {
+                let result = response.data.map((value) => {
+                    return {value: value.id, label: value.nama}
+                });
+
+                result.unshift({value: "", label: "All"});
+
+                return result;
+            });
+        };
+
         return [
             {
                 state: 'laporan.pendapatan_guru',
@@ -35,7 +47,8 @@ import laporan from "../html/laporan_template.html";
                     menu: 'laporan',
                     nav: 'pendapatan_guru',
                     resolve: {
-                        guruOpt: getGuruOptions
+                        guruOpt: getGuruOptions,
+                        kursusOpt: getKursusOptions
                     }
                 }
             }
