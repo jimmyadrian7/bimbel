@@ -42,6 +42,8 @@
     <body>
         <div id="background"></div>
 
+        {% set nomor = 1 %}
+
             {% for jenis, d1 in data %}
 
                 <div class="wrapper-page">
@@ -86,7 +88,7 @@
                                         {% for tagihan_detail in d1 %}
                                             {% set total = total + tagihan_detail.komisi %}
                                             <tr>
-                                                <td>{{ loop.index }}</td>
+                                                <td>{{ nomor }}</td>
                                                 <td>{{ tagihan_detail.nama_siswa }}</td>
                                                 <td>{{ tagihan_detail.kode_tagihan }}</td>
                                                 <td>{{ tagihan_detail.tanggal_tagihan|date("d/m/Y") }}</td>
@@ -97,6 +99,7 @@
                                                 <td>{{ tagihan_detail.persen_komisi }}%</td>
                                                 <td>{{ tagihan_detail.komisi|number_format(0, ',', '.') }}</td>
                                             </tr>
+                                            {% set nomor = nomor + 1 %}
                                         {% endfor %}
                                     </tbody>
 
