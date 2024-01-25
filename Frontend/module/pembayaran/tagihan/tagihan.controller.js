@@ -18,7 +18,7 @@ import modalDiskon from "./html/modal/modal-diskon.html";
 
         let statusOpt = [
             {label: 'Proses', value: 'p'},
-            {label: 'Cicil', value: 'c'},
+            {label: 'Menunggu Verifikasi', value: 'c'},
             {label: 'Lunas', value: 'l'}
         ];
 

@@ -336,5 +336,7 @@ class NotifyController extends Controller
         }
 
         DB::statement('UPDATE tagihan SET guru_id =  (SELECT guru_id FROM siswa WHERE siswa.id = tagihan.siswa_id LIMIT 1)');
+
+        return $result;
     }
 }

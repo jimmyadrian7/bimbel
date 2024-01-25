@@ -15,7 +15,7 @@ class Tagihan extends BaseModel
         'tagihan_detail', 'tanggal_lunas', 'guru_id'
     ];
     protected $table = 'tagihan';
-    protected $appends = ['siswa_data'];
+    protected $appends = ['siswa_data', 'verify_transaksi'];
 
     public $required_field = [
         ['name' => 'siswa_id', 'label' => 'Siswa'],
@@ -24,7 +24,7 @@ class Tagihan extends BaseModel
 
     protected $status_enum = [
         ["value" => "p", "label" => "Proses"],
-        ["value" => "c", "label" => "Cicil"],
+        ["value" => "c", "label" => "Menunggu Verifikasi"],
         ["value" => "l", "label" => "Lunas"]
     ];
 
@@ -36,6 +36,12 @@ class Tagihan extends BaseModel
 
 		return $data;
 	}
+
+    public function getVerifyTransaksiAttribute() {
+        $result = $this->transaksi()->where('status', 'p')->count();
+
+        return $result;
+    }
 
     
     public function siswa()

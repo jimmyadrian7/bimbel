@@ -108,6 +108,10 @@ class Transaksi extends BaseModel
         {
             throw new \Error("Pembayaran tidak dapat lebih besar dari hutang");
         }
+        else if ($sisa_hutang != 0)
+        {
+            throw new \Error("Nominal Pembayaran tidak dapat kurang dari hutang");
+        }
     }
 
     public function handleFile(&$attributes)
@@ -143,6 +147,7 @@ class Transaksi extends BaseModel
     {
         if ($this->status != 'v')
         {
+            $this->tagihan->update(['status' => 'c', 'siswa_id' => $this->tagihan->siswa_id]);
             return;
         }
 
