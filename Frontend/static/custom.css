@@ -41,6 +41,11 @@
     width: 100px;
 }
 
+.img-container .img-4x6 {
+    width: 4cm !important;
+    height: 6cm !important;
+}
+
 
 .input-group:not(.focused) .form-control {
     padding-left: 1px !important;
