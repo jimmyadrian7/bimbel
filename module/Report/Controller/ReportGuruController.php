@@ -56,7 +56,7 @@ class ReportGuruController extends BaseReportController
             $data_row = $data_row->merge($tagihan_details);
             
             // Sort by Komisi
-            $data_row = $data_row->sortBy('persen_komisi')->sortBy('kursus');
+            $data_row = $data_row->sortBy('persen_komisi');
             $total_pendapatan = $data_row->sum('komisi');
 
             $data = $data_row->groupBy(['jenis_pembayaran']);
