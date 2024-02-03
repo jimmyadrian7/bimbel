@@ -26,6 +26,7 @@ import modal from "./html/modal.html";
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [
             {name: "Tanggal", value: "tanggal", table: true, type: "date"},
+            {name: "Tanggal Keluar", value: "tanggal_keluar", table: true, type: "date"},
             {name: "Nominal", value: "nominal", table: true, type: "number"},
             {name: "Siswa", value: "siswa.orang.nama", table: true, hidden: true},
             {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: "file", table: true},

@@ -339,4 +339,20 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function addFieldKeluarDeposit($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $deposit = new \Bimbel\Siswa\Model\Deposit();
+        $isColExist = $deposit->getConnection()->getSchemaBuilder()->hasColumn('deposit','tanggal_keluar');
+        if (!$isColExist)
+        {
+            $deposit->getConnection()->getSchemaBuilder()->table("deposit", function($table) {
+                $table->date('tanggal_keluar')->nullable()->after('tanggal');
+            });
+        }
+
+        return $result;
+    }
 }

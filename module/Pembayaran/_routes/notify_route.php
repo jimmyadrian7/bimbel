@@ -90,3 +90,13 @@ $app->post("/api/fix/data/tagihan", function ($request, $response, $args) {
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/add/field/keluar/deposit", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+    $result = $controller->addFieldKeluarDeposit($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});

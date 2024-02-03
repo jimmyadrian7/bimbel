@@ -12,6 +12,7 @@
 
         vm.resetKodeTagihan = resetKodeTagihan;
         vm.fixDataTagihan = fixDataTagihan;
+        vm.addFieldKeluarDeposit = addFieldKeluarDeposit;
 
         function resetKodeTagihan()
         {
@@ -24,6 +25,13 @@
         {
             req.post('fix/data/tagihan').then(resp => {
                 logger.success("Berhasil perbaiki data Tagihan");
+            });
+        }
+
+        function addFieldKeluarDeposit()
+        {
+            req.post('add/field/keluar/deposit').then(resp => {
+                logger.success("Berhasil ditambahkan");
             });
         }
     }

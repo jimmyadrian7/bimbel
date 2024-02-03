@@ -7,7 +7,7 @@ use Bimbel\Siswa\Model\Siswa;
 
 class Deposit extends BaseModel
 {
-    protected $fillable = ['tanggal', 'nominal', 'siswa_id', 'status', 'bukti_pembayaran', 'bukti_pembayaran_id'];
+    protected $fillable = ['tanggal', 'tanggal_keluar', 'nominal', 'siswa_id', 'status', 'bukti_pembayaran', 'bukti_pembayaran_id'];
     protected $table = 'deposit';
     // protected $with = ['bukti_pembayaran', 'siswa'];
 
@@ -64,7 +64,10 @@ class Deposit extends BaseModel
             return;
         }
 
-        $this->siswa->update(['status' => 'h']);
+        if ($this->siswa->status != 'n')
+        {
+            $this->siswa->update(['status' => 'n']);
+        }
     }
 
 
