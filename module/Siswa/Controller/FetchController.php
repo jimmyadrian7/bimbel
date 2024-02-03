@@ -66,6 +66,7 @@ class FetchController extends Controller
             if ($data['reset'])            
             {
                 $siswa->iuran_terbuat()->delete();
+                $siswa->deposit->delete();
                 
                 foreach($siswa->tagihan as $tagihan)
                 {
