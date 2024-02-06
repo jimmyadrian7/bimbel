@@ -40,7 +40,7 @@ class Siswa extends BaseModel
         ["value" => "n", "label" => "Berhenti"]
     ];
 
-    protected $appends = ['guru_data', 'ref'];
+    protected $appends = ['guru_data', 'ref', 'kursus_data'];
     public function getGuruDataAttribute()
     {
 		$guru_id = [
@@ -51,6 +51,18 @@ class Siswa extends BaseModel
         
 
 		return $guru_id;
+	}
+
+    public function getKursusDataAttribute()
+    {
+		$kursus_id = [
+            "id" => $this->kursus_id,
+            "nama" => $this->kursus->nama
+        ];
+
+        
+
+		return $kursus_id;
 	}
 
     public function getRefAttribute()
@@ -138,6 +150,24 @@ class Siswa extends BaseModel
         }
 
         $attributes['orang_id'] = $orang->id;
+    }
+
+    public function handleSequance($attributes)
+    {
+        if (array_key_exists('no_formulir', $attributes) && !empty($attributes['no_formulir']) && array_key_exists('kursus_id', $attributes) && !empty($attributes['kursus_id']))
+        {
+            $no_formulir = $attributes['no_formulir'];
+            $no_formulir = explode("-", $no_formulir);
+            $no_formulir = (int) array_pop($no_formulir);
+            
+            $kursus = new Kursus();
+            $kursus = $kursus->find($attributes['kursus_id']);
+
+            if ($no_formulir == ($kursus->sequance_pendaftaran + 1))
+            {
+                $kursus->update(['sequance_pendaftaran' => $kursus->sequance_pendaftaran + 1]);
+            }
+        }
     }
 
 
@@ -395,6 +425,8 @@ class Siswa extends BaseModel
         self::handleOrang($attributes);
         // self::getSequance($attributes);
 
+        self::handleSequance($attributes);
+
 		$siswa = parent::create($attributes);
         $siswa->handleJadwal($jadwals);
         $siswa->handleRef($refs);
@@ -412,6 +444,8 @@ class Siswa extends BaseModel
         
         $this->handleOrang($attributes);
         $this->handleStatus($attributes);
+
+        $this->handleSequance($attributes);
 
         $result = parent::update($attributes, $options);
 

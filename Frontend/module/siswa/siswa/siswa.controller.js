@@ -12,12 +12,12 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
 
     SiswaController.$inject = [
         '$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session',
-        'referalOptions', 'kursusOptions'
+        'referalOptions'
     ];
 
     function SiswaController(
         stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session, 
-        referalOptions, kursusOptions
+        referalOptions
     )
     {
         let vm = this;
@@ -70,7 +70,16 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
             {name: "Komisi", value: "komisi", type: 'number', table: true, required: true},
             {name: "Program", value: "program", required: true},
             {name: "Paket Belajar", value: "paket_belajar", required: true},
-            {name: "Tempat Kursus", value: "kursus_id", table: true, type: "selection", selection: kursusOptions, required: true},
+            // {name: "Tempat Kursus", value: "kursus_id", table: true, type: "selection", selection: kursusOptions, required: true},
+            {
+                name: "Tempat Kursus", 
+                value: "kursus_id", 
+                type: "autocomplete",
+                url: 'kursus/search/autocomplete',
+                valueName: 'kursus_data',
+                table: true,
+                required: true
+            },
             vm.status_field,
             {name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true}
         ];
@@ -155,7 +164,7 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         vm.genTagihan = genTagihan;
 
         activate();
-        // $scope.$watch(() => vm.data.kursus_id, watchTempatKursus);
+        $scope.$watch(() => vm.data.kursus_id, watchTempatKursus);
 
         function activate()
         {
@@ -397,18 +406,16 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
 
         function watchTempatKursus()
         {
-            let el = $('[name="kursus_id"]');
-            console.log(el);
+            let el = $('[name="vm.data.kursus_id"]');
             
             if (el.length > 0)
             {
                 let el_data = el.select2('data');
-                console.log(el_data);
 
-                // if (el_data.length > 0)
-                // {
-                //     vm.data.content = el_data[0].content;
-                // }
+                if (el_data.length > 0 && el_data[0].kode)
+                {
+                    vm.data.no_formulir = el_data[0].kode + "-" + String(el_data[0].sequance_pendaftaran + 1).padStart(3, '0');
+                }
             }
         }
     }

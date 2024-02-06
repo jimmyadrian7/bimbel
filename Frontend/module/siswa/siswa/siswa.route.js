@@ -31,13 +31,13 @@ import form from "./html/form.html";
                 });
             });
         };
-        let getKursusOptions = (req) => {
-            return req.get('kursuss').then(response => {
-                return response.data.map((value) => {
-                    return {value: value.id, label: value.nama, sequance: value.sequance_pendaftaran, kode: value.kode}
-                });
-            });
-        };
+        // let getKursusOptions = (req) => {
+        //     return req.get('kursuss').then(response => {
+        //         return response.data.map((value) => {
+        //             return {value: value.id, label: value.nama, sequance: value.sequance_pendaftaran, kode: value.kode}
+        //         });
+        //     });
+        // };
 
         return [
             {
@@ -53,7 +53,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
-                        kursusOptions: getKursusOptions
+                        // kursusOptions: getKursusOptions
                     }
                 }
             },
@@ -70,7 +70,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
-                        kursusOptions: getKursusOptions
+                        // kursusOptions: getKursusOptions
                     }
                 }
             },
@@ -87,7 +87,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
-                        kursusOptions: getKursusOptions
+                        // kursusOptions: getKursusOptions
                     }
                 }
             }

@@ -3,6 +3,8 @@ namespace Bimbel\Siswa\Controller;
 
 use \Bimbel\Master\Controller\Controller;
 use \Bimbel\Siswa\Model\Siswa;
+use \Bimbel\Master\Model\Kursus;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class FetchController extends Controller
 {
@@ -41,6 +43,48 @@ class FetchController extends Controller
             }
 
             $data = $data->map->only(["id", "text"]);
+            
+            return $data;
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
+
+    public function getKursus($request, $args, &$response)
+    {
+        $result = [];
+
+        try 
+        {
+            $getData = $request->getQueryParams();
+            
+            $kursus = new Kursus();
+            $data = $kursus->whereRaw('1 = 1');
+
+            if (array_key_exists("query", $getData) && !empty($getData['query']))
+            {
+                $data = $data->where('nama', 'like', '%' . $getData['query'] . '%');
+            }
+
+            $session = new \Bimbel\Master\Model\Session();
+            $kursus_ids = $session->getKursusIds();
+
+            if ($kursus_ids !== false && count($kursus_ids) > 0)
+            {
+                $data->whereIn('id', $kursus_ids);
+            }
+
+            $data = $data->get();
+
+            foreach ($data as &$value) {
+                $value->{"text"} = $value->nama;
+            }
+
+            $data = $data->map->only(["id", "text", "kode", "sequance_pendaftaran"]);
             
             return $data;
         }
