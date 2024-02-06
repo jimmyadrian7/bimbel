@@ -312,6 +312,11 @@ class ReportController extends BaseReportController
                 }
             }
 
+            if (array_key_exists('status', $postData) && !empty($postData['status']))
+            {
+                $deposit = $deposit->where('status', $postData['status']);
+            }
+
             $deposit = $deposit->orderBy('tanggal', 'DESC')->get();
 
             $data = [

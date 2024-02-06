@@ -34,7 +34,7 @@ import form from "./html/form.html";
         let getKursusOptions = (req) => {
             return req.get('kursuss').then(response => {
                 return response.data.map((value) => {
-                    return {value: value.id, label: value.nama}
+                    return {value: value.id, label: value.nama, sequance: value.sequance_pendaftaran, kode: value.kode}
                 });
             });
         };

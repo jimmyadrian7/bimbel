@@ -13,6 +13,7 @@
         vm.resetKodeTagihan = resetKodeTagihan;
         vm.fixDataTagihan = fixDataTagihan;
         vm.addFieldKeluarDeposit = addFieldKeluarDeposit;
+        vm.addFieldSequancePendaftaranKursus = addFieldSequancePendaftaranKursus;
 
         function resetKodeTagihan()
         {
@@ -31,6 +32,13 @@
         function addFieldKeluarDeposit()
         {
             req.post('add/field/keluar/deposit').then(resp => {
+                logger.success("Berhasil ditambahkan");
+            });
+        }
+
+        function addFieldSequancePendaftaranKursus()
+        {
+            req.post('add/field/sequance-pendaftaran/kursus').then(resp => {
                 logger.success("Berhasil ditambahkan");
             });
         }

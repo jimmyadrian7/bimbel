@@ -355,4 +355,20 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function addFieldSequancePendaftaranKursus($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $kursus = new \Bimbel\Master\Model\Kursus();
+        $isColExist = $kursus->getConnection()->getSchemaBuilder()->hasColumn('kursus','sequance_pendaftaran');
+        if (!$isColExist)
+        {
+            $kursus->getConnection()->getSchemaBuilder()->table("kursus", function($table) {
+                $table->integer('sequance_pendaftaran')->unsigned()->after('sequance');
+            });
+        }
+
+        return $result;
+    }
 }

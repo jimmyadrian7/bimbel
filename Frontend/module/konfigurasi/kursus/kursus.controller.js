@@ -15,6 +15,7 @@
             {name: "Kode", value: "kode", table: true, required: true},
             {name: "Nama", value: "nama", table: true, required: true},
             {name: "Sequance", value: "sequance", table: true, required: true, hidden: true},
+            {name: "Sequance Pendaftaran", value: "sequance_pendaftaran", table: true, required: true, hidden: true},
         ];
     }
 })()

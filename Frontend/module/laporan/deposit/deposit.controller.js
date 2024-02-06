@@ -9,6 +9,12 @@
     function LaporanDepositController(req, $element, moment, kursusOpt)
     {
         let vm = this;
+        let statusOpt = [
+            {label: "All", value: ""},
+            {label: "Aktif", value: "a"},
+            {label: "Terima", value: "t"},
+            {label: "Hangus", value: "h"}
+        ];
 
         vm.myPdf = true;
         vm.generate = generate;
@@ -17,6 +23,7 @@
         };
 
         vm.fields = [
+            {type: 'selection', selection: statusOpt, value: 'status'},
             {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
         ];
 

@@ -155,6 +155,7 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         vm.genTagihan = genTagihan;
 
         activate();
+        // $scope.$watch(() => vm.data.kursus_id, watchTempatKursus);
 
         function activate()
         {
@@ -392,6 +393,23 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
                 Modal.getInstance(vm.myModal[0]).hide();
                 state.reload();
             });
+        }
+
+        function watchTempatKursus()
+        {
+            let el = $('[name="kursus_id"]');
+            console.log(el);
+            
+            if (el.length > 0)
+            {
+                let el_data = el.select2('data');
+                console.log(el_data);
+
+                // if (el_data.length > 0)
+                // {
+                //     vm.data.content = el_data[0].content;
+                // }
+            }
         }
     }
 })()
