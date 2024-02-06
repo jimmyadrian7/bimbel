@@ -26,7 +26,7 @@ import modal from "./html/modal.html";
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
         vm.fields = [
             {name: "Tanggal", value: "tanggal", table: true, type: "date"},
-            {name: "Tanggal Keluar", value: "tanggal_keluar", table: true, type: "date"},
+            {name: "Tanggal Terima", value: "tanggal_keluar", table: true, type: "date"},
             {name: "Nominal", value: "nominal", table: true, type: "number"},
             {name: "Siswa", value: "siswa.orang.nama", table: true, hidden: true},
             {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: "file", table: true},
@@ -51,9 +51,16 @@ import modal from "./html/modal.html";
                 return;
             }
 
+            if (!vm.modal.tanggal_keluar)
+            {
+                logger.error("Tanggal Terima tidak boleh kosong");
+                return;
+            }
+
             let data = {
                 id: vm.data.id,
-                bukti_pembayaran: vm.modal.bukti
+                bukti_pembayaran: vm.modal.bukti,
+                tanggal_keluar: vm.modal.tanggal_keluar
             };
 
             req.put('deposit', data).then(response => {
