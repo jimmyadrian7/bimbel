@@ -96,9 +96,19 @@ class ReportController extends BaseReportController
             ->whereMonth('tanggal', '=', $month)
             ->whereYear('tanggal', '=', $year);
 
+        $deposit = new \Bimbel\Siswa\Model\Deposit();
+        $deposit = $deposit
+            ->select(DB::raw('"Deposit ' . $month . ' - ' . $year . '" AS nama'), DB::raw('COUNT(*) AS jumlah'), DB::raw('SUM(nominal) AS total'))
+            ->whereMonth('tanggal_keluar', $month)
+            ->whereYear('tanggal_keluar', $year)
+            ->groupBy(DB::raw('MONTH(tanggal_keluar)'));
+
         if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
         {
             $pengeluaran = $pengeluaran->where('kursus_id', $postData['tempat_kursus']);
+            $deposit = $deposit->whereHas('siswa', function($query) use ($postData) {
+                $query->where('kursus_id', $postData['tempat_kursus']);
+            });
         }
         else
         {
@@ -107,13 +117,17 @@ class ReportController extends BaseReportController
             {
                 $kursus_ids = $session->getKursusIds();
                 $pengeluaran = $pengeluaran->whereIn('kursus_id', $kursus_ids);
+                $deposit = $deposit->whereHas('siswa', function($query) use ($kursus_ids) {
+                    $query->whereIn('kursus_id', $kursus_ids);
+                });
             }
         }
 
         $gaji_guru = collect($this->queryGajiGuru($postData)->toArray());
         $pengeluaran = collect($pengeluaran->get()->toArray());
+        $deposit = collect($deposit->get()->toArray());
 
-        $result = $gaji_guru->merge($pengeluaran);
+        $result = $gaji_guru->merge($pengeluaran)->merge($deposit);
 
         return $result;
     }
