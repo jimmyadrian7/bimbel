@@ -152,6 +152,11 @@ class Tagihan extends BaseModel
         $siswa = $siswa->find($attributes['siswa_id']);
         $attributes['kursus_id'] = $siswa->kursus_id;
         $attributes['guru_id'] = $siswa->guru_id;
+
+        if (!array_key_exists('status', $attributes) || empty($attributes['status']))
+        {
+            $attributes['status'] = 'p';
+        }
     }
 
     public function validateData($attributes)

@@ -171,7 +171,7 @@ class Gaji extends BaseModel
                     ELSE
                         pembiayaan.nominal
                     END
-                AS persen_komisi'), DB::raw('(tagihan_detail.total / tagihan_detail.bulan) AS total_terbagi')
+                AS persen_komisi'), DB::raw('(tagihan_detail.total / IFNULL(tagihan_detail.bulan, 1)) AS total_terbagi')
             )
             ->join('tagihan', 'tagihan.id', 'tagihan_detail.tagihan_id')
             ->join('siswa', 'siswa.id', 'tagihan.siswa_id')
@@ -207,7 +207,7 @@ class Gaji extends BaseModel
         ')]);
 
         $query
-            ->where('system', true)
+            ->where('tagihan_detail.system', true)
             ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
             ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
             ->whereDate("tagihan.tanggal_lunas", ">=", $tanggal_gaji)
@@ -228,7 +228,9 @@ class Gaji extends BaseModel
         $query->addSelect(['komisi' => DB::raw('tagihan_detail.komisi AS komisi')]);
         
         $query
-            ->where('system', false)
+            ->where(function($q) {
+                $q->where('tagihan_detail.system', false)->orWhereNull('tagihan_detail.system');
+            })
             ->whereMonth("tagihan.tanggal_lunas", $month)
             ->whereYear("tagihan.tanggal_lunas", $year)
             ->where('tagihan.status', 'l')
