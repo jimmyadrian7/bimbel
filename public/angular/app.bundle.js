@@ -1967,6 +1967,48 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _htm
 
 /***/ }),
 
+/***/ "./Frontend/module/web/user_question/user_question.controller.js":
+/*!***********************************************************************!*\
+  !*** ./Frontend/module/web/user_question/user_question.controller.js ***!
+  \***********************************************************************/
+/***/ (() => {
+
+eval("(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.web.user_question')\r\n        .controller('UserQuestionController', UserQuestionController);\r\n\r\n    UserQuestionController.$inject = ['$stateParams'];\r\n\r\n    function UserQuestionController(stateParams)\r\n    {\r\n        let vm = this;\r\n\r\n        vm.dataId = stateParams.dataId;\r\n        vm.fields = [\r\n            {name: \"Name\", value: \"name\", table: true},\r\n            {name: \"Email\", value: \"email\", table: true},\r\n            {name: \"Phone\", value: \"phone\", table: true},\r\n            {name: \"Subject\", value: \"subject\", table: true},\r\n            {name: \"Message\", value: \"message\", table: false}\r\n        ];\r\n    }\r\n})()\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/user_question/user_question.controller.js?");
+
+/***/ }),
+
+/***/ "./Frontend/module/web/user_question/user_question.js":
+/*!************************************************************!*\
+  !*** ./Frontend/module/web/user_question/user_question.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _user_question_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./user_question.module */ \"./Frontend/module/web/user_question/user_question.module.js\");\n/* harmony import */ var _user_question_module__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_user_question_module__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _user_question_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./user_question.route */ \"./Frontend/module/web/user_question/user_question.route.js\");\n/* harmony import */ var _user_question_controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./user_question.controller */ \"./Frontend/module/web/user_question/user_question.controller.js\");\n/* harmony import */ var _user_question_controller__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_user_question_controller__WEBPACK_IMPORTED_MODULE_2__);\n\r\n\r\n\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/user_question/user_question.js?");
+
+/***/ }),
+
+/***/ "./Frontend/module/web/user_question/user_question.module.js":
+/*!*******************************************************************!*\
+  !*** ./Frontend/module/web/user_question/user_question.module.js ***!
+  \*******************************************************************/
+/***/ (() => {
+
+eval("(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.web.user_question', []);\r\n})()\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/user_question/user_question.module.js?");
+
+/***/ }),
+
+/***/ "./Frontend/module/web/user_question/user_question.route.js":
+/*!******************************************************************!*\
+  !*** ./Frontend/module/web/user_question/user_question.route.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _html_table_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./html/table.html */ \"./Frontend/module/web/user_question/html/table.html\");\n/* harmony import */ var _html_detail_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./html/detail.html */ \"./Frontend/module/web/user_question/html/detail.html\");\n/* harmony import */ var _html_form_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./html/form.html */ \"./Frontend/module/web/user_question/html/form.html\");\n\r\n\r\n\r\n\r\n(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.web.user_question')\r\n        .run(appRun);\r\n\r\n    appRun.$inject =['routerHelper'];\r\n\r\n    function appRun(routerHelper)\r\n    {\r\n        routerHelper.configureStates(getStates());\r\n    }\r\n\r\n    function getStates()\r\n    {\r\n        return [\r\n            {\r\n                state: 'web.user_question',\r\n                config: {\r\n                    url: '/Question',\r\n                    template: _html_table_html__WEBPACK_IMPORTED_MODULE_0__[\"default\"],\r\n                    controller: 'UserQuestionController',\r\n                    controllerAs: 'vm',\r\n                    title: 'Question',\r\n                    menu: 'web',\r\n                    nav: 'user_question'\r\n                }\r\n            },\r\n            {\r\n                state: 'web.user_question_detail',\r\n                config: {\r\n                    url: '/Question/{dataId}',\r\n                    template: _html_detail_html__WEBPACK_IMPORTED_MODULE_1__[\"default\"],\r\n                    controller: 'UserQuestionController',\r\n                    controllerAs: 'vm',\r\n                    title: 'Detail Question',\r\n                    menu: 'web',\r\n                    nav: 'user_question'\r\n                }\r\n            },\r\n            {\r\n                state: 'web.user_question_form',\r\n                config: {\r\n                    url: '/Question/form/:dataId',\r\n                    template: _html_form_html__WEBPACK_IMPORTED_MODULE_2__[\"default\"],\r\n                    controller: 'UserQuestionController',\r\n                    controllerAs: 'vm',\r\n                    title: 'Form Question',\r\n                    menu: 'web',\r\n                    nav: 'user_question'\r\n                }\r\n            }\r\n        ];\r\n    }\r\n})()\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/user_question/user_question.route.js?");
+
+/***/ }),
+
 /***/ "./Frontend/module/web/web.controller.js":
 /*!***********************************************!*\
   !*** ./Frontend/module/web/web.controller.js ***!
@@ -1984,7 +2026,7 @@ eval("(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.web'
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _web_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./web.module */ \"./Frontend/module/web/web.module.js\");\n/* harmony import */ var _web_module__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_web_module__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _web_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./web.route */ \"./Frontend/module/web/web.route.js\");\n/* harmony import */ var _web_controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./web.controller */ \"./Frontend/module/web/web.controller.js\");\n/* harmony import */ var _web_controller__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_web_controller__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var _pengumuman_pengumuman__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pengumuman/pengumuman */ \"./Frontend/module/web/pengumuman/pengumuman.js\");\n/* harmony import */ var _promo_promo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./promo/promo */ \"./Frontend/module/web/promo/promo.js\");\n/* harmony import */ var _testimoni_testimoni__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./testimoni/testimoni */ \"./Frontend/module/web/testimoni/testimoni.js\");\n/* harmony import */ var _konfigurasi_konfigurasi__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./konfigurasi/konfigurasi */ \"./Frontend/module/web/konfigurasi/konfigurasi.js\");\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/web.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _web_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./web.module */ \"./Frontend/module/web/web.module.js\");\n/* harmony import */ var _web_module__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_web_module__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _web_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./web.route */ \"./Frontend/module/web/web.route.js\");\n/* harmony import */ var _web_controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./web.controller */ \"./Frontend/module/web/web.controller.js\");\n/* harmony import */ var _web_controller__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_web_controller__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var _pengumuman_pengumuman__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pengumuman/pengumuman */ \"./Frontend/module/web/pengumuman/pengumuman.js\");\n/* harmony import */ var _promo_promo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./promo/promo */ \"./Frontend/module/web/promo/promo.js\");\n/* harmony import */ var _testimoni_testimoni__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./testimoni/testimoni */ \"./Frontend/module/web/testimoni/testimoni.js\");\n/* harmony import */ var _konfigurasi_konfigurasi__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./konfigurasi/konfigurasi */ \"./Frontend/module/web/konfigurasi/konfigurasi.js\");\n/* harmony import */ var _user_question_user_question__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./user_question/user_question */ \"./Frontend/module/web/user_question/user_question.js\");\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/web.js?");
 
 /***/ }),
 
@@ -1994,7 +2036,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _web
   \*******************************************/
 /***/ (() => {
 
-eval("(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.web', [\r\n        'app.module.web.pengumuman', 'app.module.web.promo', 'app.module.web.testimoni', 'app.module.web.konfigurasi'\r\n    ]);\r\n})()\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/web.module.js?");
+eval("(() => {\r\n    \"use strict\";\r\n\r\n    angular.module('app.module.web', [\r\n        'app.module.web.pengumuman', 'app.module.web.promo', 'app.module.web.testimoni', 'app.module.web.konfigurasi',\r\n        'app.module.web.user_question'\r\n    ]);\r\n})()\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/web.module.js?");
 
 /***/ }),
 
@@ -3840,6 +3882,39 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 "use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<app-table table=\\\"testimonis\\\" fields=\\\"vm.fields\\\" detail=\\\"web.testimoni_detail\\\" form=\\\"web.testimoni_form\\\" nosearch=\\\"true\\\"></app-table>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/testimoni/html/table.html?");
+
+/***/ }),
+
+/***/ "./Frontend/module/web/user_question/html/detail.html":
+/*!************************************************************!*\
+  !*** ./Frontend/module/web/user_question/html/detail.html ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<app-detail table=\\\"user_question\\\" id=\\\"vm.dataId\\\" fields=\\\"vm.fields\\\" list=\\\"web.user_question\\\" edit=\\\"web.user_question_form\\\"></app-detail>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/user_question/html/detail.html?");
+
+/***/ }),
+
+/***/ "./Frontend/module/web/user_question/html/form.html":
+/*!**********************************************************!*\
+  !*** ./Frontend/module/web/user_question/html/form.html ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<app-form detail=\\\"web.user_question_detail\\\" list=\\\"web.user_question\\\" id=\\\"vm.dataId\\\" table=\\\"user_question\\\" fields=\\\"vm.fields\\\"></app-form>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/user_question/html/form.html?");
+
+/***/ }),
+
+/***/ "./Frontend/module/web/user_question/html/table.html":
+/*!***********************************************************!*\
+  !*** ./Frontend/module/web/user_question/html/table.html ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<app-table table=\\\"user_questions\\\" fields=\\\"vm.fields\\\" detail=\\\"web.user_question_detail\\\" form=\\\"web.user_question_form\\\" nosearch=\\\"true\\\"></app-table>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://bimbel/./Frontend/module/web/user_question/html/table.html?");
 
 /***/ }),
 
