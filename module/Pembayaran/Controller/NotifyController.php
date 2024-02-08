@@ -371,4 +371,25 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function updateNoFormulirSiswa($request, $args, &$response)
+    {
+        $siswa = new \Bimbel\Siswa\Model\Siswa();
+        $siswa = $siswa->get();
+        
+        $kursus = new \Bimbel\Master\Model\Kursus();
+        $kursus->whereRaw('1 = 1')->update(['sequance_pendaftaran' => 0]);
+
+        foreach ($siswa as $s)
+        {
+            if ($s->kursus)
+            {
+                $kursus = $s->kursus->refresh();
+                $s->update([
+                    'no_formulir' => $kursus->kode . "-" . sprintf('%03d', $kursus->sequance_pendaftaran + 1),
+                    'kursus_id' => $kursus->id
+                ]);
+            }
+        }
+    }
 }

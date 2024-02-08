@@ -110,3 +110,13 @@ $app->post("/api/add/field/sequance-pendaftaran/kursus", function ($request, $re
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/update/no/formulir/siswa", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+    $result = $controller->updateNoFormulirSiswa($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});
