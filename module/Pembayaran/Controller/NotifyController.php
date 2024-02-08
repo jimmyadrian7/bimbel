@@ -374,6 +374,8 @@ class NotifyController extends Controller
 
     public function updateNoFormulirSiswa($request, $args, &$response)
     {
+        $result = ["data" => "success"];
+
         $siswa = new \Bimbel\Siswa\Model\Siswa();
         $siswa = $siswa->get();
         
@@ -391,5 +393,39 @@ class NotifyController extends Controller
                 ]);
             }
         }
+
+        return $result;
+    }
+
+    public function addFieldYouTubeWeb($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $konfigurasi_web = new \Bimbel\Web\Model\KonfigurasiWeb();
+        $isColExist = $konfigurasi_web->getConnection()->getSchemaBuilder()->hasColumn('konfigurasi_web','youtube');
+        if (!$isColExist)
+        {
+            $konfigurasi_web->getConnection()->getSchemaBuilder()->table("konfigurasi_web", function($table) {
+                $table->text('youtube')->nullable()->after('tiktok');
+            });
+        }
+
+        return $result;
+    }
+
+    public function addFieldPhoneWeb($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $user_question = new \Bimbel\Web\Model\UserQuestion();
+        $isColExist = $user_question->getConnection()->getSchemaBuilder()->hasColumn('user_question','phone');
+        if (!$isColExist)
+        {
+            $user_question->getConnection()->getSchemaBuilder()->table("user_question", function($table) {
+                $table->string('phone', 255)->nullable()->after('email');
+            });
+        }
+
+        return $result;
     }
 }

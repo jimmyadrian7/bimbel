@@ -19,7 +19,8 @@
             {name: "Facebook", value: "facebook"},
             {name: "Whatsapp", value: "whatsapp"},
             {name: "Instagram", value: "instagram"},
-            {name: "Tiktok", value: "tiktok"}
+            {name: "Tiktok", value: "tiktok"},
+            {name: "You Tube", value: "youtube"}
         ];
     }
 })()

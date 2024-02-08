@@ -15,6 +15,8 @@
         vm.addFieldKeluarDeposit = addFieldKeluarDeposit;
         vm.addFieldSequancePendaftaranKursus = addFieldSequancePendaftaranKursus;
         vm.updateNoFormulirSiswa = updateNoFormulirSiswa;
+        vm.addFieldYouTubeWeb = addFieldYouTubeWeb;
+        vm.addFieldPhoneWeb = addFieldPhoneWeb;
 
         function resetKodeTagihan()
         {
@@ -48,6 +50,20 @@
         {
             req.post('update/no/formulir/siswa').then(resp => {
                 logger.success("Berhasil di update");
+            });
+        }
+
+        function addFieldYouTubeWeb()
+        {
+            req.post('add/field/youtube/web').then(resp => {
+                logger.success("Berhasil di tambah");
+            });
+        }
+
+        function addFieldPhoneWeb()
+        {
+            req.post('add/field/phone/web').then(resp => {
+                logger.success("Berhasil di tambah");
             });
         }
     }

@@ -19,6 +19,7 @@ class QuestionController extends Controller
             $data = [
                 "name" => $dataPost['name'],
                 "email" => $dataPost['email'],
+                "phone" => $dataPost['phone'],
                 "subject" => $dataPost['subject'],
                 "message" => $dataPost['message']
             ];
