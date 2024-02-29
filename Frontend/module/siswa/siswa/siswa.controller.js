@@ -139,6 +139,7 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         vm.getValue = getValue;
         vm.getHari = getHari;
         vm.updateStatus = updateStatus;
+        vm.updateAktif = updateAktif;
 
         vm.tambahIuran = tambahIuran;
         vm.fetchIuran = fetchIuran;
@@ -221,6 +222,14 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         {
             let data = vm.data;
             data['status'] = 'p';
+
+            req.put('siswa', data).then(response => state.reload());
+        }
+
+        function updateAktif()
+        {
+            let data = vm.data;
+            data['status'] = 'a';
 
             req.put('siswa', data).then(response => state.reload());
         }
