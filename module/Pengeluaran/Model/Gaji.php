@@ -192,7 +192,7 @@ class Gaji extends BaseModel
         2. lunas tepat pada bulannya
         3. lunas telat
     */
-    public function queryIuran($start_date)
+    public function queryIuran($start_date, $tagihan_status = 'l')
     {
         $tanggal_gaji = new \DateTime($start_date);
         $tanggal_gaji = $tanggal_gaji->format("Y-m-d");
@@ -213,8 +213,6 @@ class Gaji extends BaseModel
             ->whereDate("tagihan.tanggal_lunas", ">=", $tanggal_gaji)
             ->where('tagihan.status', 'l')
         ;
-
-        dd($query->toSql());
 
         return $query;
     }

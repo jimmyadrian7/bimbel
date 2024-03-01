@@ -19,8 +19,6 @@ import '../../../node_modules/flatpickr/dist/plugins/monthSelect/style.css';
 
         function link(scope, elem, attrs, ngModelCtrl)
         {
-            console.log("Working ?");
-
             let datepicker = flatpickr(elem, {
                 plugins: [new monthSelectPlugin({shorthand: false, dateFormat: "Y-m-d", altFormat: "M Y"})]
             });

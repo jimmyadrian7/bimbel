@@ -140,3 +140,13 @@ $app->post("/api/add/field/phone/web", function ($request, $response, $args) {
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/add/menu/iuran", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Pembayaran\Controller\NotifyController");
+    $result = $controller->addMenuIuran($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});

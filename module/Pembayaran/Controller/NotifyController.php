@@ -428,4 +428,31 @@ class NotifyController extends Controller
 
         return $result;
     }
+
+    public function addMenuIuran($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $menu = new \Bimbel\Master\Model\Menu();
+        $menu = $menu->create(['kode' => 'iuran', 'nama' => 'Iuran', 'parent' => 'laporan']);
+
+        $role_menu = new \Bimbel\User\Model\RoleMenu();
+        $role_menu->create([
+            'role_id' => 1,
+            'menu_id' => $menu->id,
+            'create' => null,
+            'update' => null,
+            'delete' => null
+        ]);
+        $role_menu->create([
+            'role_id' => 4,
+            'menu_id' => $menu->id,
+            'create' => null,
+            'update' => null,
+            'delete' => null
+        ]);
+        
+
+        return $result;
+    }
 }

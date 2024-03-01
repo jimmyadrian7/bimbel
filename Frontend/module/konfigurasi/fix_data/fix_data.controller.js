@@ -17,6 +17,7 @@
         vm.updateNoFormulirSiswa = updateNoFormulirSiswa;
         vm.addFieldYouTubeWeb = addFieldYouTubeWeb;
         vm.addFieldPhoneWeb = addFieldPhoneWeb;
+        vm.addMenuIuran = addMenuIuran;
 
         function resetKodeTagihan()
         {
@@ -63,6 +64,13 @@
         function addFieldPhoneWeb()
         {
             req.post('add/field/phone/web').then(resp => {
+                logger.success("Berhasil di tambah");
+            });
+        }
+
+        function addMenuIuran()
+        {
+            req.post('add/menu/iuran').then(resp => {
                 logger.success("Berhasil di tambah");
             });
         }
