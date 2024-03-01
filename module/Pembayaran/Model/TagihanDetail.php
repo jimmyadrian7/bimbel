@@ -79,14 +79,8 @@ class TagihanDetail extends BaseModel
         return $result;
     }
 
-    public function getKomisi($attributes)
+    public function getKomisiNominal($pembiayaan)
     {
-        $pembiayaan = new Pembiayaan();
-        $tagihan = new Tagihan();
-        $tagihan = $tagihan->find($attributes['tagihan_id']);
-        $pembiayaan = $pembiayaan->find($attributes['pembiayaan_id']);
-        $komisi = false;
-
         if ($pembiayaan->jenis_komisi == 's')
         {
             $komisi = $tagihan->siswa->komisi;
@@ -100,13 +94,28 @@ class TagihanDetail extends BaseModel
             $komisi = false;
         }
 
-        if ($komisi !== false)
+        return $result;
+    }
+
+    public function getKomisi($attributes, $komisi = false)
+    {
+        $pembiayaan = new Pembiayaan();
+        $tagihan = new Tagihan();
+        $tagihan = $tagihan->find($attributes['tagihan_id']);
+        $pembiayaan = $pembiayaan->find($attributes['pembiayaan_id']);
+
+        if (!$komisi)
+        {
+            $komisi = $this->getKomisiNominal($pembiayaan);
+        }
+
+        if ($komisi)
         {
             $result = $attributes['total'] * $komisi / 100;
         }
         else
         {
-            $result = $pembiayaan->nominal * $attributes['qty'];
+            $result = $pembiayaan->nominal * $attributes['total'];
         }
 
         $bulan_total = 0;
@@ -149,6 +158,20 @@ class TagihanDetail extends BaseModel
         $this->validateData($attributes);
         $this->autoFill($attributes);
         return parent::update($attributes, $options);
+    }
+
+    public function updateKomisi($komisi)
+    {
+        $additional_data = [
+            'tagihan_id' => $this->tagihan_id, 
+            'pembiayaan_id' => $this->pembiayaan_id, 
+            'total' => $this->total,
+            'bulan' => $this->bulan
+        ];
+
+        $attributes = ['komisi' => $this->getKomisi($additional_data, $komisi)];
+
+        return parent::update($attributes, []);
     }
 
     public function format()

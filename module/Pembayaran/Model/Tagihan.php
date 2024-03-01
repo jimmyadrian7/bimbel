@@ -196,6 +196,15 @@ class Tagihan extends BaseModel
         return $result;
     }
 
+    public function updateGuru($guru_id, $komisi)
+    {
+        parent::update(['guru_id' => $guru_id], []);
+        foreach($this->tagihan_detail as $td)
+        {
+            $td->updateKomisi($komisi);
+        }
+    }
+
     public function delete()
     {
         // if ($this->status != 'p')

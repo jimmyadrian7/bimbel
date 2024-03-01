@@ -1,6 +1,7 @@
 import modal from "./html/modal/modal.html";
 import modalDetail from "./html/modal/modal-detail.html";
 import modalDiskon from "./html/modal/modal-diskon.html";
+import modalPindahGuru from "./html/modal/modal-pindah.html";
 
 (() => {
     "use strict";
@@ -34,8 +35,6 @@ import modalDiskon from "./html/modal/modal-diskon.html";
 
         vm.isSiswa = session.isSiswa();
         vm.isAdmin = session.isAdminCabang() || session.isSuperUser();
-
-        console.log(session.isAdminCabang(), session.isSuperUser());
 
         vm.data = {tagihan_detail: []};
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
@@ -91,9 +90,22 @@ import modalDiskon from "./html/modal/modal-diskon.html";
             {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: 'file', required: true},
         ];
 
+        vm.pindahGuruFields = [
+            {
+                name: "Guru", 
+                value: "guru_id", 
+                type: "autocomplete",
+                url: 'guru/search/autocomplete',
+                valueName: 'guru_data',
+                required: true
+            },
+            {name: "Persen Komisi (%)", value: "komisi", type: 'number', required: true},
+        ];
+
         vm.modal = {form: {tanggal: moment(new Date()).format("YYYY-MM-DD")}};
         vm.myModal = false;
         vm.myModalDiskon = false;
+        vm.myModalPindahGuru = false;
 
         vm.getValue = getValue;
         vm.getLabel = getLabel;
@@ -126,6 +138,9 @@ import modalDiskon from "./html/modal/modal-diskon.html";
 
         vm.editTransaksi = editTransaksi;
         vm.deleteTransaksi = deleteTransaksi;
+
+        vm.pindahGuru = pindahGuru;
+        vm.postPindahGuru = postPindahGuru;
 
         function getValue(field)
         {
@@ -352,6 +367,21 @@ import modalDiskon from "./html/modal/modal-diskon.html";
                     logger.success("Success");
                     state.reload();
                 }
+            });
+        }
+
+
+        function pindahGuru()
+        {
+            vm.myModalPindahGuru = $compile(modalPindahGuru)($scope);
+        }
+
+        function postPindahGuru()
+        {
+            let data = {tagihan_id: vm.data.id, guru_id: vm.modal.form.guru_id, komisi: vm.modal.form.komisi};
+            req.post('tagihan/ganti/guru', data).then(response => {
+                Modal.getInstance(vm.myModalPindahGuru[0]).hide();
+                state.reload();
             });
         }
     }

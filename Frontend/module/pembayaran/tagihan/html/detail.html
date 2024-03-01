@@ -16,6 +16,14 @@
             <i class="fa fa-usd me-2"></i> Bayar
         </button>
 
+        <button 
+            type="button"
+            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+            ng-click="vm.pindahGuru()" 
+            ng-if="vm.data.status == 'l' && vm.isAdmin">
+            <i class="fa fa-refresh me-2"></i> Pindah Guru
+        </button>
+
         <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()">
             <i class="fa fa-print me-2"></i> Invoice
         </button>
