@@ -173,12 +173,12 @@ class Gaji extends BaseModel
                     END
                 AS persen_komisi'), DB::raw('(tagihan_detail.total / IFNULL(tagihan_detail.bulan, 1)) AS total_terbagi')
             )
-            ->join('tagihan', 'tagihan.id', 'tagihan_detail.tagihan_id')
-            ->join('siswa', 'siswa.id', 'tagihan.siswa_id')
-            ->join('orang', 'orang.id', 'siswa.orang_id')
-            ->join('kursus', 'kursus.id', 'tagihan.kursus_id')
-            ->join('pembiayaan', 'pembiayaan.id', 'tagihan_detail.pembiayaan_id')
-            ->join('transaksi', function($join) {
+            ->leftJoin('tagihan', 'tagihan.id', 'tagihan_detail.tagihan_id')
+            ->leftJoin('siswa', 'siswa.id', 'tagihan.siswa_id')
+            ->leftJoin('orang', 'orang.id', 'siswa.orang_id')
+            ->leftJoin('kursus', 'kursus.id', 'tagihan.kursus_id')
+            ->leftJoin('pembiayaan', 'pembiayaan.id', 'tagihan_detail.pembiayaan_id')
+            ->leftJoin('transaksi', function($join) {
                 $join->on('transaksi.tagihan_id', 'tagihan.id')
                     ->on('transaksi.id', DB::raw('(SELECT id FROM transaksi WHERE tagihan_id = tagihan.id ORDER BY id DESC LIMIT 1)'));
             });

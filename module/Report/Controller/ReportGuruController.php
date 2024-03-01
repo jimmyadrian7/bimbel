@@ -128,6 +128,7 @@ class ReportGuruController extends BaseReportController
             {
                 $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
             }
+
             if ($tagihan_details->count() > 0)
             {
                 $data_row['Proses'] = $tagihan_details->get();
