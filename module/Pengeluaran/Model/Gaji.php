@@ -219,8 +219,8 @@ class Gaji extends BaseModel
         if ($tagihan_status == 'l')
         {
             $query
-                ->whereMonth("tagihan.tanggal_lunas", "<=", DB::raw("month($tanggal_gaji)"))
-                ->whereYear("tagihan.tanggal_lunas", "<=", DB::raw("year($tanggal_gaji)"));
+                ->whereMonth("tagihan.tanggal_lunas", "<=", DB::raw("month('" . $tanggal_gaji . "')"))
+                ->whereYear("tagihan.tanggal_lunas", "<=", DB::raw("year('" . $tanggal_gaji . "')"));
         }
 
         return $query;
