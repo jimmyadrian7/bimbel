@@ -202,13 +202,19 @@ class Gaji extends BaseModel
         $query = $this->baseQuery();
         $query->addSelect(['komisi' => DB::raw('
             CASE 
-            WHEN year(tagihan.tanggal_lunas) = year(' . $tanggal_gaji . ') AND month(tagihan.tanggal_lunas) = month(' . $tanggal_gaji . ')  THEN
-                (TIMESTAMPDIFF(MONTH, tagihan.tanggal_lunas, tagihan_detail.tanggal_iuran_mulai) + 1 ) * tagihan_detail.komisi
-            WHEN year(tagihan.tanggal_lunas) > year(' . $tanggal_gaji . ') OR month(tagihan.tanggal_lunas) > month(' . $tanggal_gaji . ')  THEN
-                0
-            ELSE
-                tagihan_detail.komisi
-            END AS komisi
+                WHEN year(tagihan.tanggal_lunas) = year("' . $tanggal_gaji . '") AND month(tagihan.tanggal_lunas) = month("' . $tanggal_gaji . '")  THEN
+                    (
+                        IF(
+                            TIMESTAMPDIFF(MONTH, tagihan_detail.tanggal_iuran_mulai, tagihan.tanggal_lunas) < 0, 
+                            0,
+                            TIMESTAMPDIFF(MONTH, tagihan_detail.tanggal_iuran_mulai, tagihan.tanggal_lunas)
+                        )
+                        + 1 ) * tagihan_detail.komisi
+                WHEN DATE(tagihan.tanggal_lunas) > "' . $end_day . '" AND DATE(tagihan.tanggal_lunas) <= DATE(tagihan_detail.tanggal_iuran_berakhir) THEN
+                    0
+                ELSE
+                    tagihan_detail.komisi
+                END AS komisi
         ')]);
 
         $query
@@ -220,8 +226,11 @@ class Gaji extends BaseModel
 
         if ($tagihan_status == 'l')
         {
-            $query
-                ->whereDate("tagihan.tanggal_lunas", "<=", $end_day);
+            $query->where(function($q) use ($end_day) {
+                $q
+                    ->whereDate("tagihan.tanggal_lunas", "<=", $end_day)
+                    ->orWhereDate("tagihan.tanggal_lunas", '>', DB::raw('tagihan_detail.tanggal_iuran_berakhir'));
+            });
         }
 
         return $query;

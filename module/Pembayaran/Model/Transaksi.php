@@ -200,7 +200,8 @@ class Transaksi extends BaseModel
             {
                 $this->tagihan->update([
                     'tanggal_lunas' => $attributes['tanggal'],
-                    'siswa_id' => $this->tagihan->siswa_id
+                    'siswa_id' => $this->tagihan->siswa_id,
+                    'status' => $this->tagihan->status
                 ]);
             }
         }
