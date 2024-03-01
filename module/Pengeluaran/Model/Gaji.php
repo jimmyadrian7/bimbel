@@ -178,7 +178,7 @@ class Gaji extends BaseModel
             ->join('orang', 'orang.id', 'siswa.orang_id')
             ->join('kursus', 'kursus.id', 'tagihan.kursus_id')
             ->join('pembiayaan', 'pembiayaan.id', 'tagihan_detail.pembiayaan_id')
-            ->join('transaksi', function($join) {
+            ->leftJoin('transaksi', function($join) {
                 $join->on('transaksi.tagihan_id', 'tagihan.id')
                     ->on('transaksi.id', DB::raw('(SELECT id FROM transaksi WHERE tagihan_id = tagihan.id ORDER BY id DESC LIMIT 1)'));
             });
