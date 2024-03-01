@@ -87,7 +87,7 @@
                                                 <td>{{ tagihan_detail.nama_siswa }}</td>
                                                 <td>{{ tagihan_detail.kode_tagihan }}</td>
                                                 <td>{{ tagihan_detail.tanggal_tagihan|date("d/m/Y") }}</td>
-                                                <td>{{ tagihan_detail.tanggal_lunas|date("d/m/Y") }}</td>
+                                                <td>{{ tagihan_detail.tanggal_lunas|date("d/m/Y") || '-' }}</td>
                                                 <td>{{ tagihan_detail.kursus }}</td>
                                                 <td>{{ tagihan_detail.nama_item }}</td>
                                                 <td>{{ tagihan_detail.harga_total|number_format(0, ',', '.') }}</td>
