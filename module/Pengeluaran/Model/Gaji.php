@@ -210,7 +210,7 @@ class Gaji extends BaseModel
             ->where('tagihan_detail.system', true)
             ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
             ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
-            ->where('tagihan.status', 'l')
+            ->where('tagihan.status', $tagihan_status)
         ;
 
         if ($tagihan_status != 'l')
