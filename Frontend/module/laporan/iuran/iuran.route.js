@@ -41,7 +41,7 @@ import laporan from "../html/laporan_template.html";
                 config: {
                     url: '/Iuran',
                     template: laporan,
-                    controller: 'IuranController',
+                    controller: 'IuranReportController',
                     controllerAs: 'vm',
                     title: 'Iuran',
                     menu: 'laporan',

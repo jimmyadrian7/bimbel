@@ -2,11 +2,11 @@
     "use strict";
 
     angular.module('app.module.laporan.iuran')
-        .controller('IuranController', IuranController);
+        .controller('IuranReportController', IuranReportController);
 
-    IuranController.$inject = ['req', '$element', 'moment', 'guruOpt', 'logger', 'kursusOpt'];
+    IuranReportController.$inject = ['req', '$element', 'moment', 'guruOpt', 'logger', 'kursusOpt'];
 
-    function IuranController(req, $element, moment, guruOpt, logger, kursusOpt)
+    function IuranReportController(req, $element, moment, guruOpt, logger, kursusOpt)
     {
         let vm = this;
 
