@@ -196,6 +196,8 @@ class Gaji extends BaseModel
     {
         $tanggal_gaji = new \DateTime($start_date);
         $tanggal_gaji = $tanggal_gaji->format("Y-m-d");
+        $end_day = new \Carbon\Carbon($tanggal_gaji);
+        $end_day = $end_day->endOfMonth()->toDateString();
 
         $query = $this->baseQuery();
         $query->addSelect(['komisi' => DB::raw('
@@ -216,12 +218,11 @@ class Gaji extends BaseModel
             ->where('tagihan.status', $tagihan_status)
         ;
 
-        // if ($tagihan_status == 'l')
-        // {
-        //     $query
-        //         ->whereMonth("tagihan.tanggal_lunas", "<=", DB::raw("month('" . $tanggal_gaji . "')"))
-        //         ->whereYear("tagihan.tanggal_lunas", "<=", DB::raw("year('" . $tanggal_gaji . "')"));
-        // }
+        if ($tagihan_status == 'l')
+        {
+            $query
+                ->whereDate("tagihan.tanggal_lunas", "<=", $end_day);
+        }
 
         return $query;
     }
