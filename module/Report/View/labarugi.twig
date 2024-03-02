@@ -110,9 +110,44 @@
                         <td class="bg-red">{{ total_penjualan_pendapatan|number_format(0, ',', '.') }}</td>
                     </tr>
                 </table>
+
+
+                <div class="mb-10 mt-50">
+                    <span class="table-title">Penarikan Aset</span>
+                </div>
+                <table class="table-content">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Deskripsi</th>
+                            <th>Jumlah</th>
+                            <th>Sub Total</th>
+                            <th>Potongan</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    {% for pendapatan in pendapatan_penarikans %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ pendapatan.deskripsi }}</td>
+                            <td>{{ pendapatan.qty|number_format(0, ',', '.') }}</td>
+                            <td>{{ pendapatan.sub_total|number_format(0, ',', '.') }}</td>
+                            <td>{{ pendapatan.potongan|number_format(0, ',', '.') }}</td>
+                            <td>{{ pendapatan.total|number_format(0, ',', '.') }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bold">
+                        <td class="bg-transparent" colspan="1"></td>
+                        <td class="bg-red">Total</td>
+                        <td class="bg-red">{{ total_penarikan_qty|number_format(0, ',', '.') }}</td>
+                        <td class="bg-red">{{ total_penarikan_sub_total|number_format(0, ',', '.') }}</td>
+                        <td class="bg-red">{{ total_penarikan_potongan|number_format(0, ',', '.') }}</td>
+                        <td class="bg-red">{{ total_penarikan_pendapatan|number_format(0, ',', '.') }}</td>
+                    </tr>
+                </table>
     
 
-                <div class="mb-10 mt-20">
+                <div class="mb-10 mt-50">
                     <span class="table-title">Pengeluaran</span>
                 </div>
                 <table class="table-content">
@@ -138,8 +173,9 @@
                         <td class="bg-red">Total Pengeluaran</td>
                         <td class="bg-red">{{ total_pengeluaran|number_format(0, ',', '.') }}</td>
                     </tr>
-                </table>
-    
+                </table>   
+
+
                 <div class="border-black my-30"></div>
     
                 <div class="report-footer">

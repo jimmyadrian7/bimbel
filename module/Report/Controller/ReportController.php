@@ -75,6 +75,48 @@ class ReportController extends BaseReportController
         return $query->get();
     }
 
+    public function queryPenarikan($postData)
+    {
+        $penarikan = new \Bimbel\Pengeluaran\Model\Penarikan();
+        
+        $date_array = explode("-", $postData['start_date']);
+        $year = $date_array[0];
+        $month = $date_array[1];
+
+        $date_formatted = $this->convertDate($postData['start_date'] . '-01', 'F Y');
+
+        $penarikan = $penarikan
+            ->select(
+                'tabungan_aset_id', 
+                DB::raw('CONCAT("Penarikan ", tabungan_aset.nama, " ' . $date_formatted . '") AS deskripsi'),
+                DB::raw('1 AS qty'),
+                DB::raw('0 AS sub_total'),
+                DB::raw('0 AS potongan'),
+                DB::raw('SUM(penarikan.nominal) as total')
+            )
+            ->join('tabungan_aset', 'tabungan_aset.id', 'penarikan.tabungan_aset_id')
+            ->whereYear('penarikan.tanggal', $year)
+            ->whereMonth('penarikan.tanggal', $month)
+            ->where('penarikan.status', 's');
+
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+        {
+            $penarikan->where('tabungan_aset.kursus_id', $postData['tempat_kursus']);
+        }
+        else
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $penarikan->whereIn('tabungan_aset.kursus_id', $kursus_ids);
+            }
+        }
+
+        $penarikan->groupBy('tabungan_aset_id');
+        return $penarikan->get();
+    }
+
     public function queryGajiGuru($postData)
     {
         $gaji = new Gaji();
@@ -175,6 +217,7 @@ class ReportController extends BaseReportController
 
             $tagihanIuran = $this->queryPendapatanIuran($postData);
             $tagihanPenjualan = $this->queryPendapatanPenjualan($postData);
+            $tagihanPenarikan = $this->queryPenarikan($postData);
             $pengeluaran = $this->queryPengeluaran($postData);
 
             $data = [
@@ -191,9 +234,15 @@ class ReportController extends BaseReportController
                 'total_penjualan_sub_total' => $tagihanPenjualan->sum('sub_total'),
                 'total_penjualan_potongan' => $tagihanPenjualan->sum('potongan'),
 
+                'pendapatan_penarikans' => $tagihanPenarikan,
+                'total_penarikan_qty' => $tagihanPenarikan->sum('qty'),
+                'total_penarikan_pendapatan' => $tagihanPenarikan->sum('total'),
+                'total_penarikan_sub_total' => $tagihanPenarikan->sum('sub_total'),
+                'total_penarikan_potongan' => $tagihanPenarikan->sum('potongan'),
+
                 'pengeluarans' => $pengeluaran,
                 'total_pengeluaran' => $pengeluaran->sum('total'),
-                'total_laba' => $tagihanIuran->sum('total') + $tagihanPenjualan->sum('total') - $pengeluaran->sum('total'),
+                'total_laba' => $tagihanIuran->sum('total') + $tagihanPenjualan->sum('total') + $tagihanPenarikan->sum('total') - $pengeluaran->sum('total'),
                 'periode' => $this->convertDate($postData['start_date'] . "-01", 'F Y')
             ];
 
@@ -279,6 +328,7 @@ class ReportController extends BaseReportController
 
             $tagihanIuran = $this->queryPendapatanIuran($postData);
             $tagihanPenjualan = $this->queryPendapatanPenjualan($postData);
+            $tagihanPenarikan = $this->queryPenarikan($postData);
 
             $data = [
                 'judul' => "Pendapatan",
@@ -294,7 +344,13 @@ class ReportController extends BaseReportController
                 'total_penjualan_sub_total' => $tagihanPenjualan->sum('sub_total'),
                 'total_penjualan_potongan' => $tagihanPenjualan->sum('potongan'),
 
-                'total_pendapatan_semua' => $tagihanIuran->sum('total') + $tagihanPenjualan->sum('total'),
+                'pendapatan_penarikans' => $tagihanPenarikan,
+                'total_penarikan_qty' => $tagihanPenarikan->sum('qty'),
+                'total_penarikan_pendapatan' => $tagihanPenarikan->sum('total'),
+                'total_penarikan_sub_total' => $tagihanPenarikan->sum('sub_total'),
+                'total_penarikan_potongan' => $tagihanPenarikan->sum('potongan'),
+
+                'total_pendapatan_semua' => $tagihanIuran->sum('total') + $tagihanPenjualan->sum('total') + $tagihanPenarikan->sum('total'),
                 'periode' => $this->convertDate($postData['start_date'] . '-01', 'F Y')
             ];
 

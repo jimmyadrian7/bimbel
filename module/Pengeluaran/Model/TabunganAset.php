@@ -79,7 +79,7 @@ class TabunganAset extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('cicilan_aset', 'penarikan');
+        $obj = $obj->with('cicilan_aset', 'penarikan', 'penarikan.bukti');
         $data = parent::fetchDetail($id, $obj);
         
         if ($data->status != 'a')

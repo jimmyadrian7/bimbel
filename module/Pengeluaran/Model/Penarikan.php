@@ -10,7 +10,6 @@ class Penarikan extends BaseModel
 {
     protected $fillable = ['nominal', 'bukti_id', 'bukti', 'status', 'tanggal', 'tabungan_aset_id'];
     protected $table = 'penarikan';
-    protected $with = ['bukti'];
 
     protected $status_enum = [
         ["value" => "m", "label" => "Menunggu Verifikasi"],
