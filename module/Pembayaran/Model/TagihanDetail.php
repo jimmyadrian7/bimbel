@@ -103,10 +103,16 @@ class TagihanDetail extends BaseModel
         $tagihan = new Tagihan();
         $tagihan = $tagihan->find($attributes['tagihan_id']);
         $pembiayaan = $pembiayaan->find($attributes['pembiayaan_id']);
+        $old_komisi = $this->getKomisiNominal($pembiayaan, $tagihan);
 
         if (!$komisi)
         {
-            $komisi = $this->getKomisiNominal($pembiayaan, $tagihan);
+            $komisi = $old_komisi;
+        }
+
+        if (!$old_komisi)
+        {
+            $komisi = false;
         }
 
         if ($komisi)
