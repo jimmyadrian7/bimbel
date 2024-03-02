@@ -79,7 +79,7 @@ class TagihanDetail extends BaseModel
         return $result;
     }
 
-    public function getKomisiNominal($pembiayaan)
+    public function getKomisiNominal($pembiayaan, $tagihan)
     {
         if ($pembiayaan->jenis_komisi == 's')
         {
@@ -94,7 +94,7 @@ class TagihanDetail extends BaseModel
             $komisi = false;
         }
 
-        return $result;
+        return $komisi;
     }
 
     public function getKomisi($attributes, $komisi = false)
@@ -106,7 +106,7 @@ class TagihanDetail extends BaseModel
 
         if (!$komisi)
         {
-            $komisi = $this->getKomisiNominal($pembiayaan);
+            $komisi = $this->getKomisiNominal($pembiayaan, $tagihan);
         }
 
         if ($komisi)
