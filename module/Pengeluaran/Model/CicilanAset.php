@@ -9,9 +9,14 @@ use Bimbel\Pengeluaran\Model\Pengeluaran;
 
 class CicilanAset extends BaseModel 
 {
-    protected $fillable = ['tabungan_aset_id', 'bukti_pembayaran_id', 'bukti_pembayaran', 'pengeluaran_id', 'nominal', 'tanggal'];
+    protected $fillable = ['tabungan_aset_id', 'bukti_pembayaran_id', 'bukti_pembayaran', 'pengeluaran_id', 'nominal', 'tanggal', 'status'];
     protected $table = 'cicilan_aset';
     protected $with = ['bukti_pembayaran'];
+
+    protected $status_enum = [
+        ["value" => "m", "label" => "Menunggu Verifikasi"],
+        ["value" => "s", "label" => "Sukses"]
+    ];
 
     
     public function bukti_pembayaran()
@@ -20,7 +25,7 @@ class CicilanAset extends BaseModel
     }
     public function tabungan_aset()
     {
-        return $this->belongsTo(File::class, 'tabungan_aset_id', 'id');
+        return $this->belongsTo(TabunganAset::class, 'tabungan_aset_id', 'id');
     }
     public function pengeluaran()
     {
@@ -57,17 +62,16 @@ class CicilanAset extends BaseModel
         $attributes['bukti_pembayaran_id'] = $file->id;
     }
 
-    public function createPengeluaran($attributes, $tabungan_aset)
+    public function createPengeluaran($tabungan_aset)
     {
-        $nominal = $attributes['nominal'];        
         $pengeluaran = new Pengeluaran();
         $pengeluaran_value = [
             "nama" => sprintf("Cicilan %s", $tabungan_aset->nama),
             "jumlah" => 1,
-            "harga" => $nominal,
+            "harga" => $this->nominal,
             "aset" => true,
             "kursus_id" => $tabungan_aset->kursus_id,
-            "tanggal" => $attributes['tanggal']
+            "tanggal" => $this->tanggal
         ];
 
         if (!empty($this->pengeluaran_id))
@@ -83,51 +87,81 @@ class CicilanAset extends BaseModel
         return $pengeluaran;
     }
 
-    public function autoFill(&$attributes)
+    public function validateData($attributes, $type)
     {
-        if (!array_key_exists('nominal', $attributes) || !array_key_exists('tabungan_aset_id', $attributes))
+        if (!array_key_exists('tabungan_aset_id', $attributes))
         {
-            throw new \Error("Please input nominal");
+            if (!$this->tabungan_aset_id)
+            {
+                throw new \Error("Data tidak valid");
+            }
+
+            $attributes['tabungan_aset_id'] = $this->tabungan_aset_id;
         }
 
-        $tabungan_aset = new TabunganAset();
-        $tabungan_aset = $tabungan_aset->find($attributes['tabungan_aset_id']);
-        $current_id = $this->id ?: false;
-        $sisa = $tabungan_aset->getSisa($current_id) - $attributes['nominal'];
-        $status = 'c';
-
-        if ($sisa < 0)
+        if (!array_key_exists('nominal', $attributes))
         {
-            throw new \Error("Nominal cannot be greater then utang");
+            if (!$this->nominal)
+            {
+                throw new \Error("Harap isi nominal");
+            }
+
+            $attributes['nominal'] = $this->nominal;
         }
 
-        if ($sisa === 0)
+        if (!array_key_exists('tanggal', $attributes))
         {
+            if (!$this->tanggal)
+            {
+                throw new \Error("Harap isi tanggal");
+            }
+        }
+
+        $tabungan_aset = TabunganAset::findOrFail($attributes['tabungan_aset_id']);
+
+        if ($tabungan_aset->sisa < $attributes['nominal'])
+        {
+            throw new \Error("Nominal tidak dapat lebih besar dari Sisa Utang");
+        }
+    }
+
+    public function handleStatus(&$attributes)
+    {
+        if (array_key_exists('status', $attributes) && $attributes['status'] == 's')
+        {
+            $sisa = $this->nominal - $this->tabungan_aset->sisa;
             $status = 'l';
+
+            if ($sisa > 0)
+            {
+                $status = 'c';
+            }
+
+            $this->tabungan_aset->update(['sisa' => $sisa, 'status' => $status]);
+            
+            $pengeluaran_id = $this->createPengeluaran($this->tabungan_aset)->id;
+            parent::update(['pengeluaran_id' => $pengeluaran_id], []);
         }
-
-        $tabungan_aset->update([
-            'sisa' => $sisa,
-            'status' => $status
-        ]);
-
-        $attributes['pengeluaran_id'] = $this->createPengeluaran($attributes, $tabungan_aset)->id;
     }
 
     public function create(array $attributes = [])
     {
-        self::handleFile($attributes);
-        $this->autoFill($attributes);
-        
-        $cicilan_asset = parent::create($attributes);
-        return $cicilan_asset;
+        $this->validateData($attributes, 'c');
+        $this->handleFile($attributes);
+
+		$penarikan = parent::create($attributes);
+        $penarikan->handleStatus($attributes);
+
+        return $penarikan;
     }
 
     public function update(array $attributes = [], array $options = [])
     {
-        self::handleFile($attributes);
-        $this->autoFill($attributes);
+        $this->validateData($attributes, 'u');
+        $this->handleFile($attributes);
+        $this->handleStatus($attributes);
+        $result = parent::update($attributes, $options);
 
-        return parent::update($attributes, $options);
+        return $result;
     }
 }

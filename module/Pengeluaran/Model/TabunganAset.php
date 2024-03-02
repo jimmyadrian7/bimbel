@@ -4,6 +4,7 @@ namespace Bimbel\Pengeluaran\Model;
 
 use Bimbel\Core\Model\BaseModel;
 use Bimbel\Pengeluaran\Model\CicilanAset;
+use Bimbel\Pengeluaran\Model\Penarikan;
 use Bimbel\Master\Model\Kursus;
 
 class TabunganAset extends BaseModel 
@@ -25,6 +26,10 @@ class TabunganAset extends BaseModel
     public function kursus()
     {
         return $this->hasOne(Kursus::class, 'id', 'kursus_id');
+    }
+    public function penarikan()
+    {
+        return $this->hasMany(Penarikan::class, 'tabungan_aset_id', 'id');
     }
 
     
@@ -74,10 +79,10 @@ class TabunganAset extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('cicilan_aset');
+        $obj = $obj->with('cicilan_aset', 'penarikan');
         $data = parent::fetchDetail($id, $obj);
         
-        if ($data->status == 'c')
+        if ($data->status != 'a')
         {
             $data->editable = false;
             $data->deleteable = false;

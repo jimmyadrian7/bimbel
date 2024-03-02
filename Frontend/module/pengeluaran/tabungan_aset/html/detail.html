@@ -1,10 +1,13 @@
 <app-detail table="tabungan_aset" id="vm.dataId" fields="vm.fields" list="pengeluaran.tabungan_aset" edit="pengeluaran.tabungan_aset_form">
     <app-detail-button>
-        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()" ng-if="vm.data.status != 'a'">
-            <i class="fa fa-print me-2"></i> Invoice
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tarikTabungan()" ng-if="vm.data.status != 'a' && (vm.data.total - vm.data.sisa) > 0">
+            <i class="fa fa-download me-2"></i> Tarik
         </button>
         <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahCicilan()" ng-if="vm.data.status != 'l'">
             <i class="fa fa-usd me-2"></i> Bayar
+        </button>
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()" ng-if="vm.data.status != 'a'">
+            <i class="fa fa-print me-2"></i> Invoice
         </button>
     </app-detail-button>
 
@@ -19,12 +22,15 @@
 
         <ul class="nav nav-tabs mt-5 text-xs">
             <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="list" href="#transaksi">Transaksi</a>
+                <a class="nav-link active" data-bs-toggle="list" href="#tabungan">Tabungan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#penarikan">Penarikan</a>
             </li>
         </ul>
 
         <div class="tab-content text-justify">
-            <div class="tab-pane fade show active" id="transaksi">
+            <div class="tab-pane fade show active" id="tabungan">
                 <div class="my-3">
                     <div class="table-responsive mb-3">
                         <table class="table align-items-center mb-0">
@@ -38,20 +44,74 @@
                             </thead>
                             <tbody>
                                 <tr ng-if="!vm.data.cicilan_aset || vm.data.cicilan_aset.length == 0">
-                                    <td colspan="3" class="text-center">
+                                    <td colspan="{{ vm.cicilan_aset.length }}" class="text-center">
                                         <span class="text-xs font-weight-bold">No data Available</span>
                                     </td>
                                 </tr>
                     
                                 <tr ng-repeat="data in vm.data.cicilan_aset track by $index" ng-if="vm.data.cicilan_aset.length > 0">
                                     <td ng-repeat="field in vm.cicilanFields">
-                                        <app-form-preview type="{{field.type}}" value="data[field.value]"></app-form-preview>
+                                        <app-form-preview type="{{field.type}}" value="vm.getValue(field, data)"></app-form-preview>
                                     </td>
                                     <td>
                                         <button 
                                             type="button"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0" 
-                                            ng-click="vm.editData($index)">
+                                            ng-if="vm.isAdmin && data.status == 'm'"
+                                            ng-click="vm.updateStatusCicilan(data)">
+                                            <i class="fa fa-check me-2"></i> Verif
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.editDataCicilan($index)">
+                                            <i class="fa fa-edit me-2"></i> Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="penarikan">
+                <div class="my-3">
+                    <div class="table-responsive mb-3">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th 
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                                        ng-repeat="field in vm.penarikanFields" ng-bind="field.name"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="!vm.data.penarikan || vm.data.penarikan.length == 0">
+                                    <td colspan="{{ vm.penarikanFields.length }}" class="text-center">
+                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    </td>
+                                </tr>
+                    
+                                <tr ng-repeat="data in vm.data.penarikan track by $index" ng-if="vm.data.penarikan.length > 0">
+                                    <td ng-repeat="field in vm.penarikanFields">
+                                        <app-form-preview type="{{field.type}}" value="vm.getValue(field, data)"></app-form-preview>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="vm.isAdmin && data.status == 'm'"
+                                            ng-click="vm.updateStatusPenarikan(data)">
+                                            <i class="fa fa-check me-2"></i> Verif
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.editPenarikanData($index)">
                                             <i class="fa fa-edit me-2"></i> Edit
                                         </button>
                                     </td>

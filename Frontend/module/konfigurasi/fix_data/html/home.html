@@ -2,31 +2,52 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12 my-3">
-                <div class="d-flex align-items-center">
-                    <button type="button" class="btn bg-gradient-primary mb-0" ng-click="vm.resetKodeTagihan()">
-                        <i class="fa fa-refresh me-2"></i> Reset Kode Tagihan
-                    </button>
-                    <button type="button" class="btn bg-gradient-primary mb-0 mx-2" ng-click="vm.fixDataTagihan()">
-                        <i class="fa fa-refresh me-2"></i> Fix data Tagihan (Add guru)
-                    </button>
-                    <button type="button" class="btn bg-gradient-primary mb-0 mx-2" ng-click="vm.addFieldKeluarDeposit()">
-                        <i class="fa fa-refresh me-2"></i> Add Field Tanggal Terima Deposit
-                    </button>
-                    <button type="button" class="btn bg-gradient-primary mb-0 mx-2" ng-click="vm.addFieldSequancePendaftaranKursus()">
-                        <i class="fa fa-refresh me-2"></i> Add Field Sequance Pendaftaran Tempat Kursus
-                    </button>
-                    <button type="button" class="btn bg-gradient-primary mb-0 mx-2" ng-click="vm.updateNoFormulirSiswa()">
-                        <i class="fa fa-refresh me-2"></i> Update No. Formulir Siswa
-                    </button>
-                    <button type="button" class="btn bg-gradient-primary mb-0 mx-2" ng-click="vm.addFieldYouTubeWeb()">
-                        <i class="fa fa-refresh me-2"></i> Add Field Youtube Untuk WEB
-                    </button>
-                    <button type="button" class="btn bg-gradient-primary mb-0 mx-2" ng-click="vm.addFieldPhoneWeb()">
-                        <i class="fa fa-refresh me-2"></i> Add Field Phone Untuk WEB
-                    </button>
-                    <button type="button" class="btn bg-gradient-primary mb-0 mx-2" ng-click="vm.addMenuIuran()">
-                        <i class="fa fa-refresh me-2"></i> Add Menu Iuran
-                    </button>
+                <div class="row align-items-center">
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.resetKodeTagihan()">
+                            <i class="fa fa-upload me-2"></i> Reset Kode Tagihan
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.fixDataTagihan()" title="Fix data Tagihan (Add guru)">
+                            <i class="fa fa-upload me-2"></i> Fix data Tagihan
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.addFieldKeluarDeposit()" title="Add Field Tanggal Terima Deposit">
+                            <i class="fa fa-upload me-2"></i> Tanggal Terima Deposit
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.addFieldSequancePendaftaranKursus()" title="Add Field Sequance Pendaftaran Tempat Kursus">
+                            <i class="fa fa-upload me-2"></i> Sequance Pendaftaran
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.updateNoFormulirSiswa()" title="Update No. Formulir Siswa">
+                            <i class="fa fa-upload me-2"></i> No. Formulir Siswa
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.addFieldYouTubeWeb()" title="Add Field Youtube Untuk WEB">
+                            <i class="fa fa-upload me-2"></i> Youtube Untuk WEB
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.addFieldPhoneWeb()" title="Add Field Phone Untuk WEB">
+                            <i class="fa fa-upload me-2"></i> Phone Untuk WEB
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.addMenuIuran()" title="Add Menu Iuran">
+                            <i class="fa fa-upload me-2"></i> Iuran
+                        </button>
+                    </div>
+                    <div class="col-2 p-2 d-flex">
+                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.addTableRiwayatPenarikan()" title="Adding Table penarikan, adding boolean tarik into tabungan_aset and add status field to cicilan_aset (for verif cicilan)">
+                            <i class="fa fa-upload me-2"></i> Modification for 1.2
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -18,6 +18,7 @@
         vm.addFieldYouTubeWeb = addFieldYouTubeWeb;
         vm.addFieldPhoneWeb = addFieldPhoneWeb;
         vm.addMenuIuran = addMenuIuran;
+        vm.addTableRiwayatPenarikan = addTableRiwayatPenarikan;
 
         function resetKodeTagihan()
         {
@@ -71,6 +72,13 @@
         function addMenuIuran()
         {
             req.post('add/menu/iuran').then(resp => {
+                logger.success("Berhasil di tambah");
+            });
+        }
+
+        function addTableRiwayatPenarikan()
+        {
+            req.post('add/table/riwayat/penarikan').then(resp => {
                 logger.success("Berhasil di tambah");
             });
         }
