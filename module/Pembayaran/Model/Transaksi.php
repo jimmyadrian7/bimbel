@@ -218,4 +218,12 @@ class Transaksi extends BaseModel
 
         return $result;
     }
+
+    public function delete()
+    {
+        $result = parent::delete();
+        $this->bukti_pembayaran()->delete();
+
+        return $result;
+    }
 }

@@ -5,7 +5,6 @@ namespace Bimbel\Pengeluaran\Model;
 use Bimbel\Core\Model\BaseModel;
 use Bimbel\Master\Model\File;
 use Bimbel\Pengeluaran\Model\TabunganAset;
-use Bimbel\Pengeluaran\Model\Pengeluaran;
 
 class CicilanAset extends BaseModel 
 {
@@ -26,10 +25,6 @@ class CicilanAset extends BaseModel
     public function tabungan_aset()
     {
         return $this->belongsTo(TabunganAset::class, 'tabungan_aset_id', 'id');
-    }
-    public function pengeluaran()
-    {
-        return $this->hasOne(Pengeluaran::class, 'id', 'pengeluaran_id');
     }
 
 
@@ -161,6 +156,14 @@ class CicilanAset extends BaseModel
         $this->handleFile($attributes);
         $this->handleStatus($attributes);
         $result = parent::update($attributes, $options);
+
+        return $result;
+    }
+
+    public function delete()
+    {
+        $result = parent::delete();
+        $this->bukti_pembayaran()->delete();
 
         return $result;
     }

@@ -15,10 +15,17 @@
                             <div class="col-md-6">
                                 <table>
                                     <tr>
-                                        <td class="text-xs">Tabungan</td>
+                                        <td class="text-xs">Kode</td>
                                         <td class="px-3">:</td>
                                         <td class="font-weight-bolder text-dark text-xs">
-                                            <span app-number-format="vm.data.total - vm.data.sisa"></span>
+                                            <span ng-bind="vm.data.code"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Keterangan</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span ng-bind="vm.data.keterangan"></span>
                                         </td>
                                     </tr>
                                 </table>
@@ -27,17 +34,10 @@
                             <div class="col-md-6">
                                 <table>
                                     <tr>
-                                        <td class="text-xs">Total</td>
+                                        <td class="text-xs">Tabungan</td>
                                         <td class="px-3">:</td>
                                         <td class="font-weight-bolder text-dark text-xs">
-                                            <span app-number-format="vm.data.total"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-xs">Hutang</td>
-                                        <td class="px-3">:</td>
-                                        <td class="font-weight-bolder text-dark text-xs">
-                                            <span app-number-format="vm.data.hutang"></span>
+                                            <span app-number-format="vm.data.total - vm.data.sisa"></span>
                                         </td>
                                     </tr>
                                 </table>

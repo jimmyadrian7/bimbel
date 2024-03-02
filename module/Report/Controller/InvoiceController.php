@@ -38,12 +38,19 @@ class InvoiceController extends BaseReportController
         {
             $tabungan_aset = new \Bimbel\Pengeluaran\Model\TabunganAset();
             $tabungan_aset = $tabungan_aset->find($args['tabungan_aset_id']);
+
+            $cicilan_asets = $tabungan_aset->cicilan_aset()->where('status', 's')->get();
+            $penarikans = $tabungan_aset->penarikan()->where('status', 's')->get();
+
             $data = [
                 'title' => true,
                 'judul' => 'Invoice',
                 'nomor' => $tabungan_aset->code,
                 'tabungan_aset' => $tabungan_aset,
-                'total' => $tabungan_aset->cicilan_aset->sum('nominal')
+                'cicilan_asets' => $cicilan_asets,
+                'penarikans' => $penarikans,
+                'total_cicilan' => $cicilan_asets->sum('nominal'),
+                'total_penarikan' => $penarikans->sum('nominal')
             ];
 
             $result = $this->toPdf("Report/View/tabungan_aset.twig", $data);

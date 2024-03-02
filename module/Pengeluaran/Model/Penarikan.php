@@ -125,4 +125,12 @@ class Penarikan extends BaseModel
 
         return $result;
     }
+
+    public function delete()
+    {
+        $result = parent::delete();
+        $this->bukti()->delete();
+
+        return $result;
+    }
 }

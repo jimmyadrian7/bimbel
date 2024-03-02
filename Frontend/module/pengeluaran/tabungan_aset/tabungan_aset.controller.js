@@ -7,9 +7,9 @@ import tarikHtml from "./html/modal/tarik.html";
     angular.module('app.module.pengeluaran.tabungan_aset')
         .controller('TabunganAsetController', TabunganAsetController);
 
-    TabunganAsetController.$inject = ['$stateParams', 'Modal', '$compile', '$scope', 'req', '$state', 'kursusOptions', 'moment', 'session', '$parse'];
+    TabunganAsetController.$inject = ['$stateParams', 'Modal', '$compile', '$scope', 'req', '$state', 'kursusOptions', 'moment', 'session', '$parse', 'logger'];
 
-    function TabunganAsetController(stateParams, Modal, $compile, $scope, req, state, kursusOptions, moment, session, $parse)
+    function TabunganAsetController(stateParams, Modal, $compile, $scope, req, state, kursusOptions, moment, session, $parse, logger)
     {
         let vm = this;
         let statusOpt = [
@@ -30,6 +30,7 @@ import tarikHtml from "./html/modal/tarik.html";
         
 
         vm.fields = [
+            {name: "Kode", value: "code", table: true, hidden: true},
             {name: "Tempat Kursus", value: "kursus_id", type: 'selection', selection: kursusOptions, table: true, required: true},
             {name: "Nama", value: "nama", table: true, required: true},
             {name: "Keterangan", value: "keterangan", required: true},
@@ -62,6 +63,7 @@ import tarikHtml from "./html/modal/tarik.html";
         vm.buatCicilan = buatCicilan;
         vm.updateStatusCicilan = updateStatusCicilan;
         vm.editDataCicilan = editDataCicilan;
+        vm.deleteCicilanData = deleteCicilanData;
 
 
         vm.getStatusLabel = getStatusLabel;
@@ -73,6 +75,7 @@ import tarikHtml from "./html/modal/tarik.html";
         vm.editPenarikanData = editPenarikanData;
         vm.updateStatusPenarikan = updateStatusPenarikan;
         vm.buatPenarikan = buatPenarikan;
+        vm.deletePenarikanData = deletePenarikanData;
 
         vm.getValue = getValue;
         vm.getLabel = getLabel;
@@ -119,6 +122,17 @@ import tarikHtml from "./html/modal/tarik.html";
         {
             vm.modal.form = vm.data.cicilan_aset[idx];
             vm.myModal = $compile(transaksi)($scope);
+        }
+        function deleteCicilanData(cicilan)
+        {
+            let data = {id: cicilan.id};
+            req.del('cicilan_aset', data).then( response => {
+                if (response)
+                {
+                    logger.success("Success");
+                    state.reload();
+                }
+            });
         }
 
         
@@ -187,6 +201,17 @@ import tarikHtml from "./html/modal/tarik.html";
                 status: 's'
             };
             req.put('penarikan', data).then(response => state.reload());
+        }
+        function deletePenarikanData(penarikan)
+        {
+            let data = {id: penarikan.id};
+            req.del('penarikan', data).then( response => {
+                if (response)
+                {
+                    logger.success("Success");
+                    state.reload();
+                }
+            });
         }
         function buatPenarikan()
         {

@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card mb-4">
                     <div class="card-header py-2">
-                        <h6 ng-bind="vm.data.siswa.orang.nama"></h6>
+                        <h6 ng-bind="vm.data.nama"></h6>
                     </div>
 
                     <div class="card-body pt-0">
@@ -15,10 +15,10 @@
                             <div class="col-md-6">
                                 <table>
                                     <tr>
-                                        <td class="text-xs">Nama</td>
+                                        <td class="text-xs">Kode</td>
                                         <td class="px-3">:</td>
                                         <td class="font-weight-bolder text-dark text-xs">
-                                            <span ng-bind="vm.data.nama"></span>
+                                            <span ng-bind="vm.data.code"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -40,27 +40,6 @@
                 
                             <div class="col-md-6">
                                 <table>
-                                    <tr>
-                                        <td class="text-xs">Jumlah</td>
-                                        <td class="px-3">:</td>
-                                        <td class="font-weight-bolder text-dark text-xs">
-                                            <span app-number-format="vm.data.jumlah"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-xs">Harga</td>
-                                        <td class="px-3">:</td>
-                                        <td class="font-weight-bolder text-dark text-xs">
-                                            <span app-number-format="vm.data.harga"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-xs">Total</td>
-                                        <td class="px-3">:</td>
-                                        <td class="font-weight-bolder text-dark text-xs">
-                                            <span app-number-format="vm.data.total"></span>
-                                        </td>
-                                    </tr>
                                     <tr>
                                         <td class="text-xs">Sisa</td>
                                         <td class="px-3">:</td>

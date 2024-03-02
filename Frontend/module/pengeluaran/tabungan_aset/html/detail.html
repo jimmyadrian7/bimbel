@@ -44,7 +44,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-if="!vm.data.cicilan_aset || vm.data.cicilan_aset.length == 0">
-                                    <td colspan="{{ vm.cicilan_aset.length }}" class="text-center">
+                                    <td colspan="{{vm.cicilanFields.length}}" class="text-center">
                                         <span class="text-xs font-weight-bold">No data Available</span>
                                     </td>
                                 </tr>
@@ -90,7 +90,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-if="!vm.data.penarikan || vm.data.penarikan.length == 0">
-                                    <td colspan="{{ vm.penarikanFields.length }}" class="text-center">
+                                    <td colspan="{{vm.penarikanFields.length}}" class="text-center">
                                         <span class="text-xs font-weight-bold">No data Available</span>
                                     </td>
                                 </tr>
@@ -113,6 +113,13 @@
                                             ng-if="data.status != 's'"
                                             ng-click="vm.editPenarikanData($index)">
                                             <i class="fa fa-edit me-2"></i> Edit
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.deletePenarikanData(data)">
+                                            <i class="far fa-trash-alt me-2"></i> Delete
                                         </button>
                                     </td>
                                 </tr>

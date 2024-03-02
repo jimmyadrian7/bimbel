@@ -9,7 +9,7 @@ use Bimbel\Master\Model\Kursus;
 
 class TabunganAset extends BaseModel 
 {
-    protected $fillable = ['nama', 'jumlah', 'harga', 'total', 'sisa', 'keterangan', 'cicil', 'status', 'kursus_id'];
+    protected $fillable = ['code', 'nama', 'jumlah', 'harga', 'total', 'sisa', 'keterangan', 'cicil', 'status', 'kursus_id'];
     protected $table = 'tabungan_aset';
 
     protected $status_enum = [
