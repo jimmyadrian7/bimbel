@@ -221,16 +221,31 @@ class Gaji extends BaseModel
             ->where('tagihan_detail.system', true)
             ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
             ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
-            ->where('tagihan.status', $tagihan_status)
         ;
 
         if ($tagihan_status == 'l')
         {
-            $query->where(function($q) use ($end_day) {
-                $q
-                    ->whereDate("tagihan.tanggal_lunas", "<=", $end_day)
-                    ->orWhereDate("tagihan.tanggal_lunas", '>', DB::raw('tagihan_detail.tanggal_iuran_berakhir'));
+            $query
+                ->where('tagihan.status', $tagihan_status)
+                ->where(function($q) use ($end_day) {
+                    $q
+                        ->whereDate("tagihan.tanggal_lunas", "<=", $end_day)
+                        ->orWhereDate("tagihan.tanggal_lunas", '>', DB::raw('tagihan_detail.tanggal_iuran_berakhir'));
             });
+        }
+
+        if ($tagihan_status != 'l')
+        {
+            $query
+                ->where(function($q) use ($tagihan_status, $end_day) {
+                    $q
+                        ->where('tagihan.status', $tagihan_status)
+                        ->orWhere(function ($query) use ($end_day) {
+                            $query
+                                ->where('tagihan.status', 'l')
+                                ->where('tagihan.tanggal_lunas', '>', $end_day);
+                        });
+                });
         }
 
         return $query;
