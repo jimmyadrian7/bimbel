@@ -234,7 +234,7 @@ class Gaji extends BaseModel
             });
         }
 
-        if ($tagihan_status != 'l')
+        if ($tagihan_status == 'p')
         {
             $query
                 ->where(function($q) use ($tagihan_status, $end_day) {
