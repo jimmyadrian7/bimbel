@@ -131,7 +131,7 @@ class ReportGuruController extends BaseReportController
 
             if ($tagihan_details->count() > 0)
             {
-                $data_row['Proses'] = $tagihan_details->get();
+                $data_row['Belum Bayar'] = $tagihan_details->get();
             }
 
             // Komisi iuran Menunggu Verifikasi
