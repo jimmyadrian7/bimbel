@@ -223,29 +223,34 @@ class Gaji extends BaseModel
             ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
         ;
 
-        if ($tagihan_status == 'l')
-        {
-            $query
-                ->where('tagihan.status', $tagihan_status)
-                ->where(function($q) use ($end_day) {
-                    $q
-                        ->whereDate("tagihan.tanggal_lunas", "<=", $end_day)
-                        ->orWhereDate("tagihan.tanggal_lunas", '>', DB::raw('tagihan_detail.tanggal_iuran_berakhir'));
-            });
-        }
-
-        if ($tagihan_status == 'p')
-        {
-            $query
-                ->where(function($q) use ($tagihan_status, $end_day) {
-                    $q
-                        ->where('tagihan.status', $tagihan_status)
-                        ->orWhere(function ($query) use ($end_day) {
-                            $query
-                                ->where('tagihan.status', 'l')
-                                ->where('tagihan.tanggal_lunas', '>', $end_day);
-                        });
+        switch ($tagihan_status) {
+            case 'l':
+                $query
+                    ->where('tagihan.status', $tagihan_status)
+                    ->where(function($q) use ($end_day) {
+                        $q
+                            ->whereDate("tagihan.tanggal_lunas", "<=", $end_day)
+                            ->orWhereDate("tagihan.tanggal_lunas", '>', DB::raw('tagihan_detail.tanggal_iuran_berakhir'));
                 });
+            break;
+
+            case 'p':
+                $query
+                    ->where(function($q) use ($tagihan_status, $end_day) {
+                        $q
+                            ->where('tagihan.status', $tagihan_status)
+                            ->orWhere(function ($query) use ($end_day) {
+                                $query
+                                    ->where('tagihan.status', 'l')
+                                    ->where('tagihan.tanggal_lunas', '>', $end_day);
+                            });
+                    });
+            break;
+            
+            default:
+                $query
+                    ->where('tagihan.status', $tagihan_status);
+            break;
         }
 
         return $query;
