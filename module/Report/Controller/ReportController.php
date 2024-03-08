@@ -456,4 +456,61 @@ class ReportController extends BaseReportController
 
         return $result;
     }
+
+    public function getTabunganAset($request, $args, &$response)
+    {
+        $result = [];
+        
+        try
+        {
+            $postData = $request->getParsedBody();
+            $start_date = explode("-", $postData['start_date']);
+            $year = $start_date[0];
+            $month = $start_date[1];
+            $data = [];
+            $total = [];
+
+            $cicilan_aset = new \Bimbel\Pengeluaran\Model\CicilanAset();
+            $cicilan_aset = $cicilan_aset
+                ->select(DB::raw('tabungan_aset.nama AS nama'), DB::raw('SUM(nominal) AS total'))
+                ->join('tabungan_aset', 'tabungan_aset.id', 'cicilan_aset.tabungan_aset_id')
+                ->whereMonth('tanggal', $month)
+                ->whereYear('tanggal', $year)
+                ->where('cicilan_aset.status', 's')
+                ->groupBy('tabungan_aset_id')
+                ->get();
+
+            $data['Cicilan Aset'] = $cicilan_aset;
+            $total['Cicilan Aset'] = $cicilan_aset->sum('total');
+
+            $penarikan_aset = new \Bimbel\Pengeluaran\Model\Penarikan();
+            $penarikan_aset = $penarikan_aset
+                ->select(DB::raw('tabungan_aset.nama AS nama'), DB::raw('SUM(nominal) AS total'))
+                ->join('tabungan_aset', 'tabungan_aset.id', 'penarikan.tabungan_aset_id')
+                ->whereMonth('tanggal', $month)
+                ->whereYear('tanggal', $year)
+                ->where('penarikan.status', 's')
+                ->groupBy('tabungan_aset_id')
+                ->get();
+
+            $data['Penarikan Aset'] = $penarikan_aset;
+            $total['Penarikan Aset'] = $penarikan_aset->sum('total');
+            
+
+            $data = [
+                'judul' => "Tabungan Aset",
+                'data' => $data,
+                'total' => $total,
+                'periode' => $this->convertDate($postData['start_date'] . "-01")
+            ];
+
+            $result = $this->toPdf("Report/View/tabungan_aset.twig", $data);
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
 }

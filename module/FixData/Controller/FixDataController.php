@@ -4,6 +4,7 @@ namespace Bimbel\FixData\Controller;
 use \Bimbel\Master\Controller\Controller;
 use \Slim\Exception\HttpNotFoundException;
 use Illuminate\Database\Capsule\Manager as DB;
+use \Bimbel\FixData\Model\Utils;
 
 class FixDataController extends Controller
 {
@@ -385,42 +386,7 @@ class FixDataController extends Controller
     {
         $result = ["data" => "success"];
 
-        $menu = new \Bimbel\Master\Model\Menu();
-        $menu = $menu->where('kode', 'iuran')->first();
-
-        if (empty($menu))
-        {
-            $menu = new \Bimbel\Master\Model\Menu();
-            $menu = $menu->create(['kode' => 'iuran', 'nama' => 'Iuran', 'parent' => 'laporan']);
-        }
-
-        $role_menu = new \Bimbel\User\Model\RoleMenu();
-        $role_menu = $role_menu->where('role_id', 1)->where('menu_id', $menu->id)->first();
-        if (empty($role_menu))
-        {
-            $role_menu = new \Bimbel\User\Model\RoleMenu();
-            $role_menu->create([
-                'role_id' => 1,
-                'menu_id' => $menu->id,
-                'create' => null,
-                'update' => null,
-                'delete' => null
-            ]);
-        }
-
-        $role_menu = new \Bimbel\User\Model\RoleMenu();
-        $role_menu = $role_menu->where('role_id', 4)->where('menu_id', $menu->id)->first();
-        if (empty($role_menu))
-        {
-            $role_menu = new \Bimbel\User\Model\RoleMenu();
-            $role_menu->create([
-                'role_id' => 4,
-                'menu_id' => $menu->id,
-                'create' => null,
-                'update' => null,
-                'delete' => null
-            ]);
-        }        
+        Utils::addMenuReport('iuran', 'Iuran');
 
         return $result;
     }
@@ -446,22 +412,12 @@ class FixDataController extends Controller
         }
 
         // Add field tarik into tabungan_aset
-        $isColExist = DB::getSchemaBuilder()->hasColumn('tabungan_aset','tarik');
-        if (!$isColExist)
-        {
-            DB::getSchemaBuilder()->table("tabungan_aset", function($table) {
-                $table->boolean('tarik')->nullable()->after('kursus_id');
-            });
-        }
+        Utils::addField("tabungan_aset", "tarik", "boolean", "kursus_id");
 
         // Add field status into cicilan_aset
-        $isColExist = DB::getSchemaBuilder()->hasColumn('cicilan_aset','status');
-        if (!$isColExist)
-        {
-            DB::getSchemaBuilder()->table("cicilan_aset", function($table) {
-                $table->enum('status', ['m', 's'])->default('m')->after('tanggal');
-            });
-        }
+        Utils::addField("cicilan_aset", "status", "enum", "tanggal", "m", ['m', 's']);
+
+        Utils::addMenuReport('tabungan_aset_report', 'Tabungan Aset');
 
         return $result;
     }

@@ -53,7 +53,7 @@ class InvoiceController extends BaseReportController
                 'total_penarikan' => $penarikans->sum('nominal')
             ];
 
-            $result = $this->toPdf("Report/View/tabungan_aset.twig", $data);
+            $result = $this->toPdf("Report/View/invoice.twig", $data);
         }
         catch(\Error $e)
         {

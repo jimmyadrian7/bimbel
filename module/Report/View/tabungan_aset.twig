@@ -2,73 +2,99 @@
     
     <head>
         {% include "/Report/View/partial/style.twig" %}
+
+        <style>
+            .wrapper-page {
+                page-break-after: always;
+                position: relative;
+            }
+
+            .wrapper-page:last-child {
+                page-break-after: avoid;
+            }
+
+            header {
+                position: fixed;
+                top: 0px;
+                left: 0;
+                right: 0;
+                height: 200px;
+            }
+
+            body {
+                margin-top: 210px;
+            }
+
+            #background {
+                background-image:url({{background}});
+                display: block;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: -1000;
+                background-repeat: repeat;
+            }
+        </style>
     </head>
 
-    <body style="background-image:url({{background}})">
-        
-        <div class="container">
-            {% include "Report/View/partial/header.twig" %}
-            
-            <div class="content">
-                <div class="mb-10 mt-20">
-                    <span class="table-title">Cicilan Tabungan Aset</span>
-                </div>
-                <table class="table-content">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Nominal</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        {% for cicilan_aset in cicilan_asets %}
-                            <tr>
-                                <td>{{ loop.index }}</td>
-                                <td>{{ cicilan_aset.tanggal|date("d/m/Y") }}</td>
-                                <td>{{ cicilan_aset.nominal|number_format(0, ',', '.') }}</td>
-                            </tr>
-                        {% endfor %}
+    <body>
+        <div id="background"></div>
 
-                        <tr class="bold">
-                            <td class="bg-transparent" colspan="1"></td>
-                            <td class="bg-red">Total</td>
-                            <td class="bg-red">{{ total_cicilan|number_format(0, ',', '.') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+        {% for jenis, d1 in data %}
 
+            <div class="wrapper-page">
+                <header>
+                    <div class="container">
+                        {% include 
+                            "Report/View/partial/header.twig" 
+                            with {
+                                'additional': [
+                                    {'value': jenis, 'label': 'Jenis'}
+                                ] 
+                            } 
+                        %}
+                    </div>
+                </header>
 
-                <div class="mb-10 mt-50">
-                    <span class="table-title">Penarikan Tabungan Aset</span>
-                </div>
-                <table class="table-content">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Nominal</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        {% for penarikan in penarikans %}
-                            <tr>
-                                <td>{{ loop.index }}</td>
-                                <td>{{ penarikan.tanggal|date("d/m/Y") }}</td>
-                                <td>{{ penarikan.nominal|number_format(0, ',', '.') }}</td>
-                            </tr>
-                        {% endfor %}
+                <main>
+                    <div class="container">
+                        <div class="content">
+                            <div class="mb-10">
+                                <span class="table-title">Iuran</span>
+                            </div>
+                            <table class="table-content">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Nama</th>
+                                        <th>Harga Total</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for d2 in d1 %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ d2.nama }}</td>
+                                            <td>{{ d2.total|number_format(0, ',', '.') }}</td>
+                                        </tr>
+                                    {% endfor %}
 
-                        <tr class="bold">
-                            <td class="bg-transparent" colspan="1"></td>
-                            <td class="bg-red">Total</td>
-                            <td class="bg-red">{{ total_penarikan|number_format(0, ',', '.') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                                    <tr>
+                                        <td class="bg-transparent"></td>
+                                        <td class="bg-black">Total</td>
+                                        <td class="bg-black">{{ total[jenis]|number_format(0, ',', '.') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
             </div>
-        </div>
+
+        {% endfor %}
+
     </body>
 </html>
