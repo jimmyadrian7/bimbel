@@ -104,7 +104,8 @@
                         ng-change="vm.fetchSiswa()">
                     </select>
                 </div>
-                <div class="small font-weight-bold mt-2 text-end">Total Siswa: {{ vm.customData.siswa.length }}</div>
+                <div class="small font-weight-bold mt-2 float-end">Total Siswa: {{ vm.customData.siswa.length }}</div>
+                <div class="clearfix my-3"></div>
                 <app-table-template
                     data="vm.customData.siswa" 
                     fields="vm.additional.siswaFields"></app-table-template>
