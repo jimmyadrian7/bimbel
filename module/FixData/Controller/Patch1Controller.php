@@ -66,4 +66,19 @@ class Patch1Controller extends Controller
 
         return $result;
     }
+
+    public function patch4($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $isColExist = DB::getSchemaBuilder()->getConnection()->getSchemaBuilder()->hasColumn('orang','no_rek_ortu');
+        if (!$isColExist)
+        {
+            DB::getSchemaBuilder()->getConnection()->getSchemaBuilder()->table("orang", function($table) {
+                $table->string('no_rek_ortu', 255)->nullable()->after('pekerjaan_ibu');
+            });
+        }
+
+        return $result;
+    }
 }

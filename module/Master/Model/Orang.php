@@ -9,7 +9,7 @@ class Orang extends BaseModel
 {
     protected $fillable = [
         'nama', 'nama_mandarin', 'jenis_kelamin', 'agama_id', 'alamat', 'email', 'tempat_lahir', 'tanggal_lahir',
-        'hobi', 'no_hp', 'nama_ayah', 'nama_ibu', 'no_hp_ortu', 'pekerjaan_ayah', 'pekerjaan_ibu',
+        'hobi', 'no_hp', 'nama_ayah', 'nama_ibu', 'no_hp_ortu', 'pekerjaan_ayah', 'pekerjaan_ibu', 'no_rek_ortu',
         'pp', 'pp_id'
     ];
     protected $table = 'orang';

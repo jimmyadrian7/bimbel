@@ -108,7 +108,8 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
             ],
             [
                 {name: "Pekerjaan Ayah", value: "orang.pekerjaan_ayah", required: true},
-                {name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu", required: true}
+                {name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu", required: true},
+                {name: "No. Rekening Orang Tua", value: "orang.no_rek_ortu", required: true}
             ]
         ];
         vm.additional.testFields = [

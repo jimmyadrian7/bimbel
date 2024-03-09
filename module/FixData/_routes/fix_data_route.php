@@ -160,3 +160,13 @@ $app->post("/api/patch/1/3", function ($request, $response, $args) {
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/patch/1/4", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
+    $result = $controller->patch4($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});
