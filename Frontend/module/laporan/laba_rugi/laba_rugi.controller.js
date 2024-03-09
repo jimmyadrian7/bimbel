@@ -13,10 +13,17 @@
         vm.myPdf = true;
         vm.generate = generate;
         vm.data = {
-            start_date: moment(new Date()).format("YYYY-MM")
+            start_date: moment(new Date()).format("YYYY-MM"),
+            type: 'month'
         };
 
+        let typeOpt = [
+            {label: 'Bulan', value: 'month'},
+            {label: 'Tahun', value: 'year'},
+        ];
+
         vm.fields = [
+            {type: 'selection', value: 'type', selection: typeOpt},
             {type: 'month', value: 'start_date'},
             {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
         ];

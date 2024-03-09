@@ -90,7 +90,7 @@ class ReportController extends BaseReportController
                 'tabungan_aset_id', 
                 DB::raw('CONCAT("Penarikan ", tabungan_aset.nama, " ' . $date_formatted . '") AS deskripsi'),
                 DB::raw('1 AS qty'),
-                DB::raw('0 AS sub_total'),
+                DB::raw('SUM(penarikan.nominal) AS sub_total'),
                 DB::raw('0 AS potongan'),
                 DB::raw('SUM(penarikan.nominal) as total')
             )
@@ -114,6 +114,49 @@ class ReportController extends BaseReportController
         }
 
         $penarikan->groupBy('tabungan_aset_id');
+        return $penarikan->get();
+    }
+
+    public function queryPenarikanModal($postData)
+    {
+        $penarikan = new \Bimbel\Pengeluaran\Model\TarikModal();
+        
+        $date_array = explode("-", $postData['start_date']);
+        $year = $date_array[0];
+        $month = $date_array[1];
+
+        $date_formatted = $this->convertDate($postData['start_date'] . '-01', 'F Y');
+
+        $penarikan = $penarikan
+            ->select(
+                'modal_id', 
+                DB::raw('CONCAT("Penarikan Modal ", kursus.nama, " ' . $date_formatted . '") AS deskripsi'),
+                DB::raw('1 AS qty'),
+                DB::raw('SUM(tarik_modal.nominal) AS sub_total'),
+                DB::raw('0 AS potongan'),
+                DB::raw('SUM(tarik_modal.nominal) as total')
+            )
+            ->join('modal', 'modal.id', 'tarik_modal.modal_id')
+            ->join('kursus', 'kursus.id', 'modal.kursus_id')
+            ->whereYear('tarik_modal.tanggal', $year)
+            ->whereMonth('tarik_modal.tanggal', $month)
+            ->where('tarik_modal.status', 's');
+
+        if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+        {
+            $penarikan->where('modal.kursus_id', $postData['tempat_kursus']);
+        }
+        else
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $penarikan->whereIn('modal.kursus_id', $kursus_ids);
+            }
+        }
+
+        $penarikan->groupBy('modal_id');
         return $penarikan->get();
     }
 
@@ -218,31 +261,53 @@ class ReportController extends BaseReportController
             $tagihanIuran = $this->queryPendapatanIuran($postData);
             $tagihanPenjualan = $this->queryPendapatanPenjualan($postData);
             $tagihanPenarikan = $this->queryPenarikan($postData);
+            $tagihanPenarikanModal = $this->queryPenarikanModal($postData);
             $pengeluaran = $this->queryPengeluaran($postData);
+
+            $dataPendapatanPage = [];
+            $totalDataPendapatanPage = [];
+            $total_laba = 0;
+
+            $dataPendapatanPage['Pendapatan Iuran'] = $tagihanIuran;
+            $totalDataPendapatanPage['Pendapatan Iuran'] = [];
+            $totalDataPendapatanPage['Pendapatan Iuran']['qty'] = $tagihanIuran->sum('qty');
+            $totalDataPendapatanPage['Pendapatan Iuran']['total'] = $tagihanIuran->sum('total');
+            $totalDataPendapatanPage['Pendapatan Iuran']['sub_total'] = $tagihanIuran->sum('sub_total');
+            $totalDataPendapatanPage['Pendapatan Iuran']['potongan'] = $tagihanIuran->sum('potongan');
+            $total_laba += $tagihanIuran->sum('total');
+
+            $dataPendapatanPage['Pendapatan Penjualan'] = $tagihanPenjualan;
+            $totalDataPendapatanPage['Pendapatan Penjualan'] = [];
+            $totalDataPendapatanPage['Pendapatan Penjualan']['qty'] = $tagihanPenjualan->sum('qty');
+            $totalDataPendapatanPage['Pendapatan Penjualan']['total'] = $tagihanPenjualan->sum('total');
+            $totalDataPendapatanPage['Pendapatan Penjualan']['sub_total'] = $tagihanPenjualan->sum('sub_total');
+            $totalDataPendapatanPage['Pendapatan Penjualan']['potongan'] = $tagihanPenjualan->sum('potongan');
+            $total_laba += $tagihanPenjualan->sum('total');
+
+            $dataPendapatanPage['Penarikan Tabungan Aset'] = $tagihanPenarikan;
+            $totalDataPendapatanPage['Penarikan Tabungan Aset'] = [];
+            $totalDataPendapatanPage['Penarikan Tabungan qty']['total'] = $tagihanPenarikan->sum('qty');
+            $totalDataPendapatanPage['Penarikan Tabungan Aset']['total'] = $tagihanPenarikan->sum('total');
+            $totalDataPendapatanPage['Penarikan Tabungan Aset']['sub_total'] = $tagihanPenarikan->sum('sub_total');
+            $totalDataPendapatanPage['Penarikan Tabungan Aset']['potongan'] = $tagihanPenarikan->sum('potongan');
+            $total_laba += $tagihanPenarikan->sum('total');
+
+            $dataPendapatanPage['Penarikan Modal'] = $tagihanPenarikanModal;
+            $totalDataPendapatanPage['Penarikan Modal'] = [];
+            $totalDataPendapatanPage['Penarikan Modal']['qty'] = $tagihanPenarikanModal->sum('qty');
+            $totalDataPendapatanPage['Penarikan Modal']['total'] = $tagihanPenarikanModal->sum('total');
+            $totalDataPendapatanPage['Penarikan Modal']['sub_total'] = $tagihanPenarikanModal->sum('sub_total');
+            $totalDataPendapatanPage['Penarikan Modal']['potongan'] = $tagihanPenarikanModal->sum('potongan');
+            $total_laba += $tagihanPenarikanModal->sum('total');
+
 
             $data = [
                 'judul' => "Laba Rugi",
-                'pendapatans' => $tagihanIuran,
-                'total_qty' => $tagihanIuran->sum('qty'),
-                'total_pendapatan' => $tagihanIuran->sum('total'),
-                'total_sub_total' => $tagihanIuran->sum('sub_total'),
-                'total_potongan' => $tagihanIuran->sum('potongan'),
-
-                'pendapatan_penjualans' => $tagihanPenjualan,
-                'total_penjualan_qty' => $tagihanPenjualan->sum('qty'),
-                'total_penjualan_pendapatan' => $tagihanPenjualan->sum('total'),
-                'total_penjualan_sub_total' => $tagihanPenjualan->sum('sub_total'),
-                'total_penjualan_potongan' => $tagihanPenjualan->sum('potongan'),
-
-                'pendapatan_penarikans' => $tagihanPenarikan,
-                'total_penarikan_qty' => $tagihanPenarikan->sum('qty'),
-                'total_penarikan_pendapatan' => $tagihanPenarikan->sum('total'),
-                'total_penarikan_sub_total' => $tagihanPenarikan->sum('sub_total'),
-                'total_penarikan_potongan' => $tagihanPenarikan->sum('potongan'),
-
+                'data_pendapatans' => $dataPendapatanPage,
+                'total_pendapatans' => $totalDataPendapatanPage,
                 'pengeluarans' => $pengeluaran,
                 'total_pengeluaran' => $pengeluaran->sum('total'),
-                'total_laba' => $tagihanIuran->sum('total') + $tagihanPenjualan->sum('total') + $tagihanPenarikan->sum('total') - $pengeluaran->sum('total'),
+                'total_laba' => $total_laba - $pengeluaran->sum('total'),
                 'periode' => $this->convertDate($postData['start_date'] . "-01", 'F Y')
             ];
 
@@ -472,12 +537,11 @@ class ReportController extends BaseReportController
 
             $cicilan_aset = new \Bimbel\Pengeluaran\Model\CicilanAset();
             $cicilan_aset = $cicilan_aset
-                ->select(DB::raw('tabungan_aset.nama AS nama'), DB::raw('SUM(nominal) AS total'))
+                ->select(DB::raw('tabungan_aset.nama AS nama'), DB::raw('nominal AS total'), 'cicilan_aset.tanggal')
                 ->join('tabungan_aset', 'tabungan_aset.id', 'cicilan_aset.tabungan_aset_id')
                 ->whereMonth('tanggal', $month)
                 ->whereYear('tanggal', $year)
-                ->where('cicilan_aset.status', 's')
-                ->groupBy('tabungan_aset_id');
+                ->where('cicilan_aset.status', 's');
 
             if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
             {
@@ -499,12 +563,11 @@ class ReportController extends BaseReportController
 
             $penarikan_aset = new \Bimbel\Pengeluaran\Model\Penarikan();
             $penarikan_aset = $penarikan_aset
-                ->select(DB::raw('tabungan_aset.nama AS nama'), DB::raw('SUM(nominal) AS total'))
+                ->select(DB::raw('tabungan_aset.nama AS nama'), DB::raw('nominal AS total'), 'penarikan.tanggal')
                 ->join('tabungan_aset', 'tabungan_aset.id', 'penarikan.tabungan_aset_id')
                 ->whereMonth('tanggal', $month)
                 ->whereYear('tanggal', $year)
-                ->where('penarikan.status', 's')
-                ->groupBy('tabungan_aset_id');
+                ->where('penarikan.status', 's');
 
             if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
             {
@@ -557,13 +620,12 @@ class ReportController extends BaseReportController
 
             $cicilan_modal = new \Bimbel\Pengeluaran\Model\CicilanModal();
             $cicilan_modal = $cicilan_modal
-                ->select(DB::raw('kursus.nama AS nama'), DB::raw('SUM(cicilan_modal.nominal) AS total'))
+                ->select(DB::raw('kursus.nama AS nama'), DB::raw('cicilan_modal.nominal AS total'), 'cicilan_modal.tanggal')
                 ->join('modal', 'modal.id', 'cicilan_modal.modal_id')
                 ->join('kursus', 'kursus.id', 'modal.kursus_id')
                 ->whereMonth('tanggal', $month)
                 ->whereYear('tanggal', $year)
-                ->where('cicilan_modal.status', 's')
-                ->groupBy('modal_id');
+                ->where('cicilan_modal.status', 's');
 
             if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
             {
@@ -585,13 +647,12 @@ class ReportController extends BaseReportController
 
             $tarik_modal = new \Bimbel\Pengeluaran\Model\TarikModal();
             $tarik_modal = $tarik_modal
-                ->select(DB::raw('kursus.nama AS nama'), DB::raw('SUM(tarik_modal.nominal) AS total'))
+                ->select(DB::raw('kursus.nama AS nama'), DB::raw('tarik_modal.nominal AS total'), 'tarik_modal.tanggal')
                 ->join('modal', 'modal.id', 'tarik_modal.modal_id')
                 ->join('kursus', 'kursus.id', 'modal.kursus_id')
                 ->whereMonth('tanggal', $month)
                 ->whereYear('tanggal', $year)
-                ->where('tarik_modal.status', 's')
-                ->groupBy('modal_id');
+                ->where('tarik_modal.status', 's');
 
             $tarik_modal = $tarik_modal->get();
             $data['Penarikan Modal'] = $tarik_modal;

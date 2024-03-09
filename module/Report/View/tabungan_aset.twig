@@ -68,6 +68,7 @@
                                 <thead>
                                     <tr>
                                         <th>No.</th>
+                                        <th>Tanggal</th>
                                         <th>Nama</th>
                                         <th>Harga Total</th>
                                     </tr>
@@ -77,14 +78,15 @@
                                     {% for d2 in d1 %}
                                         <tr>
                                             <td>{{ loop.index }}</td>
+                                            <td>{{ d2.tanggal|date("d/m/Y") }}</td>
                                             <td>{{ d2.nama }}</td>
                                             <td>{{ d2.total|number_format(0, ',', '.') }}</td>
                                         </tr>
                                     {% endfor %}
 
-                                    <tr>
+                                    <tr class="bold">
                                         <td class="bg-transparent"></td>
-                                        <td class="bg-black">Total</td>
+                                        <td class="bg-black text-right" colspan="2">Total</td>
                                         <td class="bg-black">{{ total[jenis]|number_format(0, ',', '.') }}</td>
                                     </tr>
                                 </tbody>
