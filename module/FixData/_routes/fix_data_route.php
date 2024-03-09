@@ -151,9 +151,9 @@ $app->post("/api/add/table/riwayat/penarikan", function ($request, $response, $a
     return $response;
 });
 
-$app->post("/api/patch/2/3", function ($request, $response, $args) {
+$app->post("/api/patch/1/3", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\Patch2Controller");
+    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
     $result = $controller->patch3($request, $args, $response);
 
     $response = $response->withHeader("Content-Type", "application/json");
