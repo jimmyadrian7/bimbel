@@ -1,7 +1,0 @@
-kategori_pembiayaan,kode,nama,harga,stok,jumlah_stok,jenis_komisi
-p,BP,Biaya Pendaftaran,200000,0,0,
-s,SP1,SPP Perbulan,400000,0,0,s
-d,DP,Deposit,600000,0,0,
-l,OP,Operasional,300000,0,0,
-l,PL,Pemeliharaan,70000,0,0,
-a,JT,Jam Tangan,100000,1,10,

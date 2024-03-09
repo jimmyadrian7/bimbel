@@ -68,6 +68,13 @@
                                             ng-click="vm.editDataCicilan($index)">
                                             <i class="fa fa-edit me-2"></i> Edit
                                         </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.deleteCicilanData(data)">
+                                            <i class="far fa-trash-alt me-2"></i> Delete
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>

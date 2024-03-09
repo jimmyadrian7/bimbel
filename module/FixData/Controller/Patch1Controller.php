@@ -6,7 +6,7 @@ use \Slim\Exception\HttpNotFoundException;
 use Illuminate\Database\Capsule\Manager as DB;
 use \Bimbel\FixData\Model\Utils;
 
-class Patch2Controller extends Controller
+class Patch1Controller extends Controller
 {
     public function patch3($request, $args, &$response)
     {
@@ -20,24 +20,28 @@ class Patch2Controller extends Controller
                 $table->integer('kursus_id');
                 $table->text('keterangan');
                 $table->integer('nominal');
+                $table->integer('sisa');
+                $table->enum('status', ['a', 'c', 'l'])->default('a');
 
                 $table->foreign('kursus_id')->references('id')->on('kursus');
             });
         }
 
         // Create Table cicil modal
-        if (!DB::getSchemaBuilder()->hasTable('cicil_modal'))
+        if (!DB::getSchemaBuilder()->hasTable('cicilan_modal'))
         {
-            DB::getSchemaBuilder()->create('cicil_modal', function ($table) {
+            DB::getSchemaBuilder()->create('cicilan_modal', function ($table) {
                 $table->increments('id');
                 $table->unsignedInteger('modal_id');
                 $table->integer('nominal');
+                $table->integer('pengeluaran_id')->nullable();
                 $table->integer('bukti_id')->nullable();
                 $table->enum('status', ['m', 's'])->default('m');
                 $table->date('tanggal');
 
                 $table->foreign('modal_id')->references('id')->on('modal');
                 $table->foreign('bukti_id')->references('id')->on('file');
+                $table->foreign('pengeluaran_id')->references('id')->on('pengeluaran');
             });
         }
 

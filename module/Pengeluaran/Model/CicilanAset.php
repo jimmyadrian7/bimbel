@@ -124,7 +124,7 @@ class CicilanAset extends BaseModel
     {
         if (array_key_exists('status', $attributes) && $attributes['status'] == 's')
         {
-            $sisa = $this->nominal - $this->tabungan_aset->sisa;
+            $sisa = $this->tabungan_aset->sisa - $this->nominal;
             $status = 'l';
 
             if ($sisa > 0)

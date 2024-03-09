@@ -1,0 +1,138 @@
+<app-detail table="modal" id="vm.dataId" fields="vm.fields" list="pengeluaran.modal" edit="pengeluaran.modal_form">
+    <app-detail-button>
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tarikTabungan()" ng-if="vm.data.status != 'a' && (vm.data.nominal - vm.data.sisa) > 0">
+            <i class="fa fa-download me-2"></i> Tarik
+        </button>
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.tambahCicilan()" ng-if="vm.data.status != 'l'">
+            <i class="fa fa-usd me-2"></i> Bayar
+        </button>
+    </app-detail-button>
+
+    <app-detail-title>
+        <h6 class="mb-0">
+            <span class="text-gradient text-primary" ng-bind="vm.data.kursus.nama"></span>
+            <span class="badge badge-sm bg-gradient-info" ng-bind="vm.getStatusLabel(vm.data.status)"></span>
+        </h6>
+    </app-detail-title>
+    
+    <app-detail-additional>
+
+        <ul class="nav nav-tabs mt-5 text-xs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="list" href="#tabungan">Tabungan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#penarikan">Penarikan</a>
+            </li>
+        </ul>
+
+        <div class="tab-content text-justify">
+            <div class="tab-pane fade show active" id="tabungan">
+                <div class="my-3">
+                    <div class="table-responsive mb-3">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th 
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                                        ng-repeat="field in vm.cicilanFields" ng-bind="field.name"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="!vm.data.cicilan_modal || vm.data.cicilan_modal.length == 0">
+                                    <td colspan="{{vm.cicilanFields.length}}" class="text-center">
+                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    </td>
+                                </tr>
+                    
+                                <tr ng-repeat="data in vm.data.cicilan_modal track by $index" ng-if="vm.data.cicilan_modal.length > 0">
+                                    <td ng-repeat="field in vm.cicilanFields">
+                                        <app-form-preview type="{{field.type}}" value="vm.getValue(field, data)"></app-form-preview>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="vm.isAdmin && data.status == 'm'"
+                                            ng-click="vm.updateStatusCicilan(data)">
+                                            <i class="fa fa-check me-2"></i> Verif
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.editDataCicilan($index)">
+                                            <i class="fa fa-edit me-2"></i> Edit
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.deleteCicilanData(data)">
+                                            <i class="far fa-trash-alt me-2"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="penarikan">
+                <div class="my-3">
+                    <div class="table-responsive mb-3">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th 
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                                        ng-repeat="field in vm.penarikanFields" ng-bind="field.name"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="!vm.data.tarik_modal || vm.data.tarik_modal.length == 0">
+                                    <td colspan="{{vm.penarikanFields.length}}" class="text-center">
+                                        <span class="text-xs font-weight-bold">No data Available</span>
+                                    </td>
+                                </tr>
+                    
+                                <tr ng-repeat="data in vm.data.tarik_modal track by $index" ng-if="vm.data.tarik_modal.length > 0">
+                                    <td ng-repeat="field in vm.penarikanFields">
+                                        <app-form-preview type="{{field.type}}" value="vm.getValue(field, data)"></app-form-preview>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="vm.isAdmin && data.status == 'm'"
+                                            ng-click="vm.updateStatusPenarikan(data)">
+                                            <i class="fa fa-check me-2"></i> Verif
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.editPenarikanData($index)">
+                                            <i class="fa fa-edit me-2"></i> Edit
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                            ng-if="data.status != 's'"
+                                            ng-click="vm.deletePenarikanData(data)">
+                                            <i class="far fa-trash-alt me-2"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </app-detail-additional>
+</app-detail>
