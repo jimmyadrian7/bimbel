@@ -19,6 +19,7 @@
         vm.addFieldPhoneWeb = addFieldPhoneWeb;
         vm.addMenuIuran = addMenuIuran;
         vm.addTableRiwayatPenarikan = addTableRiwayatPenarikan;
+        vm.patch = patch;
 
         function resetKodeTagihan()
         {
@@ -80,6 +81,13 @@
         {
             req.post('add/table/riwayat/penarikan').then(resp => {
                 logger.success("Berhasil di tambah");
+            });
+        }
+
+        function patch(version)
+        {
+            req.post(`patch/${version}`).then(resp => {
+                logger.success("Berhasil di patch");
             });
         }
     }

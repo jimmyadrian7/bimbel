@@ -150,3 +150,13 @@ $app->post("/api/add/table/riwayat/penarikan", function ($request, $response, $a
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/patch/2/3", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\FixData\Controller\Patch2Controller");
+    $result = $controller->patch3($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});
