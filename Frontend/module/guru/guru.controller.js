@@ -35,6 +35,14 @@ import kursusHtml from "./html/modal/kursus.html";
             {value: "7", label: "Minggu"}
         ];
 
+        vm.siswaStatusOpt = [
+            {value: "", label: "All"},
+            {value: "b", label: "Baru"},
+            {value: "a", label: "Aktif"},
+            {value: "p", label: "Pengembalian"},
+            {value: "n", label: "Berhenti"}
+        ];
+
         vm.modal = {siswa: {}, added: [], listGuru: [], kursus: []};
         vm.siswa = [];
         vm.modalElement = false;
@@ -42,6 +50,7 @@ import kursusHtml from "./html/modal/kursus.html";
         vm.customData = {siswa: []};
         vm.dataId = stateParams.dataId;
         vm.isSuperUser = session.isSuperUser();
+        vm.filterSiswa = "";
 
         vm.statusOpt = [
             {value: 'a', label: 'Aktif'},
@@ -283,9 +292,15 @@ import kursusHtml from "./html/modal/kursus.html";
 
         function fetchSiswa()
         {
+            let filter = "";
             vm.data.siswa = [];
 
-            req.get(`guru/data/siswa/${vm.dataId}`).then(response => {
+            if (vm.filterSiswa != "")
+            {
+                filter = "?status=" + vm.filterSiswa;
+            }
+
+            req.get(`guru/data/siswa/${vm.dataId}${filter}`).then(response => {
                 vm.customData.siswa = response;
             })
         }

@@ -49,11 +49,19 @@ class FetchController extends Controller
     public function getSiswaGuru($request, $args, &$response)
     {
         $result = [];
-
+        $getData = $request->getQueryParams();
+        
         try
         {
             $siswa = new Siswa();
-            $siswa = $siswa->with('orang')->where('guru_id', $args['guru_id'])->get();
+            $siswa = $siswa->with('orang')->where('guru_id', $args['guru_id']);
+
+            if (array_key_exists('status', $getData))
+            {
+                $siswa->where('status', $getData['status']);
+            }
+
+            $siswa = $siswa->get();
             $result = $siswa;
         }
         catch (\Error $e)
