@@ -477,9 +477,23 @@ class ReportController extends BaseReportController
                 ->whereMonth('tanggal', $month)
                 ->whereYear('tanggal', $year)
                 ->where('cicilan_aset.status', 's')
-                ->groupBy('tabungan_aset_id')
-                ->get();
+                ->groupBy('tabungan_aset_id');
 
+            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            {
+                $cicilan_aset->where('tabungan_aset.kursus_id', $postData['tempat_kursus']);
+            }
+            else
+            {
+                $session = new \Bimbel\Master\Model\Session();
+                if (!$session->isSuperUser())
+                {
+                    $kursus_ids = $session->getKursusIds();
+                    $cicilan_aset->whereIn('tabungan_aset.kursus_id', $kursus_ids);
+                }
+            }
+
+            $cicilan_aset = $cicilan_aset->get();
             $data['Cicilan Aset'] = $cicilan_aset;
             $total['Cicilan Aset'] = $cicilan_aset->sum('total');
 
@@ -490,15 +504,102 @@ class ReportController extends BaseReportController
                 ->whereMonth('tanggal', $month)
                 ->whereYear('tanggal', $year)
                 ->where('penarikan.status', 's')
-                ->groupBy('tabungan_aset_id')
-                ->get();
+                ->groupBy('tabungan_aset_id');
 
+            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            {
+                $penarikan_aset->where('tabungan_aset.kursus_id', $postData['tempat_kursus']);
+            }
+            else
+            {
+                $session = new \Bimbel\Master\Model\Session();
+                if (!$session->isSuperUser())
+                {
+                    $kursus_ids = $session->getKursusIds();
+                    $penarikan_aset->whereIn('tabungan_aset.kursus_id', $kursus_ids);
+                }
+            }
+
+            $penarikan_aset = $penarikan_aset->get();
             $data['Penarikan Aset'] = $penarikan_aset;
             $total['Penarikan Aset'] = $penarikan_aset->sum('total');
             
 
             $data = [
                 'judul' => "Tabungan Aset",
+                'data' => $data,
+                'total' => $total,
+                'periode' => $this->convertDate($postData['start_date'] . "-01")
+            ];
+
+            $result = $this->toPdf("Report/View/tabungan_aset.twig", $data);
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
+
+    public function getModal($request, $args, &$response)
+    {
+        $result = [];
+        
+        try
+        {
+            $postData = $request->getParsedBody();
+            $start_date = explode("-", $postData['start_date']);
+            $year = $start_date[0];
+            $month = $start_date[1];
+            $data = [];
+            $total = [];
+
+            $cicilan_modal = new \Bimbel\Pengeluaran\Model\CicilanModal();
+            $cicilan_modal = $cicilan_modal
+                ->select(DB::raw('kursus.nama AS nama'), DB::raw('SUM(cicilan_modal.nominal) AS total'))
+                ->join('modal', 'modal.id', 'cicilan_modal.modal_id')
+                ->join('kursus', 'kursus.id', 'modal.kursus_id')
+                ->whereMonth('tanggal', $month)
+                ->whereYear('tanggal', $year)
+                ->where('cicilan_modal.status', 's')
+                ->groupBy('modal_id');
+
+            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            {
+                $cicilan_modal->where('modal.kursus_id', $postData['tempat_kursus']);
+            }
+            else
+            {
+                $session = new \Bimbel\Master\Model\Session();
+                if (!$session->isSuperUser())
+                {
+                    $kursus_ids = $session->getKursusIds();
+                    $cicilan_modal->whereIn('modal.kursus_id', $kursus_ids);
+                }
+            }
+
+            $cicilan_modal = $cicilan_modal->get();
+            $data['Cicilan Modal'] = $cicilan_modal;
+            $total['Cicilan Modal'] = $cicilan_modal->sum('total');
+
+            $tarik_modal = new \Bimbel\Pengeluaran\Model\TarikModal();
+            $tarik_modal = $tarik_modal
+                ->select(DB::raw('kursus.nama AS nama'), DB::raw('SUM(tarik_modal.nominal) AS total'))
+                ->join('modal', 'modal.id', 'tarik_modal.modal_id')
+                ->join('kursus', 'kursus.id', 'modal.kursus_id')
+                ->whereMonth('tanggal', $month)
+                ->whereYear('tanggal', $year)
+                ->where('tarik_modal.status', 's')
+                ->groupBy('modal_id');
+
+            $tarik_modal = $tarik_modal->get();
+            $data['Penarikan Modal'] = $tarik_modal;
+            $total['Penarikan Modal'] = $tarik_modal->sum('total');
+            
+
+            $data = [
+                'judul' => "Modal",
                 'data' => $data,
                 'total' => $total,
                 'periode' => $this->convertDate($postData['start_date'] . "-01")

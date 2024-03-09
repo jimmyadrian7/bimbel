@@ -60,3 +60,14 @@ $app->post("/api/generate/report/tabungan_aset", function ($request, $response, 
     $response->getBody()->write($result);
     return $response;
 });
+
+
+$app->post("/api/generate/report/modal", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Report\Controller\ReportController");
+    $result = $controller->getModal($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write($result);
+    return $response;
+});
