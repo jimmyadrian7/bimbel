@@ -2,7 +2,7 @@
     <div class="col-12 my-3">
         <div class="d-flex align-items-center">
             <div ng-repeat="field in vm.fields" class="me-2">
-                <app-form-input type="{{field.type}}" expr="vm.data.{{field.value}}"></app-form-input>
+                <app-form-input type="{{field.type}}" expr="vm.data.{{field.value}}" ng-show="!field.hidden"></app-form-input>
             </div>
             <button type="button" class="btn bg-gradient-primary mb-0" ng-click="vm.generate()">
                 <i class="fas fa-plus me-2"></i> Generate

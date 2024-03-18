@@ -219,6 +219,7 @@ class Gaji extends BaseModel
 
         $query
             ->where('tagihan_detail.system', true)
+            ->where('tagihan_detail.kategori_pembiayaan', 's')
             ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
             ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
         ;
@@ -273,6 +274,7 @@ class Gaji extends BaseModel
             ->whereMonth("tagihan.tanggal_lunas", $month)
             ->whereYear("tagihan.tanggal_lunas", $year)
             ->where('tagihan.status', 'l')
+            ->where('tagihan_detail.kategori_pembiayaan', '<>', 's')
         ;
 
         return $query;
