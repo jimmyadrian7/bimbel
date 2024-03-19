@@ -110,12 +110,22 @@ class FetchController extends Controller
 
             if ($data['reset'])            
             {
-                $siswa->iuran_terbuat()->delete();
-                $siswa->deposit->delete();
-                
-                foreach($siswa->tagihan as $tagihan)
+                if ($siswa->iuran_terbuat->count() > 0)
                 {
-                    $tagihan->delete();
+                    $siswa->iuran_terbuat()->delete();
+                }
+
+                if ($siswa->deposit)
+                {
+                    $siswa->deposit->delete();
+                }
+
+                if ($siswa->tagihan->count() > 0)
+                {
+                    foreach($siswa->tagihan as $tagihan)
+                    {
+                        $tagihan->delete();
+                    }
                 }
 
                 $siswa->update(['status' => 'b']);
