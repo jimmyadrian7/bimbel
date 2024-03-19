@@ -333,6 +333,11 @@ class Siswa extends BaseModel
             $this->deposit()->update(['status' => 'h']);
         }
 
+        if ($this->deposit->status == 'h')
+        {
+            $status = 'n';
+        }
+
         return $status;
     }
     public function handleStatus(&$attributes)
@@ -344,9 +349,9 @@ class Siswa extends BaseModel
 
         switch($attributes['status'])
         {
-            // case "p":
-            //     $attributes['status'] = $this->cekDeposit();
-            // break;
+            case "p":
+                $attributes['status'] = $this->cekDeposit();
+            break;
             
             case "a":
                 $this->createUser();

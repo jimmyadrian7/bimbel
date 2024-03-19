@@ -5,6 +5,7 @@ use \Bimbel\Master\Controller\Controller;
 use \Bimbel\Siswa\Model\Siswa;
 use \Bimbel\Master\Model\Kursus;
 use Illuminate\Database\Capsule\Manager as DB;
+use \Bimbel\Pembayaran\Model\TagihanDetail;
 
 class FetchController extends Controller
 {
@@ -149,6 +150,35 @@ class FetchController extends Controller
                 {
                     continue;
                 }
+            }
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
+
+    public function generateDeposit($request, $args, &$response)
+    {
+        $result = true;
+
+        try 
+        {
+            $data = $request->getParsedBody();
+            $siswa = new Siswa();
+            $siswa = $siswa->findOrFail($data['id']);
+            
+            if (!$siswa->deposit)
+            {
+                $tagihan_detail = TagihanDetail::where('kategori_pembiayaan', 'd')->first();
+                $deposit = new \Bimbel\Siswa\Model\Deposit();
+                $eposit = $deposit->create([
+                    'nominal' => $tagihan_detail->total,
+                    'siswa_id' => $siswa->id,
+                    'tanggal' => $siswa->tanggal_pendaftaran
+                ]);
             }
         }
         catch(\Error $e)

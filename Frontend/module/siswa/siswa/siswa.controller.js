@@ -165,6 +165,8 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         vm.modalTagihan = modalTagihan;
         vm.genTagihan = genTagihan;
 
+        vm.buatDeposit = buatDeposit;
+
         activate();
         $scope.$watch(() => vm.data.kursus_id, watchTempatKursus);
 
@@ -410,6 +412,13 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
 
             req.post('siswa/mass/generate/tagihan', data).then(response => {
                 Modal.getInstance(vm.myModal[0]).hide();
+                state.reload();
+            });
+        }
+
+        function buatDeposit()
+        {
+            req.post('siswa/buat/deposit', {id: vm.dataId}).then(response => {
                 state.reload();
             });
         }

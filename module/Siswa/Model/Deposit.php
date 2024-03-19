@@ -59,14 +59,21 @@ class Deposit extends BaseModel
 
     public function handleStatus($attributes)
     {
-        if (!array_key_exists('status', $attributes) || $attributes['status'] != 't')
+        if (!array_key_exists('status', $attributes))
         {
             return;
         }
 
-        if ($this->siswa->status != 'n')
-        {
-            $this->siswa->update(['status' => 'n']);
+        switch ($attributes['status']) {
+            case 't': // Terima
+                $this->siswa->update(['status' => 'n']);
+            break;
+            case 'a': // Aktif
+                $this->siswa->update(['status' => 'a']);
+            break;
+            case 'h': // Hangus
+                $this->siswa->update(['status' => 'n']);
+            break;
         }
     }
 

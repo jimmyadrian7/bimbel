@@ -39,3 +39,13 @@ $app->post("/api/siswa/mass/generate/tagihan", function ($request, $response, $a
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/siswa/buat/deposit", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Siswa\Controller\FetchController");
+    $result = $controller->generateDeposit($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});
