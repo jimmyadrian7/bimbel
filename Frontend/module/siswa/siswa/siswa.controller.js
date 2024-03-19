@@ -378,11 +378,13 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         function resetTagihan()
         {
             vm.reset = true;
+            vm.modalTitle = "Reset Tagihan";
             vm.myModal = $compile(tagihan_modal)($scope);
         }
         function buatTagihan()
         {
             vm.reset = false;
+            vm.modalTitle = "Buat Tagihan";
             vm.myModal = $compile(tagihan_modal)($scope);
         }
         function generateTagihan()
