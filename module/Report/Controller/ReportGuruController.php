@@ -108,42 +108,52 @@ class ReportGuruController extends BaseReportController
             $tanggal_gaji = $postData['start_date'] . '-01';
             
             $guru = $guru->find($postData['guru_id']);
+            $status = $postData['status'];
 
             // Komisi iuran Lunas
-            $tagihan_details = $gaji->queryIuran($tanggal_gaji, 'l');
-            $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.kategori_pembiayaan', 's');
-            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            if ($status == 'l' || empty($status))
             {
-                $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
-            }
-            if ($tagihan_details->count() > 0)
-            {
-                $data_row['Lunas'] = $tagihan_details->get();
+                $tagihan_details = $gaji->queryIuran($tanggal_gaji, 'l');
+                $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.kategori_pembiayaan', 's');
+                if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+                {
+                    $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
+                }
+                if ($tagihan_details->count() > 0)
+                {
+                    $data_row['Lunas'] = $tagihan_details->get();
+                }
             }
 
             // Komisi iuran Proses
-            $tagihan_details = $gaji->queryIuran($tanggal_gaji, 'p');
-            $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.kategori_pembiayaan', 's');
-            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            if ($status == 'p' || empty($status))
             {
-                $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
-            }
+                $tagihan_details = $gaji->queryIuran($tanggal_gaji, 'p');
+                $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.kategori_pembiayaan', 's');
+                if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+                {
+                    $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
+                }
 
-            if ($tagihan_details->count() > 0)
-            {
-                $data_row['Belum Bayar'] = $tagihan_details->get();
+                if ($tagihan_details->count() > 0)
+                {
+                    $data_row['Belum Bayar'] = $tagihan_details->get();
+                }
             }
 
             // Komisi iuran Menunggu Verifikasi
-            $tagihan_details = $gaji->queryIuran($tanggal_gaji, 'c');
-            $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.kategori_pembiayaan', 's');
-            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+            if ($status == 'c' || empty($status))
             {
-                $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
-            }
-            if ($tagihan_details->count() > 0)
-            {
-                $data_row['Menunggu Verifikasi'] = $tagihan_details->get();
+                $tagihan_details = $gaji->queryIuran($tanggal_gaji, 'c');
+                $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.kategori_pembiayaan', 's');
+                if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+                {
+                    $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
+                }
+                if ($tagihan_details->count() > 0)
+                {
+                    $data_row['Menunggu Verifikasi'] = $tagihan_details->get();
+                }
             }
             
             $data = [

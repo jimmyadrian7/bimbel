@@ -16,10 +16,18 @@
             start_date: moment(new Date()).format("YYYY-MM"),
         };
 
+        let statusOpt = [
+            {"value": "", "label": "All"},
+            {"value": "p", "label": "Proses"},
+            {"value": "c", "label": "Menunggu Verifikasi"},
+            {"value": "l", "label": "Lunas"}
+        ];
+
         vm.fields = [
             {type: 'month', value: 'start_date'},
             {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'},
-            {type: 'selection', selection: guruOpt, value: 'guru_id'}
+            {type: 'selection', selection: guruOpt, value: 'guru_id'},
+            {type: 'selection', selection: statusOpt, value: 'status'}
         ];
 
         function generate()
