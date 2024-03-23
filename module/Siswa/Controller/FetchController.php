@@ -198,4 +198,18 @@ class FetchController extends Controller
 
         return $result;
     }
+
+    public function authenticateResetTagihan($request, $args, &$response)
+    {
+        $result = ['authenticate' => true];
+
+        $data = $request->getParsedBody();
+
+        if ($data['password'] != '4.C#$O|3Hd&]nE%')
+        {
+            $result['authenticate'] = false;
+        }
+
+        return $result;
+    }
 }

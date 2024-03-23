@@ -40,6 +40,16 @@ $app->post("/api/siswa/mass/generate/tagihan", function ($request, $response, $a
     return $response;
 });
 
+$app->post("/api/siswa/authenticate/reset/tagihan", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Siswa\Controller\FetchController");
+    $result = $controller->authenticateResetTagihan($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});
+
 $app->post("/api/siswa/buat/deposit", function ($request, $response, $args) {
 
     $controller = $this->get("Bimbel\Siswa\Controller\FetchController");

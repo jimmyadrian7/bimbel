@@ -3,6 +3,7 @@ import edit_iuran from "./html/modal/edit_iuran.html";
 import jadwal from "./html/modal/jadwal.html";
 import tagihan_modal from "./html/modal/tagihan.html";
 import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
+import authentication_html from "./html/modal/authentication.html";
 
 (() => {
     "use strict";
@@ -12,12 +13,12 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
 
     SiswaController.$inject = [
         '$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session',
-        'referalOptions'
+        'referalOptions', 'logger'
     ];
 
     function SiswaController(
         stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session, 
-        referalOptions
+        referalOptions, logger
     )
     {
         let vm = this;
@@ -166,6 +167,9 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         vm.genTagihan = genTagihan;
 
         vm.buatDeposit = buatDeposit;
+
+        vm.openAuth = openAuth;
+        vm.authenticate = authenticate;
 
         activate();
         $scope.$watch(() => vm.data.kursus_id, watchTempatKursus);
@@ -422,6 +426,26 @@ import generate_tagihan_modal from "./html/modal/generate_tagihan_modal.html";
         {
             req.post('siswa/buat/deposit', {id: vm.dataId}).then(response => {
                 state.reload();
+            });
+        }
+
+        function openAuth()
+        {
+            vm.modal.password = "";
+            vm.myModal = $compile(authentication_html)($scope);
+        }
+        function authenticate()
+        {
+            req.post('siswa/authenticate/reset/tagihan', {password: vm.modal.password}).then(response => {
+                if (response.authenticate)
+                {
+                    Modal.getInstance(vm.myModal[0]).hide();
+                    resetTagihan();
+                }
+                else
+                {
+                    logger.error("Password salah");
+                }
             });
         }
 

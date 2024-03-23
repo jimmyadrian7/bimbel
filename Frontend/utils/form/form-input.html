@@ -17,6 +17,14 @@
     ng-required="{{required}}">
 
 <input
+    ng-if="type == 'password'" 
+    type="password" 
+    ng-model-dynamic="{{ expr }}"
+    class="form-control form-control-sm"]
+    name="{{expr}}"
+    ng-required="{{required}}">
+
+<input
     ng-if="type == 'month'" 
     type="text" 
     ng-model-dynamic="{{ expr }}"
