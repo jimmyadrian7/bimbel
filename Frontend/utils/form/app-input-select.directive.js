@@ -74,7 +74,18 @@
                 {
                     init = true;
                     displayValue.text = displayValue.nama;
-                    var newOption = new Option(displayValue.nama, displayValue.id, true, true);
+
+                    delete displayValue.nama;
+
+                    var newOption = new Option(displayValue.text, displayValue.id, true, true);
+                    
+                    Object.keys(displayValue).forEach(key => {
+                        if (!['id', 'text'].includes(key))
+                        {
+                            newOption.setAttribute(key, displayValue[key]);
+                        }
+                    });
+
                     el.append(newOption).trigger('change');
                     
                     el.trigger({
@@ -82,7 +93,7 @@
                         params: {
                             data: displayValue
                         }
-                    });                
+                    });
                 }
                 
                 if (typeof formatter !== 'undefined')

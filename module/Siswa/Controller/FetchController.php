@@ -43,7 +43,7 @@ class FetchController extends Controller
                 $value->{"text"} = $value->orang->nama;
             }
 
-            $data = $data->map->only(["id", "text"]);
+            $data = $data->map->only(["id", "text", "komisi"]);
             
             return $data;
         }
@@ -205,7 +205,7 @@ class FetchController extends Controller
 
         $data = $request->getParsedBody();
 
-        if ($data['password'] != '4.C#$O|3Hd&]nE%')
+        if ($data['password'] != 'cuanisasi')
         {
             $result['authenticate'] = false;
         }

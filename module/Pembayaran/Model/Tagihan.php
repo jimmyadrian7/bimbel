@@ -31,7 +31,8 @@ class Tagihan extends BaseModel
     public function getSiswaDataAttribute() {
 		$data = [
             "id" => $this->siswa->id,
-            "nama" => $this->siswa->orang->nama
+            "nama" => $this->siswa->orang->nama,
+            "komisi" => $this->siswa->komisi
         ];
 
 		return $data;

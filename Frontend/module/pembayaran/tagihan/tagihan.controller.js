@@ -35,6 +35,7 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
 
         vm.isSiswa = session.isSiswa();
         vm.isAdmin = session.isAdminCabang() || session.isSuperUser();
+        vm.additionalData = {};
 
         vm.data = {tagihan_detail: []};
         vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
@@ -141,6 +142,10 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
 
         vm.pindahGuru = pindahGuru;
         vm.postPindahGuru = postPindahGuru;
+
+        vm.getNumber = getNumber;
+
+        $scope.$watch(() => vm.data.siswa_id, watchSiswaId);
 
         function getValue(field)
         {
@@ -383,6 +388,64 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
                 Modal.getInstance(vm.myModalPindahGuru[0]).hide();
                 state.reload();
             });
+        }
+
+        function getNumber(field, data)
+        {
+            let result = data[field.value];
+            if (field.value == 'komisi')
+            {
+                if (!result)
+                {
+                    let jenis_komisi = data.pembiayaan.jenis_komisi;
+
+                    switch (jenis_komisi) {
+                        case 's':
+                            if (vm.additionalData.komisi_siswa)
+                            {
+                                result = data.total * vm.additionalData.komisi_siswa / 100;
+                            }
+                            else
+                            {
+                                result = 0;
+                            }
+                        break;
+                        case 'p':
+                            result = data.total * data.pembiayaan.nominal / 100;
+                        break;
+                        case 'n':
+                            result = data.pembiayaan.nominal;
+                        break;
+                    
+                        default:
+                            result = 0;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        function watchSiswaId()
+        {
+            let el = $('[name="vm.data.siswa_id"]');
+            
+            if (el.length > 0)
+            {
+                let el_data = el.select2('data');
+                if (el_data.length > 0)
+                {
+                    if (!el_data[0].komisi)
+                    {
+                        vm.additionalData.komisi_siswa = el.find(':selected').next().attr('komisi');
+                    }
+                    else
+                    {
+                        vm.additionalData.komisi_siswa = el_data[0].komisi;
+                    }
+                }
+            }
         }
     }
 })()
