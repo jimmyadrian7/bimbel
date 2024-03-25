@@ -204,12 +204,18 @@ class Gaji extends BaseModel
             CASE 
                 WHEN year(tagihan.tanggal_lunas) = year("' . $tanggal_gaji . '") AND month(tagihan.tanggal_lunas) = month("' . $tanggal_gaji . '")  THEN
                     (
-                        IF(
-                            TIMESTAMPDIFF(MONTH, tagihan_detail.tanggal_iuran_mulai, tagihan.tanggal_lunas) < 0, 
-                            0,
-                            TIMESTAMPDIFF(MONTH, tagihan_detail.tanggal_iuran_mulai, tagihan.tanggal_lunas)
+                        IF
+                        (
+                            DATE_FORMAT(tagihan.tanggal_lunas,"%Y-%m") > DATE_FORMAT(tagihan_detail.tanggal_iuran_berakhir,"%Y-%m"),
+                            tagihan_detail.bulan,
+                            IF
+                            (
+                                TIMESTAMPDIFF(MONTH, tagihan_detail.tanggal_iuran_mulai, tagihan.tanggal_lunas) < 0, 
+                                0,
+                                TIMESTAMPDIFF(MONTH, tagihan_detail.tanggal_iuran_mulai, tagihan.tanggal_lunas)
+                            ) + 1
                         )
-                        + 1 ) * tagihan_detail.komisi
+                    ) * tagihan_detail.komisi
                 WHEN DATE(tagihan.tanggal_lunas) > "' . $end_day . '" AND DATE(tagihan.tanggal_lunas) <= DATE(tagihan_detail.tanggal_iuran_berakhir) THEN
                     0
                 ELSE
@@ -220,26 +226,43 @@ class Gaji extends BaseModel
         $query
             ->where('tagihan_detail.system', true)
             ->where('tagihan_detail.kategori_pembiayaan', 's')
-            ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
-            ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
+            ->where('tagihan.status', $tagihan_status)
+            // ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
+            // ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
         ;
 
         switch ($tagihan_status) {
             case 'l':
                 $query
-                    ->where('tagihan.status', $tagihan_status)
-                    ->where(function($q) use ($end_day) {
+                    // ->where('tagihan.status', $tagihan_status)
+                    ->where(function($q) use ($end_day, $tanggal_gaji) {
                         $q
-                            ->whereDate("tagihan.tanggal_lunas", "<=", $end_day)
-                            ->orWhereDate("tagihan.tanggal_lunas", '>', DB::raw('tagihan_detail.tanggal_iuran_berakhir'));
-                });
+                            ->where(function ($query) use ($end_day, $tanggal_gaji) {
+                                $query
+                                    ->whereDate("tagihan.tanggal_lunas", "<=", $end_day)
+                                    ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
+                                    ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
+                                ;
+                            })
+                            ->orWhere(function($query) use ($end_day, $tanggal_gaji) {
+                                $query
+                                    ->whereMonth("tagihan.tanggal_lunas", "=", DB::raw("MONTH('" . $end_day . "')"))
+                                    ->whereYear("tagihan.tanggal_lunas", "=", DB::raw("YEAR('" . $end_day . "')"))
+                                    ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
+                                ;
+                            })
+                        ;
+                    })
+                ;
             break;
 
             case 'p':
                 $query
-                    ->where(function($q) use ($tagihan_status, $end_day) {
+                    ->where(function($q) use ($tagihan_status, $end_day, $tanggal_gaji) {
                         $q
-                            ->where('tagihan.status', $tagihan_status)
+                            // ->where('tagihan.status', $tagihan_status)
+                            ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
+                            ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
                             ->orWhere(function ($query) use ($end_day) {
                                 $query
                                     ->where('tagihan.status', 'l')
@@ -250,7 +273,10 @@ class Gaji extends BaseModel
             
             default:
                 $query
-                    ->where('tagihan.status', $tagihan_status);
+                    ->whereDate("tagihan_detail.tanggal_iuran_mulai", "<=", $tanggal_gaji)
+                    ->whereDate("tagihan_detail.tanggal_iuran_berakhir", ">=", $tanggal_gaji)
+                    // ->where('tagihan.status', $tagihan_status)
+                ;
             break;
         }
 

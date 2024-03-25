@@ -261,6 +261,12 @@ class Tagihan extends BaseModel
             // $data->deleteable = false;
         }
 
+        if ($data->status == 'l')
+        {
+            // $data->editable = false;
+            $data->deleteable = false;
+        }
+
         return $data;
     }
 }

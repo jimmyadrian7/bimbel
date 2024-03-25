@@ -108,7 +108,7 @@ class ReportGuruController extends BaseReportController
             $tanggal_gaji = $postData['start_date'] . '-01';
             
             $guru = $guru->find($postData['guru_id']);
-            $status = $postData['status'];
+            $status = $postData['status'] ?? null;
 
             // Komisi iuran Lunas
             if ($status == 'l' || empty($status))
