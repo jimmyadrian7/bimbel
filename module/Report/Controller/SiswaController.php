@@ -148,4 +148,57 @@ class SiswaController extends BaseReportController
 
         return $result;
     }
+
+    public function getSiswaUtang($request, $args, &$response)
+    {
+        $result = [];
+        
+        try
+        {
+            $session = new \Bimbel\Master\Model\Session();
+            $postData = $request->getParsedBody();
+            $siswa = new \Bimbel\Siswa\Model\Siswa();
+            $tagihan_detail = new \Bimbel\Pembayaran\Model\TagihanDetail();
+
+            $tagihan_detail = $tagihan_detail
+                ->where('kategori_pembiayaan', 'p')
+                ->whereHas('tagihan', function($q) use ($postData, $session) {
+                    $q
+                        ->where('status', '!=', 'l')
+                        ->whereHas('siswa', function($query) use ($postData, $session) {
+                            $query->where('status', 'a');
+
+                            if (array_key_exists('tempat_kursus', $postData) && !empty($postData['tempat_kursus']))
+                            {
+                                $query->where('kursus_id', $postData['tempat_kursus']);
+                            }
+                            else
+                            {
+                                if (!$session->isSuperUser())
+                                {
+                                    $kursus_ids = $session->getKursusIds();
+                                    $query->whereIn('kursus_id', $kursus_ids);
+                                }
+                            }
+                        })
+                    ;
+                })
+            ;
+
+            $tagihan_detail = $tagihan_detail->get();
+
+            $data = [
+                'judul' => "Siswa Belum Lunas Pendaftaran",
+                'tagihan_details' => $tagihan_detail
+            ];
+
+            $result = $this->toPdf("Report/View/siswa_utang.twig", $data);
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
 }

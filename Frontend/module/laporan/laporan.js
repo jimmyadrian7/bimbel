@@ -11,3 +11,4 @@ import "./pendapatan_guru/pendapatan_guru";
 import "./iuran/iuran";
 import "./tabungan_aset/tabungan_aset";
 import "./modal_report/modal_report";
+import "./siswa_utang/siswa_utang";

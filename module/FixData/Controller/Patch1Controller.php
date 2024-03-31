@@ -81,4 +81,13 @@ class Patch1Controller extends Controller
 
         return $result;
     }
+
+    public function patch5($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        Utils::addMenuReport('siswa_utang', 'Siswa Utang');
+
+        return $result;
+    }
 }
