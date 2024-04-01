@@ -32,7 +32,7 @@
             {name: "nama", value: "nama", table: true, required: true},
             {name: "Harga", value: "harga", type: 'number', table: true, required: true},
             {name: "Stok", value: "stok", type: 'boolean'},
-            {name: "Jenis Pembagian", value: "jenis_komisi", type: "selection", selection: jenisKomisiOpt, required: true}
+            {name: "Jenis Pembagian", value: "jenis_komisi", type: "selection", selection: jenisKomisiOpt, required: false}
         ];
     }
 })()

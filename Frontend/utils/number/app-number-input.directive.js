@@ -32,7 +32,7 @@
             {
                 var valStr, displayValue;
         
-                if (typeof val === 'undefined' || val === null) {
+                if (typeof val === 'undefined' || val === null || isNaN(val)) {
                   return 0;
                 }
         
