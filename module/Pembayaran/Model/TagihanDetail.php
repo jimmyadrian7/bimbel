@@ -110,10 +110,10 @@ class TagihanDetail extends BaseModel
             $komisi = $old_komisi;
         }
 
-        if (!$old_komisi)
-        {
-            $komisi = false;
-        }
+        // if (!$old_komisi)
+        // {
+        //     $komisi = false;
+        // }
 
         if ($komisi)
         {
@@ -121,7 +121,7 @@ class TagihanDetail extends BaseModel
         }
         else
         {
-            $result = $pembiayaan->nominal * $attributes['total'];
+            $result = $pembiayaan->nominal;
         }
 
         $bulan_total = 0;
