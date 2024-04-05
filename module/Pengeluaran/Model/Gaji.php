@@ -164,7 +164,7 @@ class Gaji extends BaseModel
                 'orang.nama AS nama_siswa', 'tagihan.code AS kode_tagihan', 'tagihan.tanggal AS tanggal_tagihan',
                 'tagihan.tanggal_lunas AS tanggal_lunas', 'tagihan_detail.nama AS nama_item', 'tagihan_detail.total AS harga_total', 'tagihan_detail.qty AS qty',
                 'kursus.nama AS kursus', 'transaksi.jenis_pembayaran AS jenis_pembayaran', 'tagihan.kursus_id', 'tagihan_detail.potongan AS potongan',
-                'tagihan_detail.sub_total AS sub_total', 'tagihan.guru_id',
+                'tagihan_detail.sub_total AS sub_total', 'tagihan.guru_id', 'pembiayaan.jenis_komisi',
                 DB::raw('
                     CASE WHEN pembiayaan.jenis_komisi = "s" THEN
                         siswa.komisi
