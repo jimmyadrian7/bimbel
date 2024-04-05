@@ -96,7 +96,13 @@
                                                 <td>{{ tagihan_detail.kursus }}</td>
                                                 <td>{{ tagihan_detail.nama_item }}</td>
                                                 <td>{{ tagihan_detail.harga_total|number_format(0, ',', '.') }}</td>
-                                                <td>{{ tagihan_detail.persen_komisi }}%</td>
+                                                <td>
+                                                    {{ tagihan_detail.persen_komisi }}
+                                                    
+                                                    {% if tagihan_detail.pembiayaan.jenis_komisi != 'n' %}
+                                                        %
+                                                    {% endif %}
+                                                </td>
                                                 <td>{{ tagihan_detail.komisi|number_format(0, ',', '.') }}</td>
                                             </tr>
                                             {% set nomor = nomor + 1 %}
