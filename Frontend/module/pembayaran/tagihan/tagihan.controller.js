@@ -311,12 +311,28 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
             vm.data.tagihan_detail[vm.activeDetail].diskon = diskon;
             vm.data.tagihan_detail[vm.activeDetail].diskon_id = diskon.id;
 
+            let total_diskon = 0;
+            let total = vm.data.tagihan_detail[vm.activeDetail].sub_total;
+
+            if (diskon.tipe_diskon == 'n')
+            {
+                total_diskon = diskon.diskon;
+            }
+            else
+            {
+                total_diskon = (total * diskon.diskon / 100);
+            }
+
+            vm.data.tagihan_detail[vm.activeDetail].total = total - total_diskon;
+
             Modal.getInstance(vm.myModalDiskon[0]).hide();
         }
         function removeDiskon(idx)
         {
             delete vm.data.tagihan_detail[idx].diskon;
             delete vm.data.tagihan_detail[idx].diskon_id;
+
+            vm.data.tagihan_detail[idx].total = vm.data.tagihan_detail[idx].sub_total;
         }
 
         function getDiskonOpt(val)
@@ -393,10 +409,28 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
         function getNumber(field, data)
         {
             let result = data[field.value];
+
+            if (field.value == 'diskon.diskon')
+            {
+                let diskon = data.diskon;
+
+                if (diskon)
+                {
+                    if (diskon.tipe_diskon == 'n')
+                    {
+                        result = diskon.diskon;
+                    }
+                    else
+                    {
+                        result = data.sub_total * diskon.diskon / 100;
+                    }
+                }
+            }
+
             if (field.value == 'komisi')
             {
-                if (!result)
-                {
+                // if (!result)
+                // {
                     let jenis_komisi = data.pembiayaan.jenis_komisi;
 
                     switch (jenis_komisi) {
@@ -414,14 +448,23 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
                             result = data.total * data.pembiayaan.nominal / 100;
                         break;
                         case 'n':
-                            result = data.pembiayaan.nominal;
+                            result = data.pembiayaan.nominal || 0;
                         break;
                     
                         default:
                             result = 0;
                         break;
                     }
-                }
+
+                    if (result != 0)
+                    {
+                        let iuran_mulai = data.tanggal_iuran_mulai;
+                        let iuran_berakhir = data.tanggal_iuran_berakhir;
+                        let total_bulan = moment(new Date(iuran_berakhir)).diff(new Date(iuran_mulai), 'months', true);
+
+                        result = result / (total_bulan + 1);
+                    }
+                // }
             }
 
             return result;

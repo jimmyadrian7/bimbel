@@ -150,6 +150,11 @@ class TagihanDetail extends BaseModel
         $attributes['potongan'] = $this->getPotongan($attributes);
         $attributes['total'] = $this->getTotal($attributes);
         $attributes['komisi'] = $this->getKomisi($attributes);
+
+        if (!array_key_exists('diskon_id', $attributes) || !empty($attributes['diskon_id']))
+        {
+            $attributes['diskon_id'] = null;
+        }
     }
 
     public function create(array $attributes = [])
