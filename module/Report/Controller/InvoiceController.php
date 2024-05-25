@@ -13,10 +13,12 @@ class InvoiceController extends BaseReportController
         {
             $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
             $tagihan = $tagihan->find($args['tagihan_id']);
+
             $data = [
                 'title' => true,
                 'judul' => 'Invoice',
                 'tagihan' => $tagihan,
+                'siswa' => $tagihan->siswa->orang->nama,
                 'nomor' => $tagihan->code
             ];
 
