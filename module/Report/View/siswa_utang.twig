@@ -45,20 +45,30 @@
                 <table class="table-content">
                     <thead>
                         <tr>
-                            <th>No. Formulir</th>
+                            <th>Kode Tagihan</th>
                             <th>Nama Siswa</th>
                             <th>Guru</th>
                             <th>Tempat Kursus</th>
+                            <th>Nama Barang</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     {% for tagihan_detail in tagihan_details %}
                         <tr>
-                            <td>{{ tagihan_detail.tagihan.siswa.no_formulir }}</td>
+                            <td>{{ tagihan_detail.tagihan.code }}</td>
                             <td>{{ tagihan_detail.tagihan.siswa.orang.nama }}</td>
                             <td>{{ tagihan_detail.tagihan.siswa.guru.orang.nama }}</td>
                             <td>{{ tagihan_detail.tagihan.siswa.kursus.nama }}</td>
+                            <td>{{ tagihan_detail.nama }}</td>
+                            <td>{{ tagihan_detail.total|number_format(0, ',', '.') }}</td>
                         </tr>
                     {% endfor %}
+
+                    <tr class="bold">
+                        <td class="bg-transparent" colspan="4"></td>
+                        <td class="bg-red">Total Utang</td>
+                        <td class="bg-red">{{ total_utang|number_format(0, ',', '.') }}</td>
+                    </tr>
                 </table>
             </div>
         </div>

@@ -15,7 +15,14 @@
         vm.data = {};
 
         vm.fields = [
-            {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
+            // {type: 'selection', selection: kursusOpt, value: 'tempat_kursus'}
+            {
+                name: "Siswa", 
+                value: "siswa_id",
+                type: "autocomplete",
+                url: 'siswa/search/autocomplete',
+                valueName: 'siswa_data'
+            }
         ];
 
         function generate()
