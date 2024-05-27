@@ -69,7 +69,7 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
             {name: "Nominal", value: "nominal", type: 'number'},
             {name: "Qty", value: "qty", type: 'number'},
             {name: "Sub Total", value: "sub_total", type: 'number'},
-            {name: "Diskon", value: "diskon.diskon", type: 'number'},
+            {name: "Diskon", value: "potongan", type: 'number'},
             {name: "Total", value: "total", type: 'number'}
         ];
 

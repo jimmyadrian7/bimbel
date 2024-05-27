@@ -151,7 +151,7 @@ class TagihanDetail extends BaseModel
         $attributes['total'] = $this->getTotal($attributes);
         $attributes['komisi'] = $this->getKomisi($attributes);
 
-        if (!array_key_exists('diskon_id', $attributes) || !empty($attributes['diskon_id']))
+        if (!array_key_exists('diskon_id', $attributes) || empty($attributes['diskon_id']))
         {
             $attributes['diskon_id'] = null;
         }
