@@ -30,11 +30,13 @@ class DeleteController extends Controller
                 throw new \Error("Data not found");
             }
 
+            $model_values = $model->toArray();
+
             $model->delete();
             $result = ["id" => $model_id];
 
             $log = $this->getModel('log');
-            $log = $log->log($model_id, $args['model'], "Delete", "");
+            $log = $log->log($model_id, $args['model'], "Delete", $model_values);
 
             DB::commit();
         }
