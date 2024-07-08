@@ -240,7 +240,16 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
         }
         function fetchPembiayaan()
         {
-            req.get('pembiayaans').then(data => {
+            let filter_data = {
+                filter: [
+                    {
+                        field: 'kategori_pembiayaan',
+                        operation: '!=',
+                        value: 's'
+                    }
+                ]
+            };
+            req.post('pembiayaans/custom', filter_data).then(data => {
                 vm.modal.pembiayaan = data;
             });
         }
