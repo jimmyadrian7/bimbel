@@ -205,7 +205,7 @@ class FetchController extends Controller
 
         $data = $request->getParsedBody();
 
-        if ($data['password'] != 'cuanisasi')
+        if ($data['password'] != 'soofec')
         {
             $result['authenticate'] = false;
         }

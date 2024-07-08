@@ -229,19 +229,23 @@ class Tagihan extends BaseModel
             ;
 
             $iuran_terbuat = $iuran_terbuat->where('siswa_id', $siswa_id)->where('iuran_id', $iuran->id)->first();
-            $tanggal_akhir = $tagihan_detail->tanggal_iuran_berakhir;
-            $tanggal_iuran = $iuran_terbuat->tahun . "-" . $iuran_terbuat->bulan . "-01";
-            $tanggal_iuran = strtotime($tanggal_iuran);
-            $tanggal_iuran = date('Y-m-d', $tanggal_iuran);
 
-            if ($tanggal_akhir == $tanggal_iuran)
+            if ($iuran_terbuat)
             {
-                $prev_date = new \DateTime($tagihan_detail->tanggal_iuran_mulai);
-                $prev_date->modify("- 1 month");
-                
-                $iuran_terbuat->tahun = $prev_date->format("Y");
-                $iuran_terbuat->bulan = $prev_date->format("n");
-                $iuran_terbuat->save();
+                $tanggal_akhir = $tagihan_detail->tanggal_iuran_berakhir;
+                $tanggal_iuran = $iuran_terbuat->tahun . "-" . $iuran_terbuat->bulan . "-01";
+                $tanggal_iuran = strtotime($tanggal_iuran);
+                $tanggal_iuran = date('Y-m-d', $tanggal_iuran);
+
+                if ($tanggal_akhir == $tanggal_iuran)
+                {
+                    $prev_date = new \DateTime($tagihan_detail->tanggal_iuran_mulai);
+                    $prev_date->modify("- 1 month");
+                    
+                    $iuran_terbuat->tahun = $prev_date->format("Y");
+                    $iuran_terbuat->bulan = $prev_date->format("n");
+                    $iuran_terbuat->save();
+                }
             }
         }
 
