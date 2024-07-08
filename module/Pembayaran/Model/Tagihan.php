@@ -7,6 +7,7 @@ use Bimbel\Guru\Model\Guru;
 use Bimbel\Pembayaran\Model\TagihanDetail;
 use Bimbel\Pembayaran\Model\Transaksi;
 use Bimbel\Master\Model\Kursus;
+use Bimbel\Siswa\Model\IuranTerbuat;
 
 class Tagihan extends BaseModel
 {
@@ -212,6 +213,37 @@ class Tagihan extends BaseModel
         // {
         //     throw new \Error("Tagihan cannot be deleted");
         // }
+
+        // update iuran siswa
+        $tagihan_details = $this->tagihan_detail()->where('system', 1)->where('kategori_pembiayaan', 's')->get();
+
+        foreach ($tagihan_details as $tagihan_detail) {
+            $iuran_terbuat = new IuranTerbuat();
+            $siswa_id = $tagihan_detail->tagihan->siswa_id;
+            $iuran = $tagihan_detail->tagihan->siswa->iuran()
+                ->whereHas('iuran_detail', function($q) use ($tagihan_detail) {
+                    $q->where('pembiayaan_id', $tagihan_detail->pembiayaan_id);
+                })
+                ->where('bulan', $tagihan_detail->bulan)
+                ->first()
+            ;
+
+            $iuran_terbuat = $iuran_terbuat->where('siswa_id', $siswa_id)->where('iuran_id', $iuran->id)->first();
+            $tanggal_akhir = $tagihan_detail->tanggal_iuran_berakhir;
+            $tanggal_iuran = $iuran_terbuat->tahun . "-" . $iuran_terbuat->bulan . "-01";
+            $tanggal_iuran = strtotime($tanggal_iuran);
+            $tanggal_iuran = date('Y-m-d', $tanggal_iuran);
+
+            if ($tanggal_akhir == $tanggal_iuran)
+            {
+                $prev_date = new \DateTime($tagihan_detail->tanggal_iuran_mulai);
+                $prev_date->modify("- 1 month");
+                
+                $iuran_terbuat->tahun = $prev_date->format("Y");
+                $iuran_terbuat->bulan = $prev_date->format("n");
+                $iuran_terbuat->save();
+            }
+        }
 
         $this->tagihan_detail()->delete();
         $this->transaksi()->delete();
