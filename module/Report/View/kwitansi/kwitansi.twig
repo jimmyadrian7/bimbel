@@ -1,0 +1,51 @@
+<html>
+    
+    <head>
+        {% include "/Report/View/partial/style.twig" %}
+        {% include "/Report/View/kwitansi/style.twig" %}
+    </head>
+
+    <body>
+        <div class="container">
+            {% include "/Report/View/kwitansi/header.twig" %}
+
+            
+            <table class="fn-12">
+                <tr>
+                    <td>
+                        <table class="left-table">
+                            <tr>
+                                <td class="border-btm-2">
+                                    {% include "/Report/View/kwitansi/program.twig" %}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="border-btm-2">
+                                    {% include "/Report/View/kwitansi/terima.twig" %}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="border-btm-2">
+                                    {% include "/Report/View/kwitansi/nominal.twig" %}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    {% include "/Report/View/kwitansi/rekening.twig" %}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td>
+                        {% include "/Report/View/kwitansi/paraf.twig" %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </body>
+</html>

@@ -13,97 +13,95 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
         '$stateParams', '$parse', '$compile', '$scope', 'req', 'Modal', '$state', 'session', 'logger', 'moment'
     ];
 
-    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session, logger, moment)
-    {
+    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session, logger, moment) {
         let vm = this;
 
         let statusOpt = [
-            {label: 'Proses', value: 'p'},
-            {label: 'Menunggu Verifikasi', value: 'c'},
-            {label: 'Lunas', value: 'l'}
+            { label: 'Proses', value: 'p' },
+            { label: 'Menunggu Verifikasi', value: 'c' },
+            { label: 'Lunas', value: 'l' }
         ];
 
         let diksonOption = [
-            {label: "Persen", value: "p"},
-            {label: "Nominal", value: "n"}
+            { label: "Persen", value: "p" },
+            { label: "Nominal", value: "n" }
         ];
 
         let jenisOption = [
-            {label: "Tunai", value: "c"},
-            {label: "Transfer", value: "tf"}
+            { label: "Tunai", value: "c" },
+            { label: "Transfer", value: "tf" }
         ];
 
         vm.isSiswa = session.isSiswa();
         vm.isAdmin = session.isAdminCabang() || session.isSuperUser();
         vm.additionalData = {};
 
-        vm.data = {tagihan_detail: []};
-        vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
+        vm.data = { tagihan_detail: [] };
+        vm.status_field = { name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true };
         vm.dataId = stateParams.dataId;
         vm.activeDetail = -1;
         vm.fields = [
-            {name: "Tanggal", value: "tanggal", type: 'date', table: true},
-            {name: "Kode", value: "code", table: true, hidden: true},
+            { name: "Tanggal", value: "tanggal", type: 'date', table: true },
+            { name: "Kode", value: "code", table: true, hidden: true },
             {
-                name: "Siswa", 
+                name: "Siswa",
                 value: "siswa_id",
                 type: "autocomplete",
                 url: 'siswa/search/autocomplete',
                 valueName: 'siswa_data',
                 table: true,
-                required: true 
+                required: true
             },
-            {name: "Siswa (mandarin)", value: "siswa.orang.nama_mandarin", table: true, hidden: true},
-            {name: "Guru", value: "guru.orang.nama", table: true, hidden: true},
-            {name: "Sub Total", value: "sub_total", type: 'number', table: true, hidden: true},
-            {name: "Potongan", value: "potongan", type: 'number', table: true, hidden: true},
-            {name: "Total", value: "total", type: 'number', table: true, hidden: true},
-            {name: "Hutang", value: "hutang", type: 'number', hidden: true},
+            { name: "Siswa (mandarin)", value: "siswa.orang.nama_mandarin", table: true, hidden: true },
+            { name: "Guru", value: "guru.orang.nama", table: true, hidden: true },
+            { name: "Sub Total", value: "sub_total", type: 'number', table: true, hidden: true },
+            { name: "Potongan", value: "potongan", type: 'number', table: true, hidden: true },
+            { name: "Total", value: "total", type: 'number', table: true, hidden: true },
+            { name: "Hutang", value: "hutang", type: 'number', hidden: true },
             vm.status_field
         ];
 
         vm.tagihanDetailFields = [
-            {name: "Nama", value: "nama"},
-            {name: "Periode Mulai", value: "tanggal_iuran_mulai", type: 'date'},
-            {name: "Periode Akhir", value: "tanggal_iuran_berakhir", type: 'date'},
-            {name: "Nominal", value: "nominal", type: 'number'},
-            {name: "Qty", value: "qty", type: 'number'},
-            {name: "Sub Total", value: "sub_total", type: 'number'},
-            {name: "Diskon", value: "potongan", type: 'number'},
-            {name: "Total", value: "total", type: 'number'}
+            { name: "Nama", value: "nama" },
+            { name: "Periode Mulai", value: "tanggal_iuran_mulai", type: 'date' },
+            { name: "Periode Akhir", value: "tanggal_iuran_berakhir", type: 'date' },
+            { name: "Nominal", value: "nominal", type: 'number' },
+            { name: "Qty", value: "qty", type: 'number' },
+            { name: "Sub Total", value: "sub_total", type: 'number' },
+            { name: "Diskon", value: "potongan", type: 'number' },
+            { name: "Total", value: "total", type: 'number' }
         ];
 
-        if (!session.isSiswa())
-        {
-            vm.tagihanDetailFields.push({name: "Komisi", value: "komisi", type: 'number'});
+        if (!session.isSiswa()) {
+            vm.tagihanDetailFields.push({ name: "Komisi", value: "komisi", type: 'number' });
         }
 
 
         vm.diskonFields = [
-            {name: "Diskon", value: "diskon", type: 'number'},
-            {name: "Tipe diskon", value: "tipe_diskon"}
+            { name: "Diskon", value: "diskon", type: 'number' },
+            { name: "Tipe diskon", value: "tipe_diskon" }
         ];
 
         vm.transaksiFields = [
-            {name: "Tanggal", value: "tanggal", type: 'date', required: true},
-            {name: "Nominal", value: "nominal", type: 'number', required: true},
-            {name: "Jenis Pembayaran", value: "jenis_pembayaran", type: 'selection', selection: jenisOption, required: true},
-            {name: "Bukti Pembayaran", value: "bukti_pembayaran", type: 'file', required: true},
+            { name: "Tanggal", value: "tanggal", type: 'date', required: true },
+            { name: "Nominal", value: "nominal", type: 'number', required: true },
+            { name: "Jenis Pembayaran", value: "jenis_pembayaran", type: 'selection', selection: jenisOption, required: true },
+            { name: "Bukti Pembayaran", value: "bukti_pembayaran", type: 'file', required: true },
         ];
 
         vm.pindahGuruFields = [
             {
-                name: "Guru", 
-                value: "guru_id", 
+                name: "Guru",
+                value: "guru_id",
                 type: "autocomplete",
                 url: 'guru/search/autocomplete',
                 valueName: 'guru_data',
                 required: true
             },
-            {name: "Persen Komisi (%)", value: "komisi", type: 'number', required: true},
+            { name: "Persen Komisi (%)", value: "komisi", type: 'number', required: true },
         ];
 
-        vm.modal = {form: {tanggal: moment(new Date()).format("YYYY-MM-DD")}};
+        vm.modal = { form: { tanggal: moment(new Date()).format("YYYY-MM-DD") } };
         vm.myModal = false;
         vm.myModalDiskon = false;
         vm.myModalPindahGuru = false;
@@ -115,7 +113,7 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
 
         vm.bayarTagihan = bayarTagihan;
         vm.buatTransaksi = buatTransaksi;
-        
+
         vm.tambahDetail = tambahDetail;
         vm.fetchPembiayaan = fetchPembiayaan;
         vm.isAdded = isAdded;
@@ -134,6 +132,7 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
         vm.verif = verif;
 
         vm.generateInvoice = generateInvoice;
+        vm.generateKwitansi = generateKwitansi;
 
         vm.notify = notify;
 
@@ -147,39 +146,32 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
 
         $scope.$watch(() => vm.data.siswa_id, watchSiswaId);
 
-        function getValue(field)
-        {
-            if (!field)
-            {
+        function getValue(field) {
+            if (!field) {
                 return "-";
             }
 
             let result = $parse(field.value)(vm.data);
 
-                if (field.type == 'selection')
-                {
-                    result = getLabel(result, field.selection);
-                }
+            if (field.type == 'selection') {
+                result = getLabel(result, field.selection);
+            }
 
-                return result || "-";
+            return result || "-";
         }
-        function getLabel(val, arr)
-        {
+        function getLabel(val, arr) {
             for (let index = 0; index < arr.length; index++) {
-                if (arr[index].value == val)
-                {
+                if (arr[index].value == val) {
                     return arr[index].label;
                 }
             }
         }
 
-        function bayarTagihan()
-        {
-            vm.modal.form = {tanggal: moment(new Date()).format("YYYY-MM-DD"), jenis_pembayaran: 'tf'};
+        function bayarTagihan() {
+            vm.modal.form = { tanggal: moment(new Date()).format("YYYY-MM-DD"), jenis_pembayaran: 'tf' };
             vm.myModal = $compile(modal)($scope);
         }
-        function buatTransaksi()
-        {
+        function buatTransaksi() {
             let data = {
                 nominal: vm.modal.form.nominal,
                 tagihan_id: vm.data.id,
@@ -191,32 +183,26 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
             let isValid = true;
             let invalid = [];
 
-            if (!data.nominal)
-            {
+            if (!data.nominal) {
                 invalid.push("Nominal wajib diisi.");
             }
-            if (data.jenis_pembayaran == 'tf' && !data.bukti_pembayaran)
-            {
+            if (data.jenis_pembayaran == 'tf' && !data.bukti_pembayaran) {
                 invalid.push("Bukti Pembayaran wajib diisi.");
 
             }
-            if (!data.tanggal)
-            {
+            if (!data.tanggal) {
                 invalid.push("Tanggal wajib diisi.");
             }
-            if (!data.jenis_pembayaran)
-            {
+            if (!data.jenis_pembayaran) {
                 invalid.push("Jenis Pembayaran wajib diisi.");
             }
 
-            if (invalid.length > 0)
-            {
+            if (invalid.length > 0) {
                 logger.error(invalid[0]);
                 return;
             }
 
-            if (vm.modal.form.id)
-            {
+            if (vm.modal.form.id) {
                 data.id = vm.modal.form.id;
 
                 req.put('transaksi', data).then(response => {
@@ -224,8 +210,7 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
                     state.reload();
                 });
             }
-            else
-            {
+            else {
                 req.post('transaksi', data).then(response => {
                     Modal.getInstance(vm.myModal[0]).hide();
                     state.reload();
@@ -234,12 +219,10 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
         }
 
 
-        function tambahDetail()
-        {
+        function tambahDetail() {
             vm.myModal = $compile(modalDetail)($scope);
         }
-        function fetchPembiayaan()
-        {
+        function fetchPembiayaan() {
             let filter_data = {
                 filter: [
                     {
@@ -253,15 +236,13 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
                 vm.modal.pembiayaan = data;
             });
         }
-        function isAdded(pembiayaan)
-        {
+        function isAdded(pembiayaan) {
             let result = false;
 
             for (let index = 0; index < vm.data.tagihan_detail.length; index++) {
                 const s = vm.data.tagihan_detail[index];
-                
-                if (s.pembiayaan_id == pembiayaan.id)
-                {
+
+                if (s.pembiayaan_id == pembiayaan.id) {
                     result = true;
                     break;
                 }
@@ -269,8 +250,7 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
 
             return result;
         }
-        function addPembiayaan(pembiayaan)
-        {
+        function addPembiayaan(pembiayaan) {
             vm.data.tagihan_detail.push({
                 kode: pembiayaan.kode,
                 nama: pembiayaan.nama,
@@ -284,17 +264,14 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
                 pembiayaan_id: pembiayaan.id
             });
         }
-        function removePembiayaan(idx)
-        {
+        function removePembiayaan(idx) {
             vm.data.tagihan_detail.splice(idx, 1);
         }
-        function updateTotal(idx)
-        {
+        function updateTotal(idx) {
             let tagihan_detail = vm.data.tagihan_detail[idx];
             vm.data.tagihan_detail[idx].sub_total = tagihan_detail.qty * tagihan_detail.nominal;
         }
-        function deleteTagihan(idx)
-        {
+        function deleteTagihan(idx) {
             removePembiayaan(idx);
             let data = {
                 id: vm.data.id,
@@ -304,31 +281,26 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
             req.put('tagihan', data).then(response => state.reload());
         }
 
-        function tambahDiskon(idx)
-        {
+        function tambahDiskon(idx) {
             vm.activeDetail = idx;
             vm.myModalDiskon = $compile(modalDiskon)($scope);
         }
-        function fetchDiskon()
-        {
+        function fetchDiskon() {
             req.get('diskons').then(data => {
                 vm.modal.diskon = data;
             });
         }
-        function addDiskon(diskon)
-        {
+        function addDiskon(diskon) {
             vm.data.tagihan_detail[vm.activeDetail].diskon = diskon;
             vm.data.tagihan_detail[vm.activeDetail].diskon_id = diskon.id;
 
             let total_diskon = 0;
             let total = vm.data.tagihan_detail[vm.activeDetail].sub_total;
 
-            if (diskon.tipe_diskon == 'n')
-            {
+            if (diskon.tipe_diskon == 'n') {
                 total_diskon = diskon.diskon;
             }
-            else
-            {
+            else {
                 total_diskon = (total * diskon.diskon / 100);
             }
 
@@ -336,26 +308,22 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
 
             Modal.getInstance(vm.myModalDiskon[0]).hide();
         }
-        function removeDiskon(idx)
-        {
+        function removeDiskon(idx) {
             delete vm.data.tagihan_detail[idx].diskon;
             delete vm.data.tagihan_detail[idx].diskon_id;
 
             vm.data.tagihan_detail[idx].total = vm.data.tagihan_detail[idx].sub_total;
         }
 
-        function getDiskonOpt(val)
-        {
+        function getDiskonOpt(val) {
             for (let index = 0; index < diksonOption.length; index++) {
-                if (diksonOption[index].value == val)
-                {
+                if (diksonOption[index].value == val) {
                     return diksonOption[index].label;
                 }
             }
         }
 
-        function verif(transaksi)
-        {
+        function verif(transaksi) {
             let data = {
                 id: transaksi.id,
                 status: 'v'
@@ -363,37 +331,39 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
             req.put('transaksi', data).then(response => state.reload());
         }
 
-        function generateInvoice()
-        {
+        function generateInvoice() {
             req.get(`generate/report/invoice/${vm.dataId}`).then(response => {
-                vm.activePdf = {filename: "invoice.pdf", filetype: 'application/pdf', base64: response.data};
+                vm.activePdf = { filename: "invoice.pdf", filetype: 'application/pdf', base64: response.data };
                 let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
                 element = $compile(element)($scope);
             });
         }
 
-        function notify()
-        {
+        function generateKwitansi() {
+            req.get(`generate/report/kwitansi/${vm.dataId}`).then(response => {
+                vm.activePdf = { filename: "invoice.pdf", filetype: 'application/pdf', base64: response.data };
+                let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
+                element = $compile(element)($scope);
+            });
+        }
+
+        function notify() {
             req.get(`notify/tagihan/wa/${vm.dataId}`).then(response => {
-                if (response)
-                {
+                if (response) {
                     logger.success("Notifikasi telah terkirim");
                 }
             });
         }
 
 
-        function editTransaksi(d)
-        {
+        function editTransaksi(d) {
             vm.modal.form = d;
             vm.myModal = $compile(modal)($scope);
         }
-        function deleteTransaksi(d)
-        {
-            let data = {id: d.id};
-            req.del('transaksi', data).then( response => {
-                if (response)
-                {
+        function deleteTransaksi(d) {
+            let data = { id: d.id };
+            req.del('transaksi', data).then(response => {
+                if (response) {
                     logger.success("Success");
                     state.reload();
                 }
@@ -401,99 +371,83 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
         }
 
 
-        function pindahGuru()
-        {
+        function pindahGuru() {
             vm.myModalPindahGuru = $compile(modalPindahGuru)($scope);
         }
 
-        function postPindahGuru()
-        {
-            let data = {tagihan_id: vm.data.id, guru_id: vm.modal.form.guru_id, komisi: vm.modal.form.komisi};
+        function postPindahGuru() {
+            let data = { tagihan_id: vm.data.id, guru_id: vm.modal.form.guru_id, komisi: vm.modal.form.komisi };
             req.post('tagihan/ganti/guru', data).then(response => {
                 Modal.getInstance(vm.myModalPindahGuru[0]).hide();
                 state.reload();
             });
         }
 
-        function getNumber(field, data)
-        {
+        function getNumber(field, data) {
             let result = data[field.value];
 
-            if (field.value == 'diskon.diskon')
-            {
+            if (field.value == 'diskon.diskon') {
                 let diskon = data.diskon;
 
-                if (diskon)
-                {
-                    if (diskon.tipe_diskon == 'n')
-                    {
+                if (diskon) {
+                    if (diskon.tipe_diskon == 'n') {
                         result = diskon.diskon;
                     }
-                    else
-                    {
+                    else {
                         result = data.sub_total * diskon.diskon / 100;
                     }
                 }
             }
 
-            if (field.value == 'komisi')
-            {
+            if (field.value == 'komisi') {
                 // if (!result)
                 // {
-                    let jenis_komisi = data.pembiayaan.jenis_komisi;
+                let jenis_komisi = data.pembiayaan.jenis_komisi;
 
-                    switch (jenis_komisi) {
-                        case 's':
-                            if (vm.additionalData.komisi_siswa)
-                            {
-                                result = data.total * vm.additionalData.komisi_siswa / 100;
-                            }
-                            else
-                            {
-                                result = 0;
-                            }
-                        break;
-                        case 'p':
-                            result = data.total * data.pembiayaan.nominal / 100;
-                        break;
-                        case 'n':
-                            result = data.pembiayaan.nominal || 0;
-                        break;
-                    
-                        default:
+                switch (jenis_komisi) {
+                    case 's':
+                        if (vm.additionalData.komisi_siswa) {
+                            result = data.total * vm.additionalData.komisi_siswa / 100;
+                        }
+                        else {
                             result = 0;
+                        }
                         break;
-                    }
+                    case 'p':
+                        result = data.total * data.pembiayaan.nominal / 100;
+                        break;
+                    case 'n':
+                        result = data.pembiayaan.nominal || 0;
+                        break;
 
-                    if (result != 0)
-                    {
-                        let iuran_mulai = data.tanggal_iuran_mulai;
-                        let iuran_berakhir = data.tanggal_iuran_berakhir;
-                        let total_bulan = moment(new Date(iuran_berakhir)).diff(new Date(iuran_mulai), 'months', true);
+                    default:
+                        result = 0;
+                        break;
+                }
 
-                        result = result / (total_bulan + 1);
-                    }
+                if (result != 0) {
+                    let iuran_mulai = data.tanggal_iuran_mulai;
+                    let iuran_berakhir = data.tanggal_iuran_berakhir;
+                    let total_bulan = moment(new Date(iuran_berakhir)).diff(new Date(iuran_mulai), 'months', true);
+
+                    result = result / (total_bulan + 1);
+                }
                 // }
             }
 
             return result;
         }
 
-        function watchSiswaId()
-        {
+        function watchSiswaId() {
             let el = $('[name="vm.data.siswa_id"]');
-            
-            if (el.length > 0)
-            {
+
+            if (el.length > 0) {
                 let el_data = el.select2('data');
-                if (el_data.length > 0)
-                {
-                    if (!el_data[0].komisi)
-                    {
+                if (el_data.length > 0) {
+                    if (!el_data[0].komisi) {
                         vm.additionalData.komisi_siswa = el.find(':selected').next().attr('komisi');
                     }
-                    else
-                    {
+                    else {
                         vm.additionalData.komisi_siswa = el_data[0].komisi;
                     }
                 }

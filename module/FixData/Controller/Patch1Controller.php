@@ -90,4 +90,38 @@ class Patch1Controller extends Controller
 
         return $result;
     }
+
+    public function patch6($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $tempat_kursus = new \Bimbel\Master\Model\Kursus();
+        $isColExist = $tempat_kursus->getConnection()->getSchemaBuilder()->hasColumn('kursus','no_rek');
+        if (!$isColExist)
+        {
+            $tempat_kursus->getConnection()->getSchemaBuilder()->table("kursus", function($table) {
+                $table->string('no_rek', 255)->nullable()->after('sequance_pendaftaran');
+            });
+        }
+
+        $tempat_kursus = new \Bimbel\Master\Model\Kursus();
+        $isColExist = $tempat_kursus->getConnection()->getSchemaBuilder()->hasColumn('kursus','nama_rek');
+        if (!$isColExist)
+        {
+            $tempat_kursus->getConnection()->getSchemaBuilder()->table("kursus", function($table) {
+                $table->string('nama_rek', 255)->nullable()->after('no_rek');
+            });
+        }
+
+        $tempat_kursus = new \Bimbel\Master\Model\Kursus();
+        $isColExist = $tempat_kursus->getConnection()->getSchemaBuilder()->hasColumn('kursus','logo_bank_id');
+        if (!$isColExist)
+        {
+            $tempat_kursus->getConnection()->getSchemaBuilder()->table("kursus", function($table) {
+                $table->integer('logo_bank_id')->nullable()->after('nama_rek');
+            });
+        }
+
+        return $result;
+    }
 }

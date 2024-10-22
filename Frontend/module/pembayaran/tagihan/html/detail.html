@@ -8,24 +8,23 @@
             <i class="fa fa-bell me-2"></i> Ingatkan
         </button> -->
 
-        <button 
-            type="button"
-            class="btn btn-link text-gradient text-primary px-3 mb-0" 
-            ng-click="vm.bayarTagihan()" 
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.bayarTagihan()"
             ng-if="vm.data.status != 'l'">
             <i class="fa fa-usd me-2"></i> Bayar
         </button>
 
-        <button 
-            type="button"
-            class="btn btn-link text-gradient text-primary px-3 mb-0" 
-            ng-click="vm.pindahGuru()" 
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.pindahGuru()"
             ng-if="vm.data.status == 'l' && vm.isAdmin">
             <i class="fa fa-refresh me-2"></i> Pindah Guru
         </button>
 
         <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.generateInvoice()">
             <i class="fa fa-print me-2"></i> Invoice
+        </button>
+
+        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0"
+            ng-click="vm.generateKwitansi()">
+            <i class="fa fa-print me-2"></i> Kwitansi
         </button>
     </app-detail-button>
 
@@ -49,30 +48,33 @@
         </ul>
 
         <div class="tab-content text-justify">
-            <div class="tab-pane fade show active" id="detail">                
+            <div class="tab-pane fade show active" id="detail">
                 <div class="my-3">
-                    <app-table-template 
-                        data="vm.data.tagihan_detail" 
+                    <app-table-template data="vm.data.tagihan_detail"
                         fields="vm.tagihanDetailFields"></app-table-template>
                 </div>
             </div>
-            
+
             <div class="tab-pane fade" id="transaksi">
                 <div class="my-3">
                     <div class="table-responsive mb-3">
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    <th
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Nominal
                                     </th>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    <th
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Jenis Pembayaran
                                     </th>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    <th
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Bukti pembayaran
                                     </th>
-                                    <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    <th
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Tanggal
                                     </th>
                                     <th></th>
@@ -84,30 +86,27 @@
                                         <span class="text-xs font-weight-bold">No data Available</span>
                                     </td>
                                 </tr>
-                    
-                                <tr ng-repeat="data in vm.data.transaksi track by $index" ng-if="vm.data.transaksi.length > 0">
+
+                                <tr ng-repeat="data in vm.data.transaksi track by $index"
+                                    ng-if="vm.data.transaksi.length > 0">
                                     <td><app-form-preview type="number" value="data.nominal"></app-form-preview></td>
-                                    <td><app-form-preview value="vm.getLabel(data.jenis_pembayaran, vm.jenisOption)"></app-form-preview></td>
-                                    <td><app-form-preview type="file" value="data.bukti_pembayaran"></app-form-preview></td>
+                                    <td><app-form-preview
+                                            value="vm.getLabel(data.jenis_pembayaran, vm.jenisOption)"></app-form-preview>
+                                    </td>
+                                    <td><app-form-preview type="file" value="data.bukti_pembayaran"></app-form-preview>
+                                    </td>
                                     <td><app-form-preview type="date" value="data.tanggal"></app-form-preview></td>
                                     <td>
-                                        <button 
-                                            type="button"
-                                            ng-if="data.status != 'v' && vm.isAdmin"
-                                            class="btn btn-link text-gradient text-primary px-3 mb-0" 
+                                        <button type="button" ng-if="data.status != 'v' && vm.isAdmin"
+                                            class="btn btn-link text-gradient text-primary px-3 mb-0"
                                             ng-click="vm.verif(data)">
                                             <i class="fa fa-check me-2"></i> Verif
                                         </button>
-                                        <button
-                                            type="button"
-                                            class="btn btn-link text-gradient text-primary px-3 mb-0"
-                                            ng-click="vm.editTransaksi(data)"
-                                            ng-if="data.status != 'v' || !vm.isSiswa">
+                                        <button type="button" class="btn btn-link text-gradient text-primary px-3 mb-0"
+                                            ng-click="vm.editTransaksi(data)" ng-if="data.status != 'v' || !vm.isSiswa">
                                             <i class="fa fa-edit me-2"></i> Edit
                                         </button>
-                                        <button
-                                            type="button"
-                                            ng-if="data.status != 'v'"
+                                        <button type="button" ng-if="data.status != 'v'"
                                             class="btn btn-link text-gradient text-primary px-3 mb-0"
                                             ng-click="vm.deleteTransaksi(data)">
                                             <i class="far fa-trash-alt me-2"></i> Delete

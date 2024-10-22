@@ -20,13 +20,13 @@ class BaseReportController extends CoreController
         $this->path = dirname(__DIR__) . "/View/images/";
     }
 
-    public function getLogo()
+    public function getImage($filename)
     {
-        $logo = $this->path . "logo.png";
-        $logo = file_get_contents($logo);
-        $logo = 'data:image/png;base64, ' . base64_encode($logo);
+        $image = $this->path . $filename;
+        $image = file_get_contents($image);
+        $image = 'data:image/png;base64, ' . base64_encode($image);
 
-        return $logo;
+        return $image;
     }
 
     public function getBackground($name = 'coba.jpg')
@@ -49,7 +49,7 @@ class BaseReportController extends CoreController
         $pdf = $this->container->get("pdf");
         $twig = $this->container->get("twig");
 
-        $data['logo'] = $this->getLogo();
+        $data['logo'] = $this->getImage('logo.png');
         $data['background'] = $this->getBackground($background);
         $html = $twig->fetch($view, $data);
 

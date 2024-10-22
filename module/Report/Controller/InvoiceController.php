@@ -64,4 +64,35 @@ class InvoiceController extends BaseReportController
         
         return $result;
     }
+
+    public function getKwitansi($request, $args, &$response)
+    {
+        $result = [];
+
+        try
+        {
+            $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+            $tagihan = $tagihan->find($args['tagihan_id']);
+
+            $tmpt_kursus = $tagihan->kursus;
+            $logo_bank = 'data:' . $tmpt_kursus->logo_bank->filetype . ';base64, ' . $tmpt_kursus->logo_bank->base64;
+
+            $data = [
+                'tagihan' => $tagihan,
+                'kursus' => $tmpt_kursus,
+                'siswa' => $tagihan->siswa->orang->nama,
+                'nomor' => $tagihan->code,
+                'smileimage' => $this->getImage('smile-icon.png'),
+                'logo_bank' => $logo_bank
+            ];
+
+            $result = $this->toPdf("Report/View/kwitansi/kwitansi.twig", $data);
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+        
+        return $result;
+    }
 }

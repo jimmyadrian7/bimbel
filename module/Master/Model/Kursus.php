@@ -6,12 +6,13 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class Kursus extends BaseModel
 {
-    protected $fillable = ['kode', 'nama', 'user', 'sequance', 'sequance_pendaftaran'];
+    protected $fillable = ['kode', 'nama', 'user', 'sequance', 'sequance_pendaftaran', 'no_rek', 'nama_rek', 'logo_bank', 'logo_bank_id'];
     protected $table = 'kursus';
 
 
     public function fetchDetail($id, $obj)
     {
+        $obj = $obj->with('logo_bank');
         $data = parent::fetchDetail($id, $obj);
         
         $query = "
@@ -50,4 +51,64 @@ class Kursus extends BaseModel
 
 		return $kode;
 	}
+
+    public function logo_bank()
+    {
+        return $this->hasOne(File::class, 'id', 'logo_bank_id');
+    }
+
+
+    public function handleFile(&$attributes, $name)
+    {
+        $file = new File();
+        $isCreate = true;
+        $myFile = self::getValue($attributes, $name);
+
+        if (empty($myFile))
+        {
+            return;
+        }
+
+        if (!empty($this->{$name . "_id"}))
+        {
+            $file = $this->{$name};
+            $isCreate = false;
+        }
+
+        if ($isCreate)
+        {
+            $file = $file->create($myFile);
+        }
+        else
+        {
+            $file->update($myFile);
+        }
+
+        $attributes[$name . '_id'] = $file->id;
+    }
+
+
+    public function create(array $attributes = [])
+    {
+        self::handleFile($attributes, 'logo_bank');
+		$kursus = parent::create($attributes);
+
+        return $kursus;
+    }
+
+    public function update(array $attributes = [], array $options = [])
+    {
+        $this->handleFile($attributes, 'logo_bank');
+        $result = parent::update($attributes, $options);
+
+        return $result;
+    }
+
+    public function delete()
+    {
+        $result = parent::delete();
+        $this->logo_bank()->delete();
+
+        return $result;
+    }
 }
