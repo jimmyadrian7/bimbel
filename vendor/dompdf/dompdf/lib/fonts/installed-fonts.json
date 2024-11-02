@@ -10,5 +10,8 @@
         "bold": "C:\\laragon\\www\\soof\\vendor\\dompdf\\dompdf\/lib\/fonts\/SimSun",
         "italic": "C:\\laragon\\www\\soof\\vendor\\dompdf\\dompdf\/lib\/fonts\/SimSun",
         "bold_italic": "C:\\laragon\\www\\soof\\vendor\\dompdf\\dompdf\/lib\/fonts\/SimSun"
+    },
+    "newsimsun": {
+        "normal": "newsimsun_normal_6693480c9ba8513952c7d97369ee62b4"
     }
 }

@@ -13,6 +13,18 @@ return [
         $options->set('DOMPDF_ENABLE_FONTS_SUBSETTING', true);
 
         $pdf = new Dompdf();
+        $pdf->getFontMetrics()->registerFont(
+            ['family' => 'SimSun', 'style' => 'normal', 'weight' => 'normal'],
+            // '/module/Report/View/font/SimSun.ttf'
+            __DIR__ . "/../module/Report/View/font/SimSun.ttf"
+        );
+
+        $pdf->getFontMetrics()->registerFont(
+            ['family' => 'fireflysung', 'style' => 'normal', 'weight' => 'normal'],
+            // '/module/Report/View/font/SimSun.ttf'
+            __DIR__ . "/../module/Report/View/font/fireflysung.ttf"
+        );
+
         $pdf->setOptions($options);
         $pdf->setPaper('A4', 'landscape');
         
