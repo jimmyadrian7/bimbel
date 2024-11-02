@@ -76,7 +76,15 @@ class InvoiceController extends BaseReportController
             $tagihan = $tagihan->find($args['tagihan_id']);
 
             $tmpt_kursus = $tagihan->kursus;
-            $logo_bank = 'data:' . $tmpt_kursus->logo_bank->filetype . ';base64, ' . $tmpt_kursus->logo_bank->base64;
+            if ($tmpt_kursus->logo_bank)
+            {
+                $logo_bank = 'data:' . $tmpt_kursus->logo_bank->filetype . ';base64, ' . $tmpt_kursus->logo_bank->base64;
+            }
+            else
+            {
+                $logo_bank = "";
+            }
+            
             $terbilang = Terbilang::convert($tagihan->total);
             $untuk = [];
             $untuk_spp = [];
