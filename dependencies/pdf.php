@@ -25,8 +25,6 @@ return [
             __DIR__ . "/../module/Report/View/font/fireflysung.ttf"
         );
 
-        dd($pdf->getFontMetrics());
-
         $pdf->setOptions($options);
         $pdf->setPaper('A4', 'landscape');
         
