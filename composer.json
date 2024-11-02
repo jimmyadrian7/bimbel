@@ -4,6 +4,7 @@
         "illuminate/database": "^8.83",
         "illuminate/pagination": "^8.83",
         "mk-j/php_xlsxwriter": "^0.38.0",
+        "ngekoding/terbilang": "^1.0",
         "php-di/php-di": "^6.3.5",
         "selective/basepath": "^2.1",
         "semhoun/slim-mailer": "^1.0",

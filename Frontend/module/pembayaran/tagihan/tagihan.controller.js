@@ -2,6 +2,7 @@ import modal from "./html/modal/modal.html";
 import modalDetail from "./html/modal/modal-detail.html";
 import modalDiskon from "./html/modal/modal-diskon.html";
 import modalPindahGuru from "./html/modal/modal-pindah.html";
+import modalKwitansi from "./html/modal/modal-kwitansi.html";
 
 (() => {
     "use strict";
@@ -133,6 +134,10 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
 
         vm.generateInvoice = generateInvoice;
         vm.generateKwitansi = generateKwitansi;
+        vm.cetakKwitansi = cetakKwitansi;
+        vm.editInfoKwitansi = editInfoKwitansi;
+        vm.changeProgramBelajar = changeProgramBelajar;
+        vm.saveInfoKwitansi = saveInfoKwitansi;
 
         vm.notify = notify;
 
@@ -340,10 +345,47 @@ import modalPindahGuru from "./html/modal/modal-pindah.html";
         }
 
         function generateKwitansi() {
+            // vm.modal.form = { tanggal: moment(new Date()).format("YYYY-MM-DD"), jenis_pembayaran: 'tf' };
+            vm.myModal = $compile(modalKwitansi)($scope);
+        }
+
+        function cetakKwitansi() {
             req.get(`generate/report/kwitansi/${vm.dataId}`).then(response => {
                 vm.activePdf = { filename: "invoice.pdf", filetype: 'application/pdf', base64: response.data };
                 let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
                 element = $compile(element)($scope);
+            });
+        }
+
+        function editInfoKwitansi() {
+            $('.editMode').removeClass('d-none');
+            $('.editEl').hide();
+
+            if (vm.data.program_belajar_other) {
+                vm.data.program_belajar_other = vm.data.program_belajar;
+                vm.data.program_belajar = 'other';
+
+            }
+        }
+
+        function changeProgramBelajar(selected) {
+            var ispogram = ['Mandarin', 'Inggris', 'Bimbel', 'Calistung'];
+            if (!ispogram.includes(selected)) {
+                vm.data.program_belajar = 'other';
+            }
+            else {
+                vm.data.program_belajar_other = '';
+            }
+        }
+
+        function saveInfoKwitansi() {
+            if (vm.data.program_belajar_other) {
+                vm.data.program_belajar = vm.data.program_belajar_other;
+            }
+
+            req.put('tagihan', vm.data).then(response => {
+                $('.editMode').addClass('d-none');
+                $('.editEl').show();
             });
         }
 

@@ -75,6 +75,10 @@ class ComposerStaticInitfb923b7fbaed180290fa2fe10d5425e8
         array (
             'Opis\\Closure\\' => 13,
         ),
+        'N' => 
+        array (
+            'Ngekoding\\Terbilang\\' => 20,
+        ),
         'M' => 
         array (
             'Masterminds\\' => 12,
@@ -247,6 +251,10 @@ class ComposerStaticInitfb923b7fbaed180290fa2fe10d5425e8
         'Opis\\Closure\\' => 
         array (
             0 => __DIR__ . '/..' . '/opis/closure/src',
+        ),
+        'Ngekoding\\Terbilang\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ngekoding/terbilang/src',
         ),
         'Masterminds\\' => 
         array (

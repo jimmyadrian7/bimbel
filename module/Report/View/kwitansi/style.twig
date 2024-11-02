@@ -40,6 +40,7 @@
     .fn-25 { font-size: 25px; }
     .pl-10 { padding-left: 10px; }
     .pr-10 { padding-right: 10px; }
+    .pr-50 { padding-right: 50px; }
     .pt-10 { padding-top: 10px; }
     .pt-30 { padding-top: 30px; }
     .pt-20 { padding-top: 20px; }
@@ -65,8 +66,17 @@
         border-collapse: collapse;
     }
 
-    .table-terima {
+    .table-keterangan {
+        margin-left: 5px;
         margin-top: 20px;
+        border: 2px solid black;
+        padding: 0px;
+        width: 190px;
+        border-collapse: collapse;
+    }
+
+    .table-terima {
+        margin-top: 10px;
         padding: 5px;
     }
 
@@ -80,11 +90,25 @@
         vertical-align: middle;
     }
 
+    .nominal-container {
+        position: relative;
+        height: 35px;
+        width: 200px;
+        text-align: center;
+    }
+
+    .text-nominal {
+        margin: auto;
+        line-height: 30px;
+    }
+
     .nominal-place {
         height: 35px;
         width: 200px;
         background-color: #97989a;
         transform: skew(-25deg);
+        position: absolute;
+        z-index: -1;
     }
 
     .table-bank {
@@ -132,8 +156,25 @@
         display: inline-block;
     }
     .checkbox-no-border {
-        width: 10px;
+        width: 15px;
         height: 10px;
+        display: inline-block;
+    }
+
+    .checkbox-pdf {
+        display: inline-block;
+        text-align: center;
+    }
+
+    .checkbox-pdf, .checkbox-pdf input {
+        padding: 0px;
+        margin: 0px;
+        line-height: 0px;
+    }
+
+    .other-options {
+        width: 100px;
+        border-bottom: 1px dashed black;
         display: inline-block;
     }
 
@@ -149,9 +190,13 @@
         height: 90px;
     }
 
+    .full-height {
+        height: 495px;
+    }
+
     .border-dot-bottom {
         border-bottom: 1px dashed black;
         width: 425px;
-        height: 20px;
+        min-height: 20px;
     }
 </style>

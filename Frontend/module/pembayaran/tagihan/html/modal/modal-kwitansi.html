@@ -1,0 +1,169 @@
+<app-modal data='vm.data'>
+    <app-modal-title>Informasi Kwitansi</app-modal-title>
+
+    <app-modal-body>
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header py-2">
+                        <h6 ng-bind="vm.data.siswa.orang.nama"></h6>
+                    </div>
+
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table>
+                                    <tr>
+                                        <td class="text-xs">Program Belajar</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span ng-bind="vm.data.program_belajar"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Jenis Pembayaran</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span ng-bind="vm.data.jenis_pembayaran"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="col-md-6">
+                                <table>
+                                    <tr>
+                                        <td class="text-xs">Terima Dari</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span ng-bind="vm.data.terima_dari"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">Keterangan</td>
+                                        <td class="px-3">:</td>
+                                        <td class="font-weight-bolder text-dark text-xs">
+                                            <span ng-bind="vm.data.keterangan"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 editMode d-none">
+                <table>
+                    <tr>
+                        <td class="text-xs">Program Belajar</td>
+                        <td class="px-3">:</td>
+                        <td class="w-100 pt-2">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.program_belajar"
+                                            id="mandarin" ng-click="vm.changeProgramBelajar('Mandarin')"
+                                            value="Mandarin">
+                                        <label class="form-check-label" for="mandarin"> Mandarin </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.program_belajar"
+                                            id="inggris" ng-click="vm.changeProgramBelajar('Inggris')" value="Inggris">
+                                        <label class="form-check-label" for="inggris"> Inggris </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.program_belajar"
+                                            id="bimbel" ng-click="vm.changeProgramBelajar('Bimbel')" value="Bimbel">
+                                        <label class="form-check-label" for="bimbel"> Bimbel </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.program_belajar"
+                                            id="calistung" ng-click="vm.changeProgramBelajar('Calistung')"
+                                            value="Calistung">
+                                        <label class="form-check-label" for="calistung"> Calistung </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.program_belajar"
+                                            value="other">
+                                        <input type="text" class="form-control form-control-sm"
+                                            ng-change="vm.changeProgramBelajar('other')"
+                                            ng-model="vm.data.program_belajar_other">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-xs">Jenis Pembayaran</td>
+                        <td class="px-3">:</td>
+                        <td class="w-100 pt-2">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.jenis_pembayaran"
+                                            id="tunai" value="Tunai">
+                                        <label class="form-check-label" for="tunai"> Tunai </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.jenis_pembayaran"
+                                            id="transfer" value="Transfer">
+                                        <label class="form-check-label" for="transfer"> Transfer </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.jenis_pembayaran"
+                                            id="cek" value="Cek">
+                                        <label class="form-check-label" for="cek"> Cek </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" ng-model="vm.data.jenis_pembayaran"
+                                            id="bilyet_giro" value="Bilyet Giro">
+                                        <label class="form-check-label" for="bilyet_giro"> Bilyet Giro </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-xs">Terima Dari</td>
+                        <td class="px-3">:</td>
+                        <td class="pt-2">
+                            <input type="text" class="form-control form-control-sm" ng-model="vm.data.terima_dari">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-xs">Keterangan</td>
+                        <td class="px-3">:</td>
+                        <td class="pt-2">
+                            <textarea ng-model="vm.data.keterangan" class="form-control form-control-sm"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </app-modal-body>
+
+    <app-modal-footer>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 editEl" ng-click="vm.cetakKwitansi()">
+            <i class="fas fa-print me-2"></i> Cetak
+        </button>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 editEl"
+            ng-click="vm.editInfoKwitansi()">
+            <i class="fas fa-pencil me-2"></i> Edit
+        </button>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 editMode d-none"
+            ng-click="vm.saveInfoKwitansi()">
+            <i class="fas fa-save me-2"></i> Save
+        </button>
+        <button type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i> Close
+        </button>
+    </app-modal-footer>
+</app-modal>

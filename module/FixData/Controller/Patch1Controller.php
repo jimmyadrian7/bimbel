@@ -122,6 +122,42 @@ class Patch1Controller extends Controller
             });
         }
 
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+        $isColExist = $tagihan->getConnection()->getSchemaBuilder()->hasColumn('tagihan','program_belajar');
+        if (!$isColExist)
+        {
+            $tagihan->getConnection()->getSchemaBuilder()->table("tagihan", function($table) {
+                $table->string('program_belajar', 255)->nullable();
+            });
+        }
+
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+        $isColExist = $tagihan->getConnection()->getSchemaBuilder()->hasColumn('tagihan','jenis_pembayaran');
+        if (!$isColExist)
+        {
+            $tagihan->getConnection()->getSchemaBuilder()->table("tagihan", function($table) {
+                $table->string('jenis_pembayaran', 255)->nullable();
+            });
+        }
+
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+        $isColExist = $tagihan->getConnection()->getSchemaBuilder()->hasColumn('tagihan','terima_dari');
+        if (!$isColExist)
+        {
+            $tagihan->getConnection()->getSchemaBuilder()->table("tagihan", function($table) {
+                $table->string('terima_dari', 255)->nullable();
+            });
+        }
+
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+        $isColExist = $tagihan->getConnection()->getSchemaBuilder()->hasColumn('tagihan','keterangan');
+        if (!$isColExist)
+        {
+            $tagihan->getConnection()->getSchemaBuilder()->table("tagihan", function($table) {
+                $table->string('keterangan', 255)->nullable();
+            });
+        }
+
         return $result;
     }
 }

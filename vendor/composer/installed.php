@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => 'd465848fcbc101e2e8695916287d42fb95a0c016',
+        'pretty_version' => '1.6.x-dev',
+        'version' => '1.6.9999999.9999999-dev',
+        'reference' => '43dfebea00d4e1ab2bb80e8e9176cb1e22d33914',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => 'd465848fcbc101e2e8695916287d42fb95a0c016',
+            'pretty_version' => '1.6.x-dev',
+            'version' => '1.6.9999999.9999999-dev',
+            'reference' => '43dfebea00d4e1ab2bb80e8e9176cb1e22d33914',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -169,6 +169,15 @@
             'reference' => '09acf64155c16dc6f580f36569ae89344e9734a3',
             'type' => 'library',
             'install_path' => __DIR__ . '/../nesbot/carbon',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'ngekoding/terbilang' => array(
+            'pretty_version' => 'v1.0.2',
+            'version' => '1.0.2.0',
+            'reference' => '46194dc2de6f0b515e76f823ad03c75cd74db0cb',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../ngekoding/terbilang',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

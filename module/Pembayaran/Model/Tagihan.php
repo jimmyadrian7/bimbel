@@ -13,7 +13,8 @@ class Tagihan extends BaseModel
 {
     protected $fillable = [
         'code', 'siswa_id', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal', 'kursus_id',
-        'tagihan_detail', 'tanggal_lunas', 'guru_id'
+        'tagihan_detail', 'tanggal_lunas', 'guru_id', 'program_belajar', 'jenis_pembayaran', 'terima_dari',
+        'keterangan'
     ];
     protected $table = 'tagihan';
     protected $appends = ['siswa_data', 'verify_transaksi'];

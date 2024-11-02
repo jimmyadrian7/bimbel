@@ -26,7 +26,8 @@ $app->get("/api/generate/report/kwitansi/{tagihan_id}", function ($request, $res
     $controller = $this->get("Bimbel\Report\Controller\InvoiceController");
     $result = $controller->getKwitansi($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/pdf");
+    $response = $response->withHeader("Content-Type", "application/json");
+    // $response = $response->withHeader("Content-Type", "application/pdf");
     $response->getBody()->write($result);
     return $response;
 });
