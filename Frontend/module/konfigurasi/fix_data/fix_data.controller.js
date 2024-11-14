@@ -6,8 +6,7 @@
 
     FixDataController.$inject = ['$stateParams', '$compile', '$scope', 'req', 'logger'];
 
-    function FixDataController(stateParams, $compile, $scope, req, logger)
-    {
+    function FixDataController(stateParams, $compile, $scope, req, logger) {
         let vm = this;
 
         vm.resetKodeTagihan = resetKodeTagihan;
@@ -19,73 +18,70 @@
         vm.addFieldPhoneWeb = addFieldPhoneWeb;
         vm.addMenuIuran = addMenuIuran;
         vm.addTableRiwayatPenarikan = addTableRiwayatPenarikan;
+        vm.fixData = fixData;
         vm.patch = patch;
 
-        function resetKodeTagihan()
-        {
+        function resetKodeTagihan() {
             req.post('reset/sequance/tagihan').then(resp => {
                 logger.success("Berhasil reset sequance Tagihan");
             });
         }
 
-        function fixDataTagihan()
-        {
+        function fixDataTagihan() {
             req.post('fix/data/tagihan').then(resp => {
                 logger.success("Berhasil perbaiki data Tagihan");
             });
         }
 
-        function addFieldKeluarDeposit()
-        {
+        function addFieldKeluarDeposit() {
             req.post('add/field/keluar/deposit').then(resp => {
                 logger.success("Berhasil ditambahkan");
             });
         }
 
-        function addFieldSequancePendaftaranKursus()
-        {
+        function addFieldSequancePendaftaranKursus() {
             req.post('add/field/sequance-pendaftaran/kursus').then(resp => {
                 logger.success("Berhasil ditambahkan");
             });
         }
 
-        function updateNoFormulirSiswa()
-        {
+        function updateNoFormulirSiswa() {
             req.post('update/no/formulir/siswa').then(resp => {
                 logger.success("Berhasil di update");
             });
         }
 
-        function addFieldYouTubeWeb()
-        {
+        function addFieldYouTubeWeb() {
             req.post('add/field/youtube/web').then(resp => {
                 logger.success("Berhasil di tambah");
             });
         }
 
-        function addFieldPhoneWeb()
-        {
+        function addFieldPhoneWeb() {
             req.post('add/field/phone/web').then(resp => {
                 logger.success("Berhasil di tambah");
             });
         }
 
-        function addMenuIuran()
-        {
+        function addMenuIuran() {
             req.post('add/menu/iuran').then(resp => {
                 logger.success("Berhasil di tambah");
             });
         }
 
-        function addTableRiwayatPenarikan()
-        {
+        function addTableRiwayatPenarikan() {
             req.post('add/table/riwayat/penarikan').then(resp => {
                 logger.success("Berhasil di tambah");
             });
         }
 
-        function patch(version)
-        {
+        function fixData(url) {
+            req.post('fix/data/' + url).then(resp => {
+                logger.success("Berhasil di perbaiki");
+            });
+        }
+
+        function patch(version) {
             req.post(`patch/${version}`).then(resp => {
                 logger.success("Berhasil di patch");
             });

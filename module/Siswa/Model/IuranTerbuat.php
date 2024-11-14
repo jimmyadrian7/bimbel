@@ -75,11 +75,20 @@ class IuranTerbuat extends BaseModel
 
         return $result;
     }
-    public function validateDate()
+    public function validateDate($tanggal = false)
     {
         $result = true;
         $iuran_date = 0;
-        $current_date = date("Yn");
+
+        if (!$tanggal)
+        {
+            $current_date = date("Yn");
+        }
+        else
+        {
+            $current_date = new \DateTime($tanggal);
+            $current_date = $current_date->format('Yn');
+        }
 
         if (!empty($this->month) && !empty($this->year))
         {

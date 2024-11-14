@@ -190,3 +190,13 @@ $app->post("/api/patch/1/6", function ($request, $response, $args) {
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->post("/api/fix/data/iuran", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\FixData\Controller\FixDataIuranController");
+    $result = $controller->fixDataIuran($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});

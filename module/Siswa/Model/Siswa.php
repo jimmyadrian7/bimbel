@@ -387,7 +387,7 @@ class Siswa extends BaseModel
 
         foreach ($this->iuran_terbuat as $iuran_terbuat)
         {
-            if (!$iuran_terbuat->validateDate())
+            if (!$iuran_terbuat->validateDate($tanggal))
             {
                 continue;
             }
