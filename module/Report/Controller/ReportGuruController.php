@@ -3,6 +3,8 @@ namespace Bimbel\Report\Controller;
 
 use \Bimbel\Report\Controller\BaseReportController;
 use Illuminate\Support\Collection;
+use \Bimbel\Guru\Model\PotonganGaji;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class ReportGuruController extends BaseReportController
 {
@@ -20,6 +22,7 @@ class ReportGuruController extends BaseReportController
             $tagihans = new \Bimbel\Pembayaran\Model\Tagihan();
             $tagihan_details = new \Bimbel\Pembayaran\Model\TagihanDetail();
             $transaksi = new \Bimbel\Pembayaran\Model\Transaksi();
+            $potongan_gaji = new PotonganGaji();
 
             $jenis_pembayaran_list = [];
             foreach ($transaksi->jenis_pembayaran_enum as $key => $value) {
@@ -68,6 +71,15 @@ class ReportGuruController extends BaseReportController
             {
                 $kursus_lists[] = join(", ", $d->pluck('kursus')->unique()->toArray());
             }
+
+            $potongan_gaji = $potongan_gaji
+                ->select(DB::raw('SUM(nominal) AS nominal'))
+                ->where('guru_id', $postData['guru_id'])
+                ->whereYear('tanggal', $year)
+                ->whereMonth('tanggal', $month)
+                ->first();
+
+            $potongan_gaji = $potongan_gaji->nominal ?? 0;
             
             $data = [
                 'judul' => "Pendapatan " . $guru->orang->nama,
@@ -75,7 +87,9 @@ class ReportGuruController extends BaseReportController
                 'jenis_pembayaran_list' => $jenis_pembayaran_list,
                 'kursus_lists' => $kursus_lists,
                 "data" => $data,
-                "total_pendapatan" => $total_pendapatan
+                "total_pendapatan" => $total_pendapatan,
+                "potongan_gaji" => $potongan_gaji,
+                'guru' => $guru
             ];
 
             $result = $this->toPdf("Report/View/pendapatan_guru.twig", $data);

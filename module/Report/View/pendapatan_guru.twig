@@ -110,9 +110,14 @@
                                     </tbody>
 
                                     <tr class="bold">
-                                        <td class="bg-transparent" colspan="8"></td>
-                                        <td class="bg-red">Total Pendapatan</td>
+                                        <td class="bg-transparent" colspan="6"></td>
+                                        <td colspan="3" class="bg-red">Total Pendapatan</td>
                                         <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
+                                    </tr>
+                                    <tr class="bold">
+                                        <td class="bg-transparent" colspan="6"></td>
+                                        <td colspan="3" class="bg-red">Potong Gaji {{ guru.orang.nama }} Bulan {{ periode }}</td>
+                                        <td class="bg-red">{{ potongan_gaji|number_format(0, ',', '.') }}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -124,7 +129,7 @@
                             <div class="border-black my-30"></div>
         
                             <div class="report-footer">
-                                <span>Total Semua Pendapatan</span><span>{{ total_pendapatan|number_format(0, ',', '.') }}</span>
+                                <span>Total Semua Pendapatan</span><span>{{ (total_pendapatan - potongan_gaji)|number_format(0, ',', '.') }}</span>
                             </div>
                         </footer>
                     {% endif %}
