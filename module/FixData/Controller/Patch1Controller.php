@@ -160,4 +160,24 @@ class Patch1Controller extends Controller
 
         return $result;
     }
+
+    public function patch7($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        // Create Table potongan
+        if (!DB::getSchemaBuilder()->hasTable('potongan_gaji'))
+        {
+            DB::getSchemaBuilder()->create('potongan_gaji', function ($table) {
+                $table->increments('id');
+                $table->integer('guru_id');
+                $table->date('tanggal');
+                $table->integer('nominal');
+
+                $table->foreign('guru_id')->references('id')->on('guru');
+            });
+        }
+
+        return $result;
+    }
 }

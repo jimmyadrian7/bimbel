@@ -59,6 +59,10 @@ class Guru extends BaseModel
     {
         return $this->hasOne(File::class, 'id', 'pp_id');
     }
+    public function potongan_gaji()
+    {
+        return $this->hasMany(PotonganGaji::class, 'guru_id', 'id');
+    }
 
     
     public function handleOrang(&$attributes)
@@ -260,7 +264,7 @@ class Guru extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'orang.pp', 'kursus');
+        $obj = $obj->with('orang', 'gaji', 'tunjangan_guru', 'rekaman', 'orang.pp', 'kursus', 'potongan_gaji');
         $data = parent::fetchDetail($id, $obj);
         
         if ($data->status != 'a')
