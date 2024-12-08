@@ -248,6 +248,16 @@ class Tagihan extends BaseModel
                     $iuran_terbuat->save();
                 }
             }
+
+            if ($this->status == 'l')
+            {
+                if ($tagihan_detail->pembiayaan->stok)
+                {
+                    $tagihan_detail->pembiayaan->update([
+                        'jumlah_stok' => $tagihan_detail->pembiayaan->jumlah_stok + $tagihan_detail->qty
+                    ]);
+                }
+            }
         }
 
         $this->tagihan_detail()->delete();
@@ -301,7 +311,15 @@ class Tagihan extends BaseModel
         if ($data->status == 'l')
         {
             // $data->editable = false;
-            $data->deleteable = false;
+            $session = new \Bimbel\Master\Model\Session();
+            if ($session->isSuperUser())
+            {
+                $data->deleteable = true;
+            }
+            else
+            {
+                $data->deleteable = false;
+            }
         }
 
         return $data;
