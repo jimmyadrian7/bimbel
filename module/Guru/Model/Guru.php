@@ -16,7 +16,7 @@ class Guru extends BaseModel
         'orang_id', 'status', 'orang',
         'berhenti', 'memilih', 'kelebihan', 'kekurangan', 'kesehatan', 'lingkungan', 'aturan', 'pelatihan', 'kapan',
         'gaji_sebelumnya', 'gaji_diminta', 'ideal', 'rekaman', 'rekaman_id', 'pp', 'pp_id', 'kursus',
-        'nama_bank', 'no_rek'
+        'nama_bank', 'no_rek', 'jabatan'
 
     ];
     protected $table = 'guru';

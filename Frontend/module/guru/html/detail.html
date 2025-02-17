@@ -9,6 +9,10 @@
             ng-if="vm.data.status == 'n'">
             <i class="fa fa-check me-2"></i> Aktif
         </button>
+        <button class="btn btn-link text-gradient text-primary mb-0 px-3" ng-click="vm.slipGaji()"
+            ng-if="vm.data.status == 'a'">
+            <i class="fa fa-print me-2"></i> Slip Gaji
+        </button>
     </app-detail-button>
 
     <app-detail-title>
@@ -73,6 +77,10 @@
                                     </th>
                                     <th
                                         class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Jumlah
+                                    </th>
+                                    <th
+                                        class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Nominal
                                     </th>
                                     <th></th>
@@ -88,6 +96,7 @@
                                 <tr ng-repeat="data in vm.data.tunjangan_guru track by $index"
                                     ng-if="vm.data.tunjangan_guru.length > 0">
                                     <td><span class="text-xs font-weight-bold" ng-bind="data.nama"></span></td>
+                                    <td><span class="text-xs font-weight-bold" app-number-format="data.jumlah"></span>
                                     <td><span class="text-xs font-weight-bold" app-number-format="data.nominal"></span>
                                     </td>
                                     <td>
@@ -134,6 +143,9 @@
                         <thead>
                             <tr>
                                 <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Nama
+                                </th>
+                                <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                     Tanggal
                                 </th>
                                 <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -151,6 +163,7 @@
 
                             <tr ng-repeat="data in vm.data.potongan_gaji track by $index"
                                 ng-if="vm.data.potongan_gaji.length > 0">
+                                <td><span class="text-xs font-weight-bold" ng-bind="data.asisten_guru"></span></td>
                                 <td><span class="text-xs font-weight-bold" app-date-format="data.tanggal"></span></td>
                                 <td><span class="text-xs font-weight-bold" app-number-format="data.nominal"></span>
                                 </td>

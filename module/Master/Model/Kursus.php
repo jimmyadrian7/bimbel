@@ -6,7 +6,10 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class Kursus extends BaseModel
 {
-    protected $fillable = ['kode', 'nama', 'user', 'sequance', 'sequance_pendaftaran', 'no_rek', 'nama_rek', 'logo_bank', 'logo_bank_id'];
+    protected $fillable = [
+        'kode', 'nama', 'user', 'sequance', 'sequance_pendaftaran', 'no_rek', 'nama_rek', 'logo_bank', 'logo_bank_id', 
+        'diserahkan_oleh', 'diketahui_oleh', 'diterima_oleh'
+    ];
     protected $table = 'kursus';
 
 

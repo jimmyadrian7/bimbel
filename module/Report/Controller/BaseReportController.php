@@ -31,7 +31,7 @@ class BaseReportController extends CoreController
 
     public function getBackground($name = 'coba.jpg')
     {
-        $background = $this->path . "coba.jpg";
+        $background = $this->path . $name;
         $background = file_get_contents($background);
         $background = 'data:image/png;base64, ' . base64_encode($background);
 
@@ -44,7 +44,7 @@ class BaseReportController extends CoreController
         return $result;
     }
 
-    public function toPdf($view, $data, $background = 'coba.jpg')
+    public function toPdf($view, $data, $background = 'coba.jpg', $orientation = 'landscape')
     {
         $pdf = $this->container->get("pdf");
         $twig = $this->container->get("twig");
@@ -52,6 +52,8 @@ class BaseReportController extends CoreController
         $data['logo'] = $this->getImage('logo.png');
         $data['background'] = $this->getBackground($background);
         $html = $twig->fetch($view, $data);
+
+        $pdf->setPaper('A4', $orientation);
 
         $pdf->loadHtml($html);
         $pdf->render();

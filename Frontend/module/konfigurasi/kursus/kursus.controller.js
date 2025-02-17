@@ -16,7 +16,10 @@
             { name: "Sequance", value: "sequance", table: true, required: true, hidden: true },
             { name: "No. Rekening", value: "no_rek", table: false },
             { name: "Nama Penerima", value: "nama_rek", table: false },
-            { name: "Logo Bank", value: "logo_bank", type: "file" }
+            { name: "Logo Bank", value: "logo_bank", type: "file" },
+            { name: "Diserahkan Oleh", value: "diserahkan_oleh", table: false },
+            { name: "Diketahui Oleh", value: "diketahui_oleh", table: false },
+            { name: "Diterima Oleh", value: "diterima_oleh", table: false }
         ];
     }
 })()

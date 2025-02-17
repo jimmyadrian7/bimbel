@@ -23,6 +23,7 @@ class ReportGuruController extends BaseReportController
             $tagihan_details = new \Bimbel\Pembayaran\Model\TagihanDetail();
             $transaksi = new \Bimbel\Pembayaran\Model\Transaksi();
             $potongan_gaji = new PotonganGaji();
+            $asisten_guru = new PotonganGaji();
 
             $jenis_pembayaran_list = [];
             foreach ($transaksi->jenis_pembayaran_enum as $key => $value) {
@@ -79,6 +80,21 @@ class ReportGuruController extends BaseReportController
                 ->whereMonth('tanggal', $month)
                 ->first();
 
+            $asisten_guru = $asisten_guru
+                ->where('guru_id', $postData['guru_id'])
+                ->whereYear('tanggal', $year)
+                ->whereMonth('tanggal', $month)
+                ->first();
+
+            if ($asisten_guru)
+            {
+                $asisten_guru = $asisten_guru->asisten_guru;
+            }
+            else
+            {
+                $asisten_guru = "";
+            }
+
             $potongan_gaji = $potongan_gaji->nominal ?? 0;
             
             $data = [
@@ -89,6 +105,7 @@ class ReportGuruController extends BaseReportController
                 "data" => $data,
                 "total_pendapatan" => $total_pendapatan,
                 "potongan_gaji" => $potongan_gaji,
+                'asisten_guru' => $asisten_guru,
                 'guru' => $guru
             ];
 
@@ -177,6 +194,54 @@ class ReportGuruController extends BaseReportController
             ];
 
             $result = $this->toPdf("Report/View/iuran.twig", $data);
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+            $result = json_encode($result);
+        }
+
+        return $result;
+    }
+
+    public function getSlipGaji($request, $args, $response)
+    {
+        $result = [];
+
+        try
+        {
+            $postData = $request->getParsedBody();
+            $data_row = [];
+
+            $guru = new \Bimbel\Guru\Model\Guru();
+            $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
+            
+            $guru = $guru->find($postData['guru_id']);
+            $status = null;
+            $total_gaji = 0;
+
+            $tanggal_gaji = \DateTime::createFromFormat("Y-m-d", $postData['start_date']);
+            $tahun_gaji = $tanggal_gaji->format('Y');
+            $bulan_gaji = $tanggal_gaji->format('m');
+            
+            $gaji = $gaji->where('guru_id', $postData['guru_id'])->whereYear('tanggal', $tahun_gaji)->whereMonth('tanggal', $bulan_gaji)->sum('komisi');
+
+            $tunjangan_guru = $guru->tunjangan_guru;
+            $cabang = $guru->kursus->first();
+            // $cabang = implode(', ', $cabang);
+            
+            $data = [
+                'judul' => "SLIP GAJI " . strtoupper($guru->jabatan),
+                'periode' => $this->convertDate($postData['start_date'], "F Y"),
+                'tanggal' => $this->convertDate($postData['start_date'], "d F Y"),
+                'guru' => $guru,
+                'cabang' => $cabang->nama,
+                'gaji_pokok' => $gaji,
+                'tunjangan_guru' => $tunjangan_guru,
+                'kursus' => $cabang,
+            ];
+
+            $result = $this->toPdf("Report/View/slip_gaji.twig", $data, "background slip gaji.jpg", 'potrait');
         }
         catch(\Error $e)
         {

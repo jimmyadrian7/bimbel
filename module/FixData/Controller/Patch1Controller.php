@@ -180,4 +180,65 @@ class Patch1Controller extends Controller
 
         return $result;
     }
+
+    public function patch8($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $potongan_gaji = new \Bimbel\Guru\Model\PotonganGaji();
+        $isColExist = $potongan_gaji->getConnection()->getSchemaBuilder()->hasColumn('potongan_gaji','asisten_guru');
+        if (!$isColExist)
+        {
+            $potongan_gaji->getConnection()->getSchemaBuilder()->table("potongan_gaji", function($table) {
+                $table->string('asisten_guru', 255)->nullable()->after('nominal');
+            });
+        }
+
+        $guru = new \Bimbel\Guru\Model\Guru();
+        $isColExist = $guru->getConnection()->getSchemaBuilder()->hasColumn('guru','jabatan');
+        if (!$isColExist)
+        {
+            $guru->getConnection()->getSchemaBuilder()->table("guru", function($table) {
+                $table->string('jabatan', 255)->nullable()->after('no_rek');
+            });
+        }
+
+        $kursus = new \Bimbel\Master\Model\Kursus();
+        $isColExist = $kursus->getConnection()->getSchemaBuilder()->hasColumn('kursus','diserahkan_oleh');
+        if (!$isColExist)
+        {
+            $kursus->getConnection()->getSchemaBuilder()->table("kursus", function($table) {
+                $table->string('diserahkan_oleh', 255)->nullable()->after('logo_bank_id');
+            });
+        }
+
+        $kursus = new \Bimbel\Master\Model\Kursus();
+        $isColExist = $kursus->getConnection()->getSchemaBuilder()->hasColumn('kursus','diketahui_oleh');
+        if (!$isColExist)
+        {
+            $kursus->getConnection()->getSchemaBuilder()->table("kursus", function($table) {
+                $table->string('diketahui_oleh', 255)->nullable()->after('diserahkan_oleh');
+            });
+        }
+
+        $kursus = new \Bimbel\Master\Model\Kursus();
+        $isColExist = $kursus->getConnection()->getSchemaBuilder()->hasColumn('kursus','diterima_oleh');
+        if (!$isColExist)
+        {
+            $kursus->getConnection()->getSchemaBuilder()->table("kursus", function($table) {
+                $table->string('diterima_oleh', 255)->nullable()->after('diketahui_oleh');
+            });
+        }
+
+        $tunjangan_guru = new \Bimbel\Guru\Model\TunjanganGuru();
+        $isColExist = $tunjangan_guru->getConnection()->getSchemaBuilder()->hasColumn('tunjangan_guru','jumlah');
+        if (!$isColExist)
+        {
+            $tunjangan_guru->getConnection()->getSchemaBuilder()->table("tunjangan_guru", function($table) {
+                $table->string('jumlah', 255)->nullable()->after('nominal');
+            });
+        }
+
+        return $result;
+    }
 }

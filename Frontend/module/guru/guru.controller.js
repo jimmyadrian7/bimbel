@@ -4,6 +4,8 @@ import potongan_gaji from "./html/modal/potongan_gaji.html";
 import pilihHari from "./html/modal/pilih-hari.html";
 import showGuru from "./html/modal/show-guru.html";
 import kursusHtml from "./html/modal/kursus.html";
+import modalSlipGaji from "./html/modal/modal-slip-gaji.html";
+import previewSlipGaji from "./html/modal/preview-slip-gaji.html";
 
 (() => {
     "use strict";
@@ -13,12 +15,12 @@ import kursusHtml from "./html/modal/kursus.html";
 
     GuruController.$inject = [
         '$stateParams', 'agamaOptions', '$compile', '$scope', 'req', '$state',
-        '$parse', 'Modal', 'logger', 'moment', 'session', 'kursusOptions'
+        '$parse', 'Modal', 'logger', 'moment', 'session', 'kursusOptions', '$element'
     ];
 
     function GuruController(
         stateParams, agamaOptions, $compile, scope,
-        req, state, $parse, Modal, logger, moment, session, kursusOptions
+        req, state, $parse, Modal, logger, moment, session, kursusOptions, $element
     ) {
         let vm = this;
         let jenisKelamin = [
@@ -43,6 +45,7 @@ import kursusHtml from "./html/modal/kursus.html";
             { value: "n", label: "Berhenti" }
         ];
 
+        vm.myPdf = true;
         vm.modal = { siswa: {}, added: [], listGuru: [], kursus: [] };
         vm.siswa = [];
         vm.modalElement = false;
@@ -61,12 +64,14 @@ import kursusHtml from "./html/modal/kursus.html";
             { name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, table: true, hidden: true, hideDetail: true, required: true },
             { name: "No. HP", value: "orang.no_hp", table: true, hidden: true, hideDetail: true, required: true },
             { name: "Status", value: "status", type: 'selection', selection: vm.statusOpt, table: true, hidden: true, hideDetail: true },
-            { name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true, required: true }
+            { name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true, required: true },
+            { name: "Jabatan", value: "jabatan", table: false },
         ];
 
         vm.additional = {};
         vm.additional.tunjanganFields = [
             { name: 'Nama', value: 'nama' },
+            { name: 'Jumlah', value: 'jumlah', type: 'number' },
             { name: 'Nominal', value: 'nominal', type: 'number' }
         ];
         vm.additional.siswaFields = [
@@ -83,6 +88,7 @@ import kursusHtml from "./html/modal/kursus.html";
             { name: 'Tanggal Gajian', value: 'tanggal', type: 'date' }
         ];
         vm.additional.potonganGajiFields = [
+            { name: 'Nama', value: 'asisten_guru' },
             { name: 'Tanggal', value: 'tanggal', type: 'date' },
             { name: 'Nominal', value: 'nominal', type: 'number' }
         ];
@@ -135,6 +141,9 @@ import kursusHtml from "./html/modal/kursus.html";
 
         vm.generateGaji = generateGaji;
         vm.genGaji = genGaji;
+
+        vm.slipGaji = slipGaji;
+        vm.generateSlipGaji = generateSlipGaji;
 
         vm.tambahTunjangan = tambahTunjangan;
         vm.addTunjangan = addTunjangan;
@@ -194,6 +203,29 @@ import kursusHtml from "./html/modal/kursus.html";
             });
         }
 
+        function slipGaji() {
+            vm.modal.tanggal = moment(new Date()).format("YYYY-MM-DD");
+            vm.modalElement = $compile(modalSlipGaji)(scope);
+        }
+        function generateSlipGaji() {
+            if (!vm.modal.tanggal) {
+                logger.error("Date cannot be empty");
+                return;
+            }
+
+            let data = {
+                start_date: vm.modal.tanggal,
+                guru_id: vm.dataId
+            };
+
+            req.post('guru/generate/slip/gaji', data).then(response => {
+                vm.modalElement = $compile(previewSlipGaji)(scope);
+                vm.myPdf = false;
+                let container = vm.modalElement[0].querySelector("#myPdf");
+                container.setAttribute('src', `data:application/pdf;base64, ${response.data}#page=1&zoom=80`);
+            });
+        }
+
 
         function tambahTunjangan() {
             vm.modalElement = $compile(tunjangan)(scope);
@@ -202,6 +234,7 @@ import kursusHtml from "./html/modal/kursus.html";
             let data = {
                 guru_id: vm.dataId,
                 nama: vm.modal.nama,
+                jumlah: vm.modal.jumlah,
                 nominal: vm.modal.nominal
             };
 
@@ -225,6 +258,7 @@ import kursusHtml from "./html/modal/kursus.html";
         function addPotonganGaji() {
             let data = {
                 guru_id: vm.dataId,
+                asisten_guru: vm.modal.asisten_guru,
                 tanggal: vm.modal.tanggal,
                 nominal: vm.modal.nominal
             };

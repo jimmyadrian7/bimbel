@@ -20,3 +20,13 @@ $app->post("/api/generate/report/iuran", function ($request, $response, $args) {
     $response->getBody()->write($result);
     return $response;
 });
+
+$app->post("/api/guru/generate/slip/gaji", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Report\Controller\ReportGuruController");
+    $result = $controller->getSlipGaji($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write($result);
+    return $response;
+});

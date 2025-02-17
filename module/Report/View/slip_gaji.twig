@@ -1,0 +1,194 @@
+<html>
+
+<head>
+    {% include "/Report/View/partial/style.twig" %}
+
+    <style>
+        @font-face {
+            font-family: 'fireflysung';
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SimSun';
+            font-style: normal;
+        }
+
+        .mandarin {
+            font-family: 'SimSun', sans-serif;
+        }
+
+        .content {
+            font-size: 15px;
+        }
+
+        .wrapper-page {
+            page-break-after: always;
+            position: relative;
+        }
+
+        .wrapper-page:last-child {
+            page-break-after: avoid;
+        }
+
+        body {
+            margin-top: 210px;
+        }
+
+        #background {
+            background-image:url({{background}});
+            display: block;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: -1000;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            text-transform: capitalize;
+        }
+
+        .left-space {
+            padding-left: 10px;
+        }
+
+        .table-detail tr td {
+            padding: 5px;
+        }
+
+        .table-info {
+            margin-top: 20px;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        .table-info td {
+            padding: 10px 5px;
+        }
+
+        .background-gray {
+            background-color: lightgray;
+        }
+
+        .empty-box {
+            padding: 30px;
+        }
+
+        .table-sign {
+            width: 100%;
+            text-align: center;
+        }
+
+        .table-sign td {
+            width: 33%;
+        }
+
+        .text-underscore {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="background"></div>
+
+    <div class="wrapper-page">
+        <main>
+            <div class="container">
+                <div class="content">
+                    <h2 class="page-header">
+                        {{ judul }} <br>
+                        <small><u>PERIODE {{periode}}</u></small>
+                    </h2>
+
+                    <table class="table-detail">
+                        <tr>
+                            <td>Nama</td>
+                            <td class="left-space">:</td>
+                            <td>{{ guru.orang.nama }}</td>
+                        </tr>
+                        <tr>
+                            <td>Jabatan</td>
+                            <td class="left-space">:</td>
+                            <td>{{ guru.jabatan }}</td>
+                        </tr>
+                        <tr>
+                            <td>Cabang</td>
+                            <td class="left-space">:</td>
+                            <td>{{ cabang }}</td>
+                        </tr>
+                    </table>
+
+                    <table class="table-info" border="1">
+                        <tr>
+                            <td>GAJI POKOK</td>
+                            <td>Rp {{ gaji_pokok|number_format(0, ',', '.') }}</td>
+                        </tr>
+                        {% for tg in tunjangan_guru %}
+                        <tr>
+                            <td>{{ tg.nama }}</td>
+                            {% if tg.jumlah > 1 %}
+                            <td>Rp. {{ tg.nominal }} x {{ tg.jumlah }} kali = Rp {{ tg.nominal|number_format(0, ',',
+                                '.') }}</td>
+                            {% else %}
+                            <td>Rp {{ tg.nominal|number_format(0, ',',
+                                '.') }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        <tr class="background-gray">
+                            <td>TOTAL YANG DITERIMA</td>
+                            <td>Rp {{ gaji_pokok|number_format(0, ',', '.') }}</td>
+                        </tr>
+                    </table>
+
+                    <br>
+
+                    <table>
+                        <tr>
+                            <td>Tanggal Penyerahan &nbsp;&nbsp;</td>
+                            <td>:</td>
+                            <td>{{ tanggal }}</td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <br>
+
+                    <table class="table-sign">
+                        <tr>
+                            <td>Diserahkan Oleh,</td>
+                            <td>Diketahui Oleh,</td>
+                            <td>Diterima Oleh,</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="empty-box">&nbsp;</div>
+                            </td>
+                            <td>
+                                <div class="empty-box">&nbsp;</div>
+                            </td>
+                            <td>
+                                <div class="empty-box">&nbsp;</div>
+                            </td>
+                        </tr>
+                        <tr class="mandarin text-underscore">
+                            <td>{{ kursus.diserahkan_oleh }}</td>
+                            <td>{{ kursus.diketahui_oleh }}</td>
+                            <td>{{ kursus.diterima_oleh }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
