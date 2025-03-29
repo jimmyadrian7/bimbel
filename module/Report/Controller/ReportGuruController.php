@@ -211,7 +211,7 @@ class ReportGuruController extends BaseReportController
         try
         {
             $postData = $request->getParsedBody();
-            $data_row = [];
+            $data_row = collect([]);
 
             $guru = new \Bimbel\Guru\Model\Guru();
             $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
@@ -224,7 +224,18 @@ class ReportGuruController extends BaseReportController
             $tahun_gaji = $tanggal_gaji->format('Y');
             $bulan_gaji = $tanggal_gaji->format('m');
             
-            $gaji = $gaji->where('guru_id', $postData['guru_id'])->whereYear('tanggal', $tahun_gaji)->whereMonth('tanggal', $bulan_gaji)->sum('komisi');
+            // $gaji = $gaji->where('guru_id', $postData['guru_id'])->whereYear('tanggal', $tahun_gaji)->whereMonth('tanggal', $bulan_gaji)->sum('komisi');
+            // Komisi selain iuran
+            $tagihan_details = $gaji->queryLainLain($tahun_gaji . "-" . $bulan_gaji . "-01");
+            $tagihan_details->where('tagihan.guru_id', $postData['guru_id']);
+            $data_row = $data_row->merge($tagihan_details->get());
+
+            // Komisi iuran
+            $tagihan_details = $gaji->queryIuran($tahun_gaji . "-" . $bulan_gaji . "-01");
+            $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.komisi', ">", 0);
+            $data_row = $data_row->merge($tagihan_details->get());
+            
+            $gaji = $data_row->sum('komisi');
 
             $tunjangan_guru = $guru->tunjangan_guru;
             $cabang = $guru->kursus->first();
