@@ -135,17 +135,20 @@
                         <tr>
                             <td>{{ tg.nama }}</td>
                             {% if tg.jumlah > 1 %}
-                            <td>Rp. {{ tg.nominal }} x {{ tg.jumlah }} kali = Rp {{ tg.nominal|number_format(0, ',',
-                                '.') }}</td>
+                            <td>
+                                Rp. {{ tg.nominal|number_format(0, ',', '.') }} x {{ tg.jumlah }} kali = Rp {{
+                                (tg.nominal*tg.jumlah)|number_format(0, ',', '.') }}
+                            </td>
                             {% else %}
-                            <td>Rp {{ tg.nominal|number_format(0, ',',
-                                '.') }}</td>
+                            <td>
+                                Rp {{ tg.nominal|number_format(0, ',', '.') }}
+                            </td>
                             {% endif %}
                         </tr>
                         {% endfor %}
                         <tr class="background-gray">
                             <td>TOTAL YANG DITERIMA</td>
-                            <td>Rp {{ gaji_pokok|number_format(0, ',', '.') }}</td>
+                            <td>Rp {{ (gaji_pokok + total_tunjangan)|number_format(0, ',', '.') }}</td>
                         </tr>
                     </table>
 

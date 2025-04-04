@@ -5,6 +5,7 @@ use Bimbel\Core\Model\BaseModel;
 use Bimbel\Guru\Model\Guru;
 use Bimbel\Pengeluaran\Model\Pengeluaran;
 use Illuminate\Database\Capsule\Manager as DB;
+use \Bimbel\Guru\Model\PotonganGaji;
 
 class Gaji extends BaseModel
 {
@@ -68,6 +69,23 @@ class Gaji extends BaseModel
         return $result;
     }
 
+    public function hitungPotongan($guru_id, $year, $month)
+    {
+        $potongan_gaji = new PotonganGaji();
+
+        // Potongan Gaji
+        $potongan_gaji = $potongan_gaji
+            ->select(DB::raw('SUM(nominal) AS nominal'))
+            ->where('guru_id', $guru_id)
+            ->whereYear('tanggal', $year)
+            ->whereMonth('tanggal', $month)
+            ->first();
+
+        $potongan_gaji = $potongan_gaji->nominal ?? 0;
+
+        return $potongan_gaji;
+    }
+
     public function autoFillData(&$attributes)
     {
         $guru = new Guru();
@@ -79,6 +97,7 @@ class Gaji extends BaseModel
 
         $komisi = $this->hitungTagihan($guru->id, $year, $month);
         $tunjangan = $this->hitungTunjangan($guru);
+        $potongan = $this->hitungPotongan($guru->id, $year, $month);
 
         $tanggal_gaji = $this->getTanggalGaji($attributes['tanggal']);
         $tanggal_gaji = explode("-", $tanggal_gaji);
@@ -88,7 +107,7 @@ class Gaji extends BaseModel
         $attributes['sub_total'] = $komisi['sub_total'];
         $attributes['komisi'] = $komisi['komisi'];
         $attributes['tunjangan'] = $tunjangan;
-        $attributes['total'] = $komisi['komisi'] + $tunjangan;
+        $attributes['total'] = $komisi['komisi'] + $tunjangan - $potongan;
         $attributes['bulan'] = $tanggal_gaji[1];
         $attributes['tahun'] = $tanggal_gaji[0];
     }

@@ -215,6 +215,7 @@ class ReportGuruController extends BaseReportController
 
             $guru = new \Bimbel\Guru\Model\Guru();
             $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
+            $potongan_gaji = new PotonganGaji();
             
             $guru = $guru->find($postData['guru_id']);
             $status = null;
@@ -230,16 +231,28 @@ class ReportGuruController extends BaseReportController
             $tagihan_details->where('tagihan.guru_id', $postData['guru_id']);
             $data_row = $data_row->merge($tagihan_details->get());
 
-            // Komisi iuran
+            // Komisi Iuran
             $tagihan_details = $gaji->queryIuran($tahun_gaji . "-" . $bulan_gaji . "-01");
             $tagihan_details->where('tagihan.guru_id', $postData['guru_id'])->where('tagihan_detail.komisi', ">", 0);
             $data_row = $data_row->merge($tagihan_details->get());
-            
-            $gaji = $data_row->sum('komisi');
 
+            // Potongan Gaji
+            $potongan_gaji = $potongan_gaji
+                ->select(DB::raw('SUM(nominal) AS nominal'))
+                ->where('guru_id', $postData['guru_id'])
+                ->whereYear('tanggal', $tahun_gaji)
+                ->whereMonth('tanggal', $bulan_gaji)
+                ->first();
+            $potongan_gaji = $potongan_gaji->nominal ?? 0;
+            
+            $gaji = $data_row->sum('komisi') - $potongan_gaji;
             $tunjangan_guru = $guru->tunjangan_guru;
             $cabang = $guru->kursus->first();
             // $cabang = implode(', ', $cabang);
+
+            $total_tunjangan = $tunjangan_guru->sum(function ($tunjangan_guru) {
+                return $tunjangan_guru['nominal'] * $tunjangan_guru['jumlah'];
+            });
             
             $data = [
                 'judul' => "SLIP GAJI " . strtoupper($guru->jabatan),
@@ -250,6 +263,7 @@ class ReportGuruController extends BaseReportController
                 'gaji_pokok' => $gaji,
                 'tunjangan_guru' => $tunjangan_guru,
                 'kursus' => $cabang,
+                'total_tunjangan' => $total_tunjangan,
             ];
 
             $result = $this->toPdf("Report/View/slip_gaji.twig", $data, "background slip gaji.jpg", 'potrait');
