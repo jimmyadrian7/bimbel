@@ -15,7 +15,7 @@
         }
 
         .mandarin {
-            font-family: 'SimSun', sans-serif;
+            font-family: 'SimSun', 'fireflysung', sans-serif;
         }
 
         .content {
@@ -112,7 +112,7 @@
                         <tr>
                             <td>Nama</td>
                             <td class="left-space">:</td>
-                            <td>{{ guru.orang.nama }}</td>
+                            <td class="mandarin">{{ guru.orang.nama }}</td>
                         </tr>
                         <tr>
                             <td>Jabatan</td>
@@ -146,9 +146,19 @@
                             {% endif %}
                         </tr>
                         {% endfor %}
+
+                        {% for pg in potongan_gaji %}
+                        <tr>
+                            <td>Potongan Gaji Asisten Guru <span class="mandarin">{{ pg.asisten_guru }}</span></td>
+                            <td>
+                                Rp {{ pg.nominal|number_format(0, ',', '.') }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+
                         <tr class="background-gray">
                             <td>TOTAL YANG DITERIMA</td>
-                            <td>Rp {{ (gaji_pokok + total_tunjangan)|number_format(0, ',', '.') }}</td>
+                            <td>Rp {{ (total_diterima)|number_format(0, ',', '.') }}</td>
                         </tr>
                     </table>
 

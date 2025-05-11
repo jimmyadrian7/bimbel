@@ -55,8 +55,15 @@ class ReportGuruController extends BaseReportController
             }
             $data_row = $data_row->merge($tagihan_details->get());
 
+            $jenis_pembayaran = "tf";
+
+            if (isset($data_row[0]))
+            {
+                $jenis_pembayaran = $data_row[0]->jenis_pembayaran;
+            }
+
             $tagihan_details = $gaji->getTunjangan($postData['guru_id']);
-            $tagihan_details = $tagihan_details->map->format();
+            $tagihan_details = $tagihan_details->map->format($postData['start_date'] . "-01", $jenis_pembayaran);
             $data_row = $data_row->merge($tagihan_details);
             
             // Sort by Komisi
@@ -74,28 +81,29 @@ class ReportGuruController extends BaseReportController
             }
 
             $potongan_gaji = $potongan_gaji
-                ->select(DB::raw('SUM(nominal) AS nominal'))
+                // ->select(DB::raw('SUM(nominal) AS nominal'))
                 ->where('guru_id', $postData['guru_id'])
                 ->whereYear('tanggal', $year)
                 ->whereMonth('tanggal', $month)
-                ->first();
+                ->get();
 
-            $asisten_guru = $asisten_guru
-                ->where('guru_id', $postData['guru_id'])
-                ->whereYear('tanggal', $year)
-                ->whereMonth('tanggal', $month)
-                ->first();
+            // $asisten_guru = $asisten_guru
+            //     ->where('guru_id', $postData['guru_id'])
+            //     ->whereYear('tanggal', $year)
+            //     ->whereMonth('tanggal', $month)
+            //     ->first();
 
-            if ($asisten_guru)
-            {
-                $asisten_guru = $asisten_guru->asisten_guru;
-            }
-            else
-            {
-                $asisten_guru = "";
-            }
+            // if ($asisten_guru)
+            // {
+            //     $asisten_guru = $asisten_guru->asisten_guru;
+            // }
+            // else
+            // {
+            //     $asisten_guru = "";
+            // }
 
-            $potongan_gaji = $potongan_gaji->nominal ?? 0;
+            // $potongan_gaji = $potongan_gaji->nominal ?? 0;
+            $total_potongan_gaji = $potongan_gaji->sum('nominal');
             
             $data = [
                 'judul' => "Pendapatan " . $guru->orang->nama,
@@ -105,7 +113,8 @@ class ReportGuruController extends BaseReportController
                 "data" => $data,
                 "total_pendapatan" => $total_pendapatan,
                 "potongan_gaji" => $potongan_gaji,
-                'asisten_guru' => $asisten_guru,
+                "total_potongan_gaji" => $total_potongan_gaji,
+                // 'asisten_guru' => $asisten_guru,
                 'guru' => $guru
             ];
 
@@ -238,14 +247,15 @@ class ReportGuruController extends BaseReportController
 
             // Potongan Gaji
             $potongan_gaji = $potongan_gaji
-                ->select(DB::raw('SUM(nominal) AS nominal'))
+                // ->select(DB::raw('SUM(nominal) AS nominal'))
                 ->where('guru_id', $postData['guru_id'])
                 ->whereYear('tanggal', $tahun_gaji)
                 ->whereMonth('tanggal', $bulan_gaji)
-                ->first();
-            $potongan_gaji = $potongan_gaji->nominal ?? 0;
+                ->get();
+            // $potongan_gaji = $potongan_gaji->nominal ?? 0;
+            $total_potongan = $potongan_gaji->sum('nominal');
             
-            $gaji = $data_row->sum('komisi') - $potongan_gaji;
+            $gaji = $data_row->sum('komisi');
             $tunjangan_guru = $guru->tunjangan_guru;
             $cabang = $guru->kursus->first();
             // $cabang = implode(', ', $cabang);
@@ -253,6 +263,8 @@ class ReportGuruController extends BaseReportController
             $total_tunjangan = $tunjangan_guru->sum(function ($tunjangan_guru) {
                 return $tunjangan_guru['nominal'] * $tunjangan_guru['jumlah'];
             });
+
+            $total_diterima = $gaji + $total_tunjangan - $total_potongan;
             
             $data = [
                 'judul' => "SLIP GAJI " . strtoupper($guru->jabatan),
@@ -264,6 +276,8 @@ class ReportGuruController extends BaseReportController
                 'tunjangan_guru' => $tunjangan_guru,
                 'kursus' => $cabang,
                 'total_tunjangan' => $total_tunjangan,
+                'potongan_gaji' => $potongan_gaji,
+                'total_diterima' => $total_diterima,
             ];
 
             $result = $this->toPdf("Report/View/slip_gaji.twig", $data, "background slip gaji.jpg", 'potrait');

@@ -15,16 +15,20 @@ class TunjanganGuru extends BaseModel
     }
 
 
-    public function format()
+    public function format($tanggal, $jenis_pembayaran)
     {
+        $tanggal_gaji = new \DateTime($tanggal);
+        $tanggal_gaji = $tanggal_gaji->format("d/m/Y");
+
         return [
             "nama_siswa" => "-",
             "kode_tagihan" => "-",
-            "tanggal_tagihan" => "-",
-            "tanggal_lunas" => "-",
+            "tanggal_tagihan" => $tanggal_gaji,
+            "tanggal_lunas" => $tanggal_gaji,
             "nama_item" => $this->nama,
-            "harga_total" => $this->nominal,
-            "komisi" => $this->nominal
+            "harga_total" => $this->nominal * $this->jumlah,
+            "komisi" => $this->nominal * $this->jumlah,
+            "jenis_pembayaran" => $jenis_pembayaran,
         ];
     }
 }

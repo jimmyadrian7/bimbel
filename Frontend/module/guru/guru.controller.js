@@ -89,6 +89,13 @@ import previewSlipGaji from "./html/modal/preview-slip-gaji.html";
         ];
         vm.additional.potonganGajiFields = [
             { name: 'Nama', value: 'asisten_guru' },
+            // {
+            //     name: "Asisten Guru",
+            //     value: "asisten_guru_id",
+            //     type: "autocomplete",
+            //     url: 'guru/search/autocomplete',
+            //     valueName: 'guru_data'
+            // },
             { name: 'Tanggal', value: 'tanggal', type: 'date' },
             { name: 'Nominal', value: 'nominal', type: 'number' }
         ];
