@@ -40,7 +40,14 @@ class BaseReportController extends CoreController
 
     public function convertDate($date, $format='d/m/Y')
     {
+        $monthNames = [
+            'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April',
+            'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli', 'August' => 'Agustus',
+            'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
+        ];
         $result = (new \Datetime($date))->format($format);
+        $result = str_replace(array_keys($monthNames), array_values($monthNames), $result);
+
         return $result;
     }
 

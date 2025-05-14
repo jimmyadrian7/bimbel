@@ -4,7 +4,11 @@
         <td class="pr-10">Sudah Terima Dari</td>
         <td class="pr-10">:</td>
         <td>
+            {% if tagihan.terima_dari|isMandarin %}
             <div class="border-dot-bottom mandarin">{{ tagihan.terima_dari }}</div>
+            {% else %}
+            <div class="border-dot-bottom">{{ tagihan.terima_dari }}</div>
+            {% endif %}
         </td>
     </tr>
     <tr>

@@ -131,7 +131,11 @@
                                     {% for pg in potongan_gaji %}
                                         <tr class="bold">
                                             <td class="bg-transparent" colspan="6"></td>
-                                            <td colspan="3" class="bg-red mandarin">Potong Gaji <span class="mandarin">{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
+                                            {% if pg.asisten_guru|isMandarin %}
+                                            <td colspan="3" class="bg-red">Potong Gaji <span class="mandarin">{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
+                                            {% else %}
+                                            <td colspan="3" class="bg-red">Potong Gaji <span>{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
+                                            {% endif %}
                                             <td class="bg-red">{{ pg.nominal|number_format(0, ',', '.') }}</td>
                                         </tr>
                                     {% endfor %}

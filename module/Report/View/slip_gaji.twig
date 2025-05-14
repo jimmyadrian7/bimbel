@@ -112,7 +112,11 @@
                         <tr>
                             <td>Nama</td>
                             <td class="left-space">:</td>
+                            {% if guru.orang.nama|isMandarin %}
                             <td class="mandarin">{{ guru.orang.nama }}</td>
+                            {% else %}
+                            <td>{{ guru.orang.nama }}</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <td>Jabatan</td>
@@ -149,7 +153,11 @@
 
                         {% for pg in potongan_gaji %}
                         <tr>
+                            {% if pg.asisten_guru|isMandarin %}
                             <td>Potongan Gaji Asisten Guru <span class="mandarin">{{ pg.asisten_guru }}</span></td>
+                            {% else %}
+                            <td>Potongan Gaji Asisten Guru <span>{{ pg.asisten_guru }}</span></td>
+                            {% endif %}
                             <td>
                                 Rp {{ pg.nominal|number_format(0, ',', '.') }}
                             </td>
