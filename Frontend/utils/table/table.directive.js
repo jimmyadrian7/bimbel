@@ -10,8 +10,7 @@ import sortHtml from "./modal/sort.html";
 
     appTable.$inject = ['req', '$state', '$parse', '$compile'];
 
-    function appTable(req, $state, $parse, $compile)
-    {
+    function appTable(req, $state, $parse, $compile) {
         let directive = {
             restrict: 'E',
             template: table,
@@ -36,25 +35,24 @@ import sortHtml from "./modal/sort.html";
 
         return directive;
 
-        function controllerFunc(scope, session, $location, $timeout)
-        {
+        function controllerFunc(scope, session, $location, $timeout) {
             let vm = this;
-            
+
             vm.title = `Tabel ${$state.current.title}`;
             vm.data = [];
             vm.rawResponse = {};
             vm.oldFields = [];
             vm.filterData = [
-                {field: "", operation: "", value: "", selected: false}
+                { field: "", operation: "", value: "", selected: false }
             ];
             vm.appliedFilter = [
-                {field: "", operation: "", value: "", selected: false}
+                { field: "", operation: "", value: "", selected: false }
             ];
             vm.sortData = [
-                {field: "", type: ""}
+                { field: "", type: "" }
             ];
             vm.appliedSort = [
-                {field: "", type: ""}
+                { field: "", type: "" }
             ];
 
             vm.isFilter = false;
@@ -85,39 +83,33 @@ import sortHtml from "./modal/sort.html";
             vm.lastPage = 1;
             vm.page_array = [];
 
-            
+
             vm.sortOptions = [
-                {label: "Ascending (A-Z/1-10)", value: "ASC"},
-                {label: "Descending (Z-A/10-1)", value: "DESC"}
+                { label: "Ascending (A-Z/1-10)", value: "ASC" },
+                { label: "Descending (Z-A/10-1)", value: "DESC" }
             ];
 
 
             scope.$watch(() => vm.table, watchTable);
             scope.$watch(() => vm.searchValue, watchSearch);
 
-            function watchTable(newVal)
-            {
-                if (newVal)
-                {
+            function watchTable(newVal) {
+                if (newVal) {
                     activate();
                 }
             }
 
-            function activate()
-            {
-                if (vm.addable === undefined)
-                {
+            function activate() {
+                if (vm.addable === undefined) {
                     let parent = false;
                     let menuKode = $state.current.name;
-                    if ($state.current.nav)
-                    {
+                    if ($state.current.nav) {
                         menuKode = $state.current.nav;
                         parent = $state.current.menu;
                     }
 
                     let activeMenu = session.getMenu(menuKode, parent);
-                    if (activeMenu)
-                    {
+                    if (activeMenu) {
                         vm.addable = activeMenu.create;
                     }
                 }
@@ -126,30 +118,25 @@ import sortHtml from "./modal/sort.html";
                 getData();
             }
 
-            function getTableFields()
-            {
+            function getTableFields() {
                 vm.oldFields = vm.fields;
                 vm.fields = vm.fields.filter((field) => {
                     return field.table;
                 });
             }
 
-            function getData()
-            {
+            function getData() {
                 let url = `${vm.table}`;
                 let data = {};
                 let method = "get";
 
-                if (vm.isFilter || vm.isSort)
-                {
+                if (vm.isFilter || vm.isSort) {
                     method = "post";
-                    if (vm.isFilter)
-                    {
+                    if (vm.isFilter) {
                         data.filter = vm.appliedFilter;
                     }
 
-                    if (vm.isSort)
-                    {
+                    if (vm.isSort) {
                         data.sort = vm.appliedSort;
                     }
 
@@ -158,13 +145,11 @@ import sortHtml from "./modal/sort.html";
 
                 url = `${url}?pagination=1&page=${vm.currentPage}`;
 
-                if (vm.searchValue)
-                {
+                if (vm.searchValue) {
                     url = `${url}&search=${vm.searchValue}`;
                 }
 
-                if (method == "get")
-                {
+                if (method == "get") {
                     req.get(url).then(response => {
                         vm.rawResponse = response;
                         vm.data = response.data || [];
@@ -172,8 +157,7 @@ import sortHtml from "./modal/sort.html";
                         generatePage(response.last_page);
                     });
                 }
-                else
-                {
+                else {
                     req.post(url, data).then(response => {
                         vm.rawResponse = response;
                         vm.data = response.data || [];
@@ -183,86 +167,71 @@ import sortHtml from "./modal/sort.html";
                 }
             }
 
-            function generatePage(last_page)
-            {
+            function generatePage(last_page) {
                 let start = 1;
                 let end = vm.currentPage + 2;
                 let totalPage = 5;
-                if (vm.currentPage > 3)
-                {
+                if (vm.currentPage > 3) {
                     start = vm.currentPage - 2;
                 }
 
-                if (end > last_page)
-                {
+                if (end > last_page) {
                     start = last_page - 4;
                     end = last_page;
                 }
 
-                if (last_page < 5)
-                {
+                if (last_page < 5) {
                     start = 1;
                     end = last_page;
                     totalPage = last_page;
                 }
 
                 vm.lastPage = end;
-                vm.page_array = Array.from({length: totalPage}, (_, i) => start + i);
+                vm.page_array = Array.from({ length: totalPage }, (_, i) => start + i);
             }
 
-            function changePage(page)
-            {
+            function changePage(page) {
                 vm.currentPage = page;
                 $location.search('page', page);
                 getData();
             }
 
-            function tambahData()
-            {
+            function tambahData() {
                 $state.go(vm.form);
             }
 
-            function goDetail(data)
-            {
-                $state.go(vm.detail, {dataId: data.id});
+            function goDetail(data) {
+                $state.go(vm.detail, { dataId: data.id });
             }
 
-            function getValue(data, field)
-            {
+            function getValue(data, field) {
                 let result = $parse(field.value)(data);
 
-                if (field.type == 'selection')
-                {
+                if (field.type == 'selection') {
                     result = getLabel(result, field.selection);
                 }
 
-                if (field.type == 'autocomplete')
-                {
+                if (field.type == 'autocomplete') {
                     result = $parse(field.valueName + ".nama")(data);
                 }
 
-                if (field.type == 'file')
-                {
+                if (field.type == 'file') {
                     result = $parse(field.value + ".filename")(data);
                 }
 
                 return result || "-";
             }
 
-            function getLabel(val, arr)
-            {
+            function getLabel(val, arr) {
                 for (let index = 0; index < arr.length; index++) {
-                    if (arr[index].value == val)
-                    {
+                    if (arr[index].value == val) {
                         return arr[index].label;
                     }
                 }
             }
 
-            function watchSearch(newVal, oldVal)
-            {
-                if (newVal === oldVal)
-                {
+            function watchSearch(newVal, oldVal) {
+                if (newVal === oldVal) {
                     return;
                 }
 
@@ -271,8 +240,7 @@ import sortHtml from "./modal/sort.html";
             }
 
 
-            function showFilter()
-            {
+            function showFilter() {
                 vm.filterData = angular.copy(vm.appliedFilter);
 
                 vm.fieldOptions = vm.oldFields.map((value) => {
@@ -282,36 +250,32 @@ import sortHtml from "./modal/sort.html";
                         type: value.type,
                         selection: value.selection,
                         operation: [
-                            {value: "=", label: "="},
-                            {value: "like", label: "like"}
+                            { value: "=", label: "=" },
+                            { value: "like", label: "like" }
                         ]
                     };
 
-                    if (opt.type == "autocomplete")
-                    {
-                        opt.value =  opt.value.split("_");
+                    if (opt.type == "autocomplete") {
+                        opt.value = opt.value.split("_");
                         opt.value = opt.value[0] + ".orang.nama";
                     }
 
 
-                    if (opt.type == "selection" || opt.type == "boolean")
-                    {
-                        opt.operation = [{value: "=", label: "="}];
+                    if (opt.type == "selection" || opt.type == "boolean") {
+                        opt.operation = [{ value: "=", label: "=" }];
                     }
 
-                    if (opt.type == "number" || opt.type == "date")
-                    {
+                    if (opt.type == "number" || opt.type == "date") {
                         opt.operation = [
-                            {value: "=", label: "="},
-                            {value: "<", label: "<"},
-                            {value: "<=", label: "<="},
-                            {value: ">", label: ">"},
-                            {value: ">=", label: ">="}
+                            { value: "=", label: "=" },
+                            { value: "<", label: "<" },
+                            { value: "<=", label: "<=" },
+                            { value: ">", label: ">" },
+                            { value: ">=", label: ">=" }
                         ];
                     }
 
-                    if (opt.type == "autocomplete" || opt.type == "textarea")
-                    {
+                    if (opt.type == "autocomplete" || opt.type == "textarea") {
                         opt.type = undefined;
                     }
 
@@ -319,12 +283,11 @@ import sortHtml from "./modal/sort.html";
                 }).filter((val) => {
                     return val.type != 'file';
                 });
-                
+
                 vm.myModal = $compile(filterHtml)(scope);
             }
 
-            function changeField(idx)
-            {
+            function changeField(idx) {
                 let selected = vm.filterData[idx].field;
                 let selectedData = getSelectedOption(selected);
 
@@ -332,13 +295,11 @@ import sortHtml from "./modal/sort.html";
 
             }
 
-            function getSelectedOption(field)
-            {
+            function getSelectedOption(field) {
                 let result = false;
 
                 vm.fieldOptions.forEach((val) => {
-                    if (val.value == field)
-                    {
+                    if (val.value == field) {
                         result = val;
                     }
                 });
@@ -346,33 +307,27 @@ import sortHtml from "./modal/sort.html";
                 return result;
             }
 
-            function tambahFilter()
-            {
-                vm.filterData.push({field: "", operation: "", value: "", selected: false});
+            function tambahFilter() {
+                vm.filterData.push({ field: "", operation: "", value: "", selected: false });
             }
 
-            function deleteFilter(idx)
-            {
+            function deleteFilter(idx) {
                 vm.filterData.splice(idx, 1);
             }
 
-            function clearFilter()
-            {
+            function clearFilter() {
                 vm.filterData = [
-                    {field: "", operation: "", value: "", selected: false}
+                    { field: "", operation: "", value: "", selected: false }
                 ];
             }
 
-            function applyFilter()
-            {
+            function applyFilter() {
                 vm.appliedFilter = angular.copy(vm.filterData);
 
-                if (vm.appliedFilter.length == 1 && (!vm.appliedFilter[0].field || !vm.appliedFilter[0].operation || !vm.appliedFilter[0].value))
-                {
+                if (vm.appliedFilter.length == 1 && (!vm.appliedFilter[0].field || !vm.appliedFilter[0].operation || !vm.appliedFilter[0].value)) {
                     vm.isFilter = false;
                 }
-                else
-                {
+                else {
                     vm.isFilter = true;
                 }
 
@@ -381,16 +336,14 @@ import sortHtml from "./modal/sort.html";
             }
 
 
-            function showSort()
-            {
+            function showSort() {
                 vm.sortData = angular.copy(vm.appliedSort);
 
                 vm.fieldOptions = vm.oldFields.map((value) => {
-                    let opt = {label: value.name, value: value.value};
+                    let opt = { label: value.name, value: value.value };
 
-                    if (value.type == "autocomplete")
-                    {
-                        opt.value =  opt.value.split("_");
+                    if (value.type == "autocomplete") {
+                        opt.value = opt.value.split("_");
                         opt.value = opt.value[0] + ".orang.nama";
                     }
 
@@ -398,41 +351,35 @@ import sortHtml from "./modal/sort.html";
                 }).filter((val) => {
                     return val.type != 'file' && val.value.split(".").length == 1;
                 });
-                
+
                 vm.myModal = $compile(sortHtml)(scope);
             }
 
-            function tambahSort()
-            {
-                vm.sortData.push({field: "", type: ""});
+            function tambahSort() {
+                vm.sortData.push({ field: "", type: "" });
             }
 
-            function deleteSort(idx)
-            {
+            function deleteSort(idx) {
                 vm.sortData.splice(idx, 1);
             }
 
-            function clearSort()
-            {
+            function clearSort() {
                 vm.sortData = [
-                    {field: "", type: ""}
+                    { field: "", type: "" }
                 ];
             }
 
-            function applySort()
-            {
+            function applySort() {
                 vm.appliedSort = angular.copy(vm.sortData);
 
-                if (vm.appliedSort.length == 1 && (!vm.appliedSort[0].field || !vm.appliedSort[0].type))
-                {
+                if (vm.appliedSort.length == 1 && (!vm.appliedSort[0].field || !vm.appliedSort[0].type)) {
                     vm.isSort = false;
                 }
-                else
-                {
+                else {
                     vm.isSort = true;
                 }
 
-                
+
 
                 $timeout(() => changePage(1), 500);
             }

@@ -4,6 +4,7 @@ namespace Bimbel\Guru\Controller;
 use \Bimbel\Master\Controller\Controller;
 use \Bimbel\Siswa\Model\Siswa;
 use \Bimbel\Guru\Model\Guru;
+use \Bimbel\Guru\Model\AsistenGuru;
 use \Bimbel\Master\Model\Session;
 use Illuminate\Database\Capsule\Manager as DB;
 
@@ -126,6 +127,45 @@ class FetchController extends Controller
             $result = $guru->get();
         }
         catch (\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
+
+    public function getAsistenGuru($request, $args, &$response)
+    {
+        $result = [];
+
+        try 
+        {
+            $session = new Session();
+            $getData = $request->getQueryParams();
+            
+            $asisten_guru = new AsistenGuru();
+
+            if (!$session->isSuperUser())
+            {
+                $kursus_ids = $session->getKursusIds();
+                $asisten_guru = $asisten_guru->whereHas('kurus', function($q) use ($kursus_ids) {
+                    $q->whereIn('kursus.id', $kursus_ids);
+                });
+            }
+
+            $data = $asisten_guru->whereHas('orang', function($q) use ($getData) {
+                $q->where('nama', 'like', '%' . $getData['query'] . '%');
+            })->where('status', 'a')->get();
+
+            foreach ($data as &$value) {
+                $value->{"text"} = $value->orang->nama;
+            }
+
+            $data = $data->map->only(["id", "text", "gaji_tetap"]);
+            
+            return $data;
+        }
+        catch(\Error $e) 
         {
             $result = $this->container->get('error')($e, $response);
         }

@@ -29,3 +29,13 @@ $app->get("/api/guru/available", function ($request, $response, $args) {
     $response->getBody()->write(json_encode($result));
     return $response;
 });
+
+$app->get("/api/asisten_guru/search/autocomplete", function ($request, $response, $args) {
+
+    $controller = $this->get("Bimbel\Guru\Controller\FetchController");
+    $result = $controller->getAsistenGuru($request, $args, $response);
+
+    $response = $response->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode($result));
+    return $response;
+});

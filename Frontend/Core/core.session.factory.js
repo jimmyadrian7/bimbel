@@ -4,8 +4,7 @@
     angular.module('app.core')
         .factory('session', session);
 
-    function session()
-    {
+    function session() {
         let data = {};
 
         return {
@@ -19,29 +18,24 @@
             isSiswa: isSiswa
         }
 
-        function setSession(session)
-        {
+        function setSession(session) {
             data = session;
         }
-        function getSession()
-        {
+        function getSession() {
             return data;
         }
 
 
-        function getMenu(menuKode, parent=false)
-        {
+        function getMenu(menuKode, parent = false) {
             let menus = data.menu;
             let menu = false;
 
             menus.forEach(value => {
-                if (value.kode == menuKode && !parent && !value.parent)
-                {
+                if (value.kode == menuKode && !parent && !value.parent) {
                     menu = value;
                 }
-                
-                if (parent && value.parent == parent && value.kode == menuKode)
-                {
+
+                if (parent && value.parent == parent && value.kode == menuKode) {
                     menu = value;
                 }
             });
@@ -49,30 +43,24 @@
             return menu;
         }
 
-        function getGroupMenu(parent)
-        {
+        function getGroupMenu(parent) {
             let menu = data.menu.filter(value => value.parent == parent);
             return menu;
         }
 
 
-        function isSuperUser()
-        {
+        function isSuperUser() {
             return data.jenis_user == 's';
         }
-        function isAdminCabang()
-        {
+        function isAdminCabang() {
             return data.jenis_user == 'c';
         }
-        function isGuru()
-        {
+        function isGuru() {
             let result = false;
 
-            if (data.role)
-            {
+            if (data.role) {
                 data.role.forEach(role => {
-                    if (role.kode == 'G')
-                    {
+                    if (role.kode == 'G') {
                         result = true;
                     }
                 });
@@ -80,15 +68,12 @@
 
             return result;
         }
-        function isSiswa()
-        {
+        function isSiswa() {
             let result = false;
 
-            if (data.role)
-            {
+            if (data.role) {
                 data.role.forEach(role => {
-                    if (role.kode == 'S')
-                    {
+                    if (role.kode == 'S') {
                         result = true;
                     }
                 });

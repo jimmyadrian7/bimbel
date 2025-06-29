@@ -6,7 +6,7 @@ use Bimbel\Guru\Model\Guru;
 
 class TunjanganGuru extends BaseModel
 {
-    protected $fillable = ['guru_id', 'nama', 'nominal', 'jumlah'];
+    protected $fillable = ['guru_id', 'nama', 'nominal', 'jumlah', 'asisten_guru_id'];
     protected $table = 'tunjangan_guru';
 
     public function guru()

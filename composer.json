@@ -26,9 +26,19 @@
         "sort-packages": true,
         "platform": {
             "php": "7.3.0"
-         }
+        }
     },
     "scripts": {
-        "start": "php -S localhost:8080 -t public"
+        "start": "php -S localhost:8080 -t public",
+        "setup": "php scripts/setup.php",
+        "cleanup": "php scripts/cleanup.php",
+        "test": "echo 'No tests configured yet'",
+        "check": [
+            "@composer validate",
+            "@composer check-platform-reqs"
+        ],
+        "post-install-cmd": [
+            "echo 'Installation completed. Run composer setup to configure the project.'"
+        ]
     }
 }

@@ -191,19 +191,62 @@
                         </tr>
                         <tr>
                             <td>
-                                <div class="empty-box">&nbsp;</div>
+                                <div class="empty-box">
+
+                                    {% if kursus.diserahkan_oleh_file and kursus.diserahkan_oleh_file.filetype %}
+                                        <img src="data:{{ kursus.diserahkan_oleh_file.filetype }};base64, {{ kursus.diserahkan_oleh_file.base64 }}" alt="Diserahkan Oleh" height="90px">
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </div>
                             </td>
                             <td>
-                                <div class="empty-box">&nbsp;</div>
+                                <div class="empty-box">
+                                    {% if kursus.diketahui_oleh_file and kursus.diketahui_oleh_file.filetype %}
+                                        <img src="data:{{ kursus.diketahui_oleh_file.filetype }};base64, {{ kursus.diketahui_oleh_file.base64 }}" alt="Diketahui Oleh" height="90px">
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </div>
                             </td>
                             <td>
-                                <div class="empty-box">&nbsp;</div>
+                                <div class="empty-box">
+                                    {% if kursus.diterima_oleh_file and kursus.diterima_oleh_file.filetype %}
+                                        <img src="data:{{ kursus.diterima_oleh_file.filetype }};base64, {{ kursus.diterima_oleh_file.base64 }}" alt="Diterima Oleh" height="90px">
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         <tr class="mandarin text-underscore">
                             <td>{{ kursus.diserahkan_oleh }}</td>
                             <td>{{ kursus.diketahui_oleh }}</td>
                             <td>{{ kursus.diterima_oleh }}</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3" style="height: 50px;"></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3" class="mandarin">
+                                <img src="{{ smile_images }}" alt="Smile" height="20px">
+                                感谢教师的悉心教导
+                                <img src="{{ smile_images }}" alt="Smile" height="20px">
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="3" style="height: 25px;"></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3">
+                                <img src="{{ smile_images }}" alt="Smile" height="20px">
+                                Terima Kasih Atas Dedikasi Guru
+                                <img src="{{ smile_images }}" alt="Smile" height="20px">
+                            </td>
                         </tr>
                     </table>
                 </div>

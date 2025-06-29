@@ -12,7 +12,7 @@ class Gaji extends BaseModel
     protected $fillable = [
         'guru_id', 'total_siswa', 
         'potongan', 'sub_total', 'tunjangan', 'komisi', 'total',
-        'tanggal', 'pengeluaran_id', "bulan", "tahun"
+        'tanggal', 'pengeluaran_id', "bulan", "tahun", "asisten_guru_id",
     ];
     protected $table = 'gaji';
 

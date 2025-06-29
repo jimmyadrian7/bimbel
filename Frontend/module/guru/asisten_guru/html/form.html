@@ -1,0 +1,86 @@
+<app-form detail="guru.asisten_guru_detail" list="guru.asisten_guru" id="vm.dataId" table="asisten_guru"
+    fields="vm.fields" data="vm.data">
+    <app-form-body>
+        <form name="appForm" novalidate>
+            <ul class="nav nav-tabs mt-5 text-xs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="list" href="#detail">Detail</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#kursus">Tempat Kursus</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#kuesioner">Kuesioner</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="list" href="#bank">Bank</a>
+                </li>
+            </ul>
+
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="detail">
+                    <div class="row mt-4">
+                        <div class="col-md-6" ng-repeat="fields in vm.additional.detailFields">
+                            <table>
+                                <tr ng-repeat="field in fields track by $index">
+                                    <td class="text-xs" ng-bind="field.name"></td>
+                                    <td class="px-3">:</td>
+                                    <td class="font-weight-bolder text-dark py-2">
+                                        <app-form-input name="{{field.name}}" type="{{field.type}}"
+                                            expr="vm.data.{{field.value}}"
+                                            required="{{field.required}}"></app-form-input>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade show" id="kursus">
+                    <div class="my-3">
+                        <div class="mt-3">
+                            <button type="button" type="button"
+                                class="btn btn-link text-gradient text-primary px-3 mb-0" ng-click="vm.editKursus()">
+                                <i class="fa fa-pencil me-2"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+
+                    <app-table-template data="vm.data.kursus" fields="vm.additional.kursusFields"></app-table-template>
+                </div>
+
+                <div class="tab-pane fade show" id="kuesioner">
+                    <div class="row my-4">
+                        <div class="col-12">
+                            <div class="my-3" ng-repeat="field in vm.additional.surveyFields">
+                                <div class="text-xs" ng-bind="field.name"></div>
+                                <div class="font-weight-bolder text-dark py-2">
+                                    <app-form-input name="{{field.name}}" type="{{field.type}}"
+                                        expr="vm.data.{{field.value}}" required="{{field.required}}"></app-form-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade show" id="bank">
+                    <div class="row mt-4">
+                        <div class="col-md-6" ng-repeat="fields in vm.additional.bankFields">
+                            <table>
+                                <tr ng-repeat="field in fields track by $index">
+                                    <td class="text-xs" ng-bind="field.name"></td>
+                                    <td class="px-3">:</td>
+                                    <td class="font-weight-bolder text-dark py-2">
+                                        <app-form-input name="{{field.name}}" type="{{field.type}}"
+                                            expr="vm.data.{{field.value}}"
+                                            required="{{field.required}}"></app-form-input>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </app-form-body>
+</app-form>

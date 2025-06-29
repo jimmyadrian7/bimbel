@@ -6,8 +6,7 @@
 
     appInputSelect.$inject = ['$window'];
 
-    function appInputSelect($window)
-    {
+    function appInputSelect($window) {
         let directive = {
             restrict: 'A',
             require: 'ngModel',
@@ -16,9 +15,8 @@
 
         return directive;
 
-        
-        function link(scope, element, attrs, ngModelCtrl)
-        {
+
+        function link(scope, element, attrs, ngModelCtrl) {
             let el = $(element);
             let init = false;
             let baseUrl = $window.location.pathname.split('/admin')[0] + "/api";
@@ -30,24 +28,23 @@
                 ajax: {
                     url: `${baseUrl}/${attrs.url}`,
                     dataType: 'json',
-                    data: (params) => { return {query: params.term} },
+                    data: (params) => { return { query: params.term } },
                     processResults: (response) => {
                         return {
                             results: response
                         }
                     }
-                }
+                },
+                tags: attrs.enableCreation ? true : false
             });
 
-            el.on('change', function() {
-                if (init)
-                {
+            el.on('change', function () {
+                if (init) {
                     ngModelCtrl.$setViewValue(el.select2("val"));
                     init = false;
                 }
-                else
-                {
-                    scope.$apply(function() {
+                else {
+                    scope.$apply(function () {
                         ngModelCtrl.$setViewValue(el.select2("val"));
                     });
                 }
@@ -64,30 +61,27 @@
             });
 
 
-            function setDisplay(displayValue, formatter)
-            {
+            function setDisplay(displayValue, formatter) {
                 if (!displayValue) {
                     return "";
                 }
 
-                if (typeof displayValue == 'object')
-                {
+                if (typeof displayValue == 'object') {
                     init = true;
                     displayValue.text = displayValue.nama;
 
                     delete displayValue.nama;
 
                     var newOption = new Option(displayValue.text, displayValue.id, true, true);
-                    
+
                     Object.keys(displayValue).forEach(key => {
-                        if (!['id', 'text'].includes(key))
-                        {
+                        if (!['id', 'text'].includes(key)) {
                             newOption.setAttribute(key, displayValue[key]);
                         }
                     });
 
                     el.append(newOption).trigger('change');
-                    
+
                     el.trigger({
                         type: 'select2:select',
                         params: {
@@ -95,19 +89,16 @@
                         }
                     });
                 }
-                
-                if (typeof formatter !== 'undefined')
-                {
+
+                if (typeof formatter !== 'undefined') {
                     return displayValue || "";
                 }
-                else
-                {
+                else {
                     element.val(displayValue || "");
                 }
             }
 
-            function setModel(modelVal)
-            {
+            function setModel(modelVal) {
                 return modelVal;
             }
         }

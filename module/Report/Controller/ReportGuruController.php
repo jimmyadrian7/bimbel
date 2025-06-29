@@ -265,6 +265,8 @@ class ReportGuruController extends BaseReportController
             });
 
             $total_diterima = $gaji + $total_tunjangan - $total_potongan;
+
+            $smile_images = $this->getImage('Cus-2.jpg');
             
             $data = [
                 'judul' => "SLIP GAJI " . strtoupper($guru->jabatan),
@@ -278,6 +280,7 @@ class ReportGuruController extends BaseReportController
                 'total_tunjangan' => $total_tunjangan,
                 'potongan_gaji' => $potongan_gaji,
                 'total_diterima' => $total_diterima,
+                'smile_images' => $smile_images,
             ];
 
             $result = $this->toPdf("Report/View/slip_gaji.twig", $data, "background slip gaji.jpg", 'potrait');

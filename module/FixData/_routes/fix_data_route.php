@@ -61,160 +61,192 @@
 // });
 
 
-$app->post("/api/reset/sequance/tagihan", function ($request, $response, $args) {
+// $app->post("/api/reset/sequance/tagihan", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->resetSequanceTagihan($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->resetSequanceTagihan($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/fix/data/tagihan", function ($request, $response, $args) {
+// $app->post("/api/fix/data/tagihan", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->fixDataTagihan($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->fixDataTagihan($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/add/field/keluar/deposit", function ($request, $response, $args) {
+// $app->post("/api/add/field/keluar/deposit", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->addFieldKeluarDeposit($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->addFieldKeluarDeposit($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/add/field/sequance-pendaftaran/kursus", function ($request, $response, $args) {
+// $app->post("/api/add/field/sequance-pendaftaran/kursus", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->addFieldSequancePendaftaranKursus($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->addFieldSequancePendaftaranKursus($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/update/no/formulir/siswa", function ($request, $response, $args) {
+// $app->post("/api/update/no/formulir/siswa", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->updateNoFormulirSiswa($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->updateNoFormulirSiswa($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/add/field/youtube/web", function ($request, $response, $args) {
+// $app->post("/api/add/field/youtube/web", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->addFieldYouTubeWeb($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->addFieldYouTubeWeb($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/add/field/phone/web", function ($request, $response, $args) {
+// $app->post("/api/add/field/phone/web", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->addFieldPhoneWeb($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->addFieldPhoneWeb($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/add/menu/iuran", function ($request, $response, $args) {
+// $app->post("/api/add/menu/iuran", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->addMenuIuran($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->addMenuIuran($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/add/table/riwayat/penarikan", function ($request, $response, $args) {
+// $app->post("/api/add/table/riwayat/penarikan", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
-    $result = $controller->addTableRiwayatPenarikan($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataController");
+//     $result = $controller->addTableRiwayatPenarikan($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/patch/1/3", function ($request, $response, $args) {
+// $app->post("/api/patch/1/3", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
-    $result = $controller->patch3($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
+//     $result = $controller->patch3($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/patch/1/4", function ($request, $response, $args) {
+// $app->post("/api/patch/1/4", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
-    $result = $controller->patch4($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
+//     $result = $controller->patch4($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/patch/1/5", function ($request, $response, $args) {
+// $app->post("/api/patch/1/5", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
-    $result = $controller->patch5($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
+//     $result = $controller->patch5($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/patch/1/6", function ($request, $response, $args) {
+// $app->post("/api/patch/1/6", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
-    $result = $controller->patch6($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
+//     $result = $controller->patch6($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/fix/data/iuran", function ($request, $response, $args) {
+// $app->post("/api/fix/data/iuran", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\FixDataIuranController");
-    $result = $controller->fixDataIuran($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\FixDataIuranController");
+//     $result = $controller->fixDataIuran($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/patch/1/7", function ($request, $response, $args) {
+// $app->post("/api/patch/1/7", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
-    $result = $controller->patch7($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
+//     $result = $controller->patch7($request, $args, $response);
 
-    $response = $response->withHeader("Content-Type", "application/json");
-    $response->getBody()->write(json_encode($result));
-    return $response;
-});
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
 
-$app->post("/api/patch/1/8", function ($request, $response, $args) {
+// $app->post("/api/patch/1/8", function ($request, $response, $args) {
 
-    $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
-    $result = $controller->patch8($request, $args, $response);
+//     $controller = $this->get("Bimbel\FixData\Controller\Patch1Controller");
+//     $result = $controller->patch8($request, $args, $response);
+
+//     $response = $response->withHeader("Content-Type", "application/json");
+//     $response->getBody()->write(json_encode($result));
+//     return $response;
+// });
+
+$app->post("/api/patch/{version}/{subversion}", function ($request, $response, $args) {
+
+    $version = $args['version'];
+    $subversion = $args['subversion'];
+
+    try {
+        $controllerClass = "Bimbel\FixData\Controller\Patch" . $version . "Controller";
+        $controller = $this->get($controllerClass);
+
+        $methodName = 'patch' . $subversion;
+
+        // Check if method exists before calling it
+        if (method_exists($controller, $methodName)) {
+            $result = $controller->$methodName($request, $args, $response);
+        } else {
+            $result = [
+                'error' => true,
+                'message' => "Method {$methodName} not found in {$controllerClass}"
+            ];
+        }
+    } catch (Exception $e) {
+        $result = [
+            'error' => true,
+            'message' => "Controller not found or error occurred: " . $e->getMessage()
+        ];
+    }
 
     $response = $response->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode($result));

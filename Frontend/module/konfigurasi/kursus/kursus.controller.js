@@ -18,8 +18,11 @@
             { name: "Nama Penerima", value: "nama_rek", table: false },
             { name: "Logo Bank", value: "logo_bank", type: "file" },
             { name: "Diserahkan Oleh", value: "diserahkan_oleh", table: false },
+            { name: "TTD Diserahkan Oleh", value: "diserahkan_oleh_file", type: 'file', table: false },
             { name: "Diketahui Oleh", value: "diketahui_oleh", table: false },
-            { name: "Diterima Oleh", value: "diterima_oleh", table: false }
+            { name: "TTD Diketahui Oleh", value: "diketahui_oleh_file", type: 'file', table: false },
+            { name: "Diterima Oleh", value: "diterima_oleh", table: false },
+            { name: "TTD Diterima Oleh", value: "diterima_oleh_file", type: 'file', table: false }
         ];
     }
 })()

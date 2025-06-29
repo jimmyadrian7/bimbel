@@ -8,14 +8,30 @@ class Kursus extends BaseModel
 {
     protected $fillable = [
         'kode', 'nama', 'user', 'sequance', 'sequance_pendaftaran', 'no_rek', 'nama_rek', 'logo_bank', 'logo_bank_id', 
-        'diserahkan_oleh', 'diketahui_oleh', 'diterima_oleh'
+        'diserahkan_oleh', 'diketahui_oleh', 'diterima_oleh', 
+        'diserahkan_oleh_file', 'diketahui_oleh_file', 'diterima_oleh_file', 
+        'diserahkan_oleh_file_id', 'diketahui_oleh_file_id', 'diterima_oleh_file_id'
     ];
     protected $table = 'kursus';
 
+    public function diserahkan_oleh_file()
+    {
+        return $this->belongsTo(File::class, 'diserahkan_oleh_file_id');
+    }
+
+    public function diketahui_oleh_file()
+    {
+        return $this->belongsTo(File::class, 'diketahui_oleh_file_id');
+    }
+
+    public function diterima_oleh_file()
+    {
+        return $this->belongsTo(File::class, 'diterima_oleh_file_id');
+    }
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('logo_bank');
+        $obj = $obj->with('logo_bank', 'diserahkan_oleh_file', 'diketahui_oleh_file', 'diterima_oleh_file');
         $data = parent::fetchDetail($id, $obj);
         
         $query = "
@@ -94,6 +110,9 @@ class Kursus extends BaseModel
     public function create(array $attributes = [])
     {
         self::handleFile($attributes, 'logo_bank');
+        self::handleFile($attributes, 'diserahkan_oleh_file');
+        self::handleFile($attributes, 'diketahui_oleh_file');
+        self::handleFile($attributes, 'diterima_oleh_file');
 		$kursus = parent::create($attributes);
 
         return $kursus;
@@ -102,6 +121,9 @@ class Kursus extends BaseModel
     public function update(array $attributes = [], array $options = [])
     {
         $this->handleFile($attributes, 'logo_bank');
+        $this->handleFile($attributes, 'diserahkan_oleh_file');
+        $this->handleFile($attributes, 'diketahui_oleh_file');
+        $this->handleFile($attributes, 'diterima_oleh_file');
         $result = parent::update($attributes, $options);
 
         return $result;

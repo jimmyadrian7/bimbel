@@ -1,0 +1,84 @@
+<app-modal data='vm.data'>
+    <app-modal-title>Edit Tempat Kursus</app-modal-title>
+
+    <app-modal-body>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-gradient text-primary">Master Data Tempat Kursus</div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive p-0" ng-init="vm.fetchKursus()">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kode</th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                
+                                <tbody>
+                                    <tr ng-if="!vm.modal.kursus || vm.modal.kursus.length === 0">
+                                        <td colspan="3" class="text-center">
+                                            <span class="text-xs font-weight-bold">No data Available</span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="vm.modal.kursus" ng-repeat="kursus in vm.modal.kursus">
+                                        <td class="text-xs font-weight-bold" ng-bind="kursus.kode"></td>
+                                        <td class="text-xs font-weight-bold" ng-bind="kursus.nama"></td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                ng-if="!vm.isAdded(kursus)"
+                                                class="btn btn-link text-primary text-gradient px-3 my-0" 
+                                                ng-click="vm.addKursus(kursus)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-gradient text-primary">Tempat Kursus</div>
+                    <div class="card-body px-3 py-0">
+                        <ul class="list-group">
+                            <li 
+                                class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg"
+                                ng-repeat="kursus in vm.data.kursus track by $index"
+                                ng-if="vm.data.kursus">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-1 text-dark font-weight-bold text-sm" ng-bind="kursus.nama"></h6>
+                                    <span class="text-xs" ng-bind="kursus.kode"></span>
+                                </div>
+                                <div class="d-flex align-items-center text-sm">
+                                    <button type="button" class="btn btn-link text-primary text-gradient p-0 my-0" ng-click="vm.removeKursus($index)" title="delete">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            <li 
+                                class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg"
+                                ng-if="!vm.data.kursus || vm.data.kursus.length == 0">
+                                <h6 class="mb-1 text-dark font-weight-bold text-sm">
+                                    No data Available
+                                </h6>
+                            </li>
+                        </ul>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </app-modal-body>
+
+    <app-modal-footer>
+        <button type="button" type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i> Close
+        </button>
+    </app-modal-footer>
+</app-modal>

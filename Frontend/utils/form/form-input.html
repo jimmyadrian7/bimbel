@@ -1,55 +1,20 @@
-<input
-    ng-if="type == 'number'" 
-    type="text" 
-    ng-model-dynamic="{{ expr }}"
-    input-number="true"
-    class="form-control form-control-sm"
-    name="{{expr}}"
-    ng-required="{{required}}">
+<input ng-if="type == 'number'" type="text" ng-model-dynamic="{{ expr }}" input-number="true"
+    class="form-control form-control-sm" name="{{expr}}" ng-required="{{required}}">
 
-<input
-    ng-if="type == 'date'" 
-    type="text" 
-    ng-model-dynamic="{{ expr }}"
-    input-date="true"
-    class="form-control form-control-sm"]
-    name="{{expr}}"
-    ng-required="{{required}}">
+<input ng-if="type == 'date'" type="text" ng-model-dynamic="{{ expr }}" input-date="true"
+    class="form-control form-control-sm" ] name="{{expr}}" ng-required="{{required}}">
 
-<input
-    ng-if="type == 'password'" 
-    type="password" 
-    ng-model-dynamic="{{ expr }}"
-    class="form-control form-control-sm"]
-    name="{{expr}}"
-    ng-required="{{required}}">
+<input ng-if="type == 'password'" type="password" ng-model-dynamic="{{ expr }}" class="form-control form-control-sm" ]
+    name="{{expr}}" ng-required="{{required}}">
 
-<input
-    ng-if="type == 'month'" 
-    type="text" 
-    ng-model-dynamic="{{ expr }}"
-    input-month="true"
-    class="form-control form-control-sm"]
-    name="{{expr}}"
-    ng-required="{{required}}">
+<input ng-if="type == 'month'" type="text" ng-model-dynamic="{{ expr }}" input-month="true"
+    class="form-control form-control-sm" ] name="{{expr}}" ng-required="{{required}}">
 
-<input
-    ng-if="type == 'time'" 
-    type="text" 
-    ng-model-dynamic="{{ expr }}"
-    input-time="true"
-    class="form-control form-control-sm"
-    name="{{expr}}"
-    ng-required="{{required}}">
+<input ng-if="type == 'time'" type="text" ng-model-dynamic="{{ expr }}" input-time="true"
+    class="form-control form-control-sm" name="{{expr}}" ng-required="{{required}}">
 
-<select
-    ng-if="type == 'selection'" 
-    type="text" 
-    ng-model-dynamic="{{ expr }}"
-    class="form-select form-select-sm"
-    option="true"
-    name="{{expr}}"
-    ng-required="{{required}}">
+<select ng-if="type == 'selection'" type="text" ng-model-dynamic="{{ expr }}" class="form-select form-select-sm"
+    option="true" name="{{expr}}" ng-required="{{required}}">
 </select>
 
 <!-- <input
@@ -61,52 +26,25 @@
     url="{{field.url}}"
     class="form-control form-control-sm"> -->
 
-<select
-    ng-if="type == 'autocomplete'"
-    class="form-select form-select-sm"
-    ng-model-dynamic="{{ expr }}"
-    url="{{field.url}}"
-    input-autocomplete="true"
-    name="{{expr}}"
-    ng-required="{{required}}">
+<select ng-if="type == 'autocomplete'" class="form-select form-select-sm" ng-model-dynamic="{{ expr }}"
+    url="{{field.url}}" input-autocomplete="true" name="{{expr}}" ng-required="{{required}}"
+    enable-creation="{{field.enableCreation || false}}">
 </select>
 
-<input
-    ng-if="type == 'file'" 
-    type="file"
-    ng-model-dynamic="{{ expr }}"
-    input-file="true"
-    class="form-control form-control-sm"
-    name="{{expr}}"
-    ng-required="{{required}}">
+<input ng-if="type == 'file'" type="file" ng-model-dynamic="{{ expr }}" input-file="true"
+    class="form-control form-control-sm" name="{{expr}}" ng-required="{{required}}">
 
-<textarea
-    ng-if="type == 'textarea'"
-    ng-model-dynamic="{{ expr }}"
-    class="form-control form-control-sm" 
-    name="{{expr}}"
+<textarea ng-if="type == 'textarea'" ng-model-dynamic="{{ expr }}" class="form-control form-control-sm" name="{{expr}}"
     ng-required="{{required}}"></textarea>
 
 <div ng-if="type == 'boolean'" class="form-check">
-    <input 
-    type="checkbox"
-    class="form-check-input"
-    ng-model-dynamic="{{ expr }}"
-    ng-true-value="1"
-    ng-false-value="0"
-    name="{{expr}}"
-    ng-required="{{required}}">
+    <input type="checkbox" class="form-check-input" ng-model-dynamic="{{ expr }}" ng-true-value="1" ng-false-value="0"
+        name="{{expr}}" ng-required="{{required}}">
 </div>
 
-<input
-    ng-if="!type"
-    type="text" 
-    ng-model-dynamic="{{ expr }}"
-    class="form-control form-control-sm"
-    name="{{expr}}"
+<input ng-if="!type" type="text" ng-model-dynamic="{{ expr }}" class="form-control form-control-sm" name="{{expr}}"
     ng-required="{{required}}">
 
-    <!-- // @need to uncoment -->
-<span 
-    class="text-danger text-xs"
+<!-- // @need to uncoment -->
+<span class="text-danger text-xs"
     ng-show="appForm[expr].$invalid && (appForm[expr].$touched || appForm.$submitted)">{{name}} wajib diisi.</span>
