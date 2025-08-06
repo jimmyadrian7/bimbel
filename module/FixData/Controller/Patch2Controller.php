@@ -114,4 +114,30 @@ class Patch2Controller extends Controller
 
         return $result;
     }
+
+    public function patch3($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        // Create Table Report Info
+        if (!DB::getSchemaBuilder()->hasTable('report_info'))
+        {
+            DB::getSchemaBuilder()->create('report_info', function ($table) {
+                $table->increments('id');
+                $table->integer('logo_id')->nullable();
+                $table->text('alamat')->nullable();
+                $table->string('no_hp', 255)->nullable();
+                $table->string('email', 255)->nullable();
+
+                $table->foreign('logo_id')->references('id')->on('file');
+            });
+
+            DB::table('report_info')->insert(['id' => 1]);
+        }
+
+        $menu_guru_id = Utils::addMenuReport('report_profile', 'Report Profile', 'konfigurasi');
+        Utils::updateAccessRight('cud', $menu_guru_id, [1, 4]);
+
+        return $result;
+    }
 }

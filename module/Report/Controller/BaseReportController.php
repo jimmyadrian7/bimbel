@@ -56,7 +56,12 @@ class BaseReportController extends CoreController
         $pdf = $this->container->get("pdf");
         $twig = $this->container->get("twig");
 
-        $data['logo'] = $this->getImage('logo.png');
+        // $data['logo'] = $this->getImage('logo.png');
+        // Get Report Info
+        $report_info = \Bimbel\Master\Model\ReportInfo::find(1);
+        $data['logo'] = 'data:image/png;base64, ' . $report_info->logo->base64;
+        $data['report_info'] = $report_info;
+
         $data['background'] = $this->getBackground($background);
         $html = $twig->fetch($view, $data);
 

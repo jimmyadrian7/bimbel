@@ -12,5 +12,6 @@
         'app.module.konfigurasi.whatsapp',
         'app.module.konfigurasi.account_configuration',
         'app.module.konfigurasi.fix_data',
+        'app.module.konfigurasi.report_profile',
     ]);
 })()
