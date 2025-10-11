@@ -17,34 +17,39 @@ import authentication_html from "./html/modal/authentication.html";
     ];
 
     function SiswaController(
-        stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session, 
+        stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session,
         referalOptions, logger
-    )
-    {
+    ) {
         let vm = this;
         let jenisKelamin = [
-            {label: "Laki laki", value: "l"},
-            {label: "Perempuan", value: "p"}
+            { label: "Laki laki", value: "l" },
+            { label: "Perempuan", value: "p" }
         ];
         let statusOpt = [
-            {label: "Baru", value: "b"},
-            {label: "Aktif", value: "a"},
-            {label: "Pengembalian", value: "p"},
-            {label: "Berhenti", value: "n"}
+            { label: "Baru", value: "b" },
+            { label: "Aktif", value: "a" },
+            { label: "Pengembalian", value: "p" },
+            { label: "Berhenti", value: "n" }
         ];
         let hariOpt = [
-            {value: "1", label: "Senin"},
-            {value: "2", label: "Selasa"},
-            {value: "3", label: "Rabu"},
-            {value: "4", label: "Kamis"},
-            {value: "5", label: "Jumat"},
-            {value: "6", label: "Sabtu"},
-            {value: "7", label: "Minggu"}
+            { value: "1", label: "Senin" },
+            { value: "2", label: "Selasa" },
+            { value: "3", label: "Rabu" },
+            { value: "4", label: "Kamis" },
+            { value: "5", label: "Jumat" },
+            { value: "6", label: "Sabtu" },
+            { value: "7", label: "Minggu" }
+        ];
+
+        let statusSiswaOpt = [
+            { value: "Pelajar", label: "Pelajar" },
+            { value: "Mahasiswa", label: "Mahasiswa" },
+            { value: "Pekerja", label: "Pekerja" },
         ];
 
         vm.myModal = false;
         vm.reset = false;
-        vm.data = {iuran: [], jadwal: [], ref: {}};
+        vm.data = { iuran: [], jadwal: [], ref: {} };
         vm.modal = {};
         vm.dataId = stateParams.dataId;
         vm.activeIndex = -1;
@@ -52,13 +57,13 @@ import authentication_html from "./html/modal/authentication.html";
         vm.isSuperUser = session.isSuperUser() || session.isAdminCabang();
         vm.referalOptions = referalOptions;
 
-        vm.status_field = {name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true};
+        vm.status_field = { name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true };
         vm.fields = [
-            {name: "No. Formulir", value: "no_formulir", table: true, required: true},
-            {name: "Tanggal Pendaftaran", value: "tanggal_pendaftaran", table: true, type: "date", required: true},
+            { name: "No. Formulir", value: "no_formulir", table: true, required: true },
+            { name: "Tanggal Pendaftaran", value: "tanggal_pendaftaran", table: true, type: "date", required: true },
             {
-                name: "Guru", 
-                value: "guru_id", 
+                name: "Guru",
+                value: "guru_id",
                 type: "autocomplete",
                 url: 'guru/search/autocomplete',
                 valueName: 'guru_data',
@@ -66,15 +71,15 @@ import authentication_html from "./html/modal/authentication.html";
                 hidden: !vm.hideGuru,
                 required: true
             },
-            {name: "Nama", value: "orang.nama", table: true, required: true},
-            {name: "Nama Mandarin", value: "orang.nama_mandarin", table: true, required: true},
-            {name: "Komisi", value: "komisi", type: 'number', table: true, required: true},
-            {name: "Program", value: "program", required: true},
-            {name: "Paket Belajar", value: "paket_belajar", required: true},
+            { name: "Nama", value: "orang.nama", table: true, required: true },
+            { name: "Nama Mandarin", value: "orang.nama_mandarin", table: true, required: true },
+            { name: "Komisi", value: "komisi", type: 'number', table: true, required: true },
+            { name: "Program", value: "program", required: true },
+            { name: "Paket Belajar", value: "paket_belajar", required: true },
             // {name: "Tempat Kursus", value: "kursus_id", table: true, type: "selection", selection: kursusOptions, required: true},
             {
-                name: "Tempat Kursus", 
-                value: "kursus_id", 
+                name: "Tempat Kursus",
+                value: "kursus_id",
                 type: "autocomplete",
                 url: 'kursus/search/autocomplete',
                 valueName: 'kursus_data',
@@ -82,60 +87,61 @@ import authentication_html from "./html/modal/authentication.html";
                 required: true
             },
             vm.status_field,
-            {name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true}
+            { name: "Status Siswa", value: "status_siswa", type: "selection", selection: statusSiswaOpt },
+            { name: "Profile Picture", value: "orang.pp", type: "file", hideDetail: true }
         ];
 
         vm.additional = {};
         vm.additional.detailFields = [
             [
-                {name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, required: true},
-                {name: "Agama", value: "orang.agama_id", type: 'selection', selection: agamaOptions, required: true},
-                {name: "Tempat Lahir", value: "orang.tempat_lahir", required: true},
-                {name: "Tanggal Lahir", value: "orang.tanggal_lahir", type: 'date', required: true},
+                { name: "Jenis Kelamin", value: "orang.jenis_kelamin", type: 'selection', selection: jenisKelamin, required: true },
+                { name: "Agama", value: "orang.agama_id", type: 'selection', selection: agamaOptions, required: true },
+                { name: "Tempat Lahir", value: "orang.tempat_lahir", required: true },
+                { name: "Tanggal Lahir", value: "orang.tanggal_lahir", type: 'date', required: true },
             ],
             [
-                {name: "No. HP", value: "orang.no_hp", table: true, required: true},
-                {name: "Email", value: "orang.email", required: true},
-                {name: "Alamat", value: "orang.alamat", required: true},
-                {name: "Sekolah", value: "sekolah", required: true},
-                {name: "Kelas", value: "kelas", required: true}
+                { name: "No. HP", value: "orang.no_hp", table: true, required: true },
+                { name: "Email", value: "orang.email", required: true },
+                { name: "Alamat", value: "orang.alamat", required: true },
+                { name: "Sekolah", value: "sekolah", required: true },
+                { name: "Kelas", value: "kelas", required: true }
             ]
         ];
         vm.additional.ortuFields = [
             [
-                {name: "Nama Ayah", value: "orang.nama_ayah", required: true},
-                {name: "Nama Ibu", value: "orang.nama_ibu", required: true},
-                {name: "No. HP Orang Tua", value: "orang.no_hp_ortu", required: true}
+                { name: "Nama Ayah", value: "orang.nama_ayah", required: true },
+                { name: "Nama Ibu", value: "orang.nama_ibu", required: true },
+                { name: "No. HP Orang Tua", value: "orang.no_hp_ortu", required: true }
             ],
             [
-                {name: "Pekerjaan Ayah", value: "orang.pekerjaan_ayah", required: true},
-                {name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu", required: true},
-                {name: "No. Rekening Orang Tua", value: "orang.no_rek_ortu", required: true}
+                { name: "Pekerjaan Ayah", value: "orang.pekerjaan_ayah", required: true },
+                { name: "Pekerjaan Ibu", value: "orang.pekerjaan_ibu", required: true },
+                { name: "No. Rekening Orang Tua", value: "orang.no_rek_ortu", required: true }
             ]
         ];
         vm.additional.testFields = [
             [
-                {name: "Pinyin", value: "pinyin"},
-                {name: "Dengar", value: "dengar"},
-                {name: "Bicara", value: "bicara"}
+                { name: "Pinyin", value: "pinyin" },
+                { name: "Dengar", value: "dengar" },
+                { name: "Bicara", value: "bicara" }
             ],
             [
-                {name: "Membaca", value: "membaca"},
-                {name: "Menulis", value: "menulis"},
-                {name: "Kondisi Siswa", value: "kondisi"}
+                { name: "Membaca", value: "membaca" },
+                { name: "Menulis", value: "menulis" },
+                { name: "Kondisi Siswa", value: "kondisi" }
             ]
         ];
         vm.additional.responFields = [
-            {name: "Respon & Tanggapan Orang Tua", value: "respon", type: 'textarea'},
-            {name: "Tanggapan Guru", value: "tanggapan", type: 'textarea'}
+            { name: "Respon & Tanggapan Orang Tua", value: "respon", type: 'textarea' },
+            { name: "Tanggapan Guru", value: "tanggapan", type: 'textarea' }
         ];
         vm.iuranFields = [
-            {name: "Nama", value: "nama"},
-            {name: "Bulan", value: "bulan", type: 'number'}
+            { name: "Nama", value: "nama" },
+            { name: "Bulan", value: "bulan", type: 'number' }
         ];
         vm.jadwalFields = [
-            {name: 'Hari', value: 'hari', type: 'selection', selection: hariOpt},
-            {name: 'Waktu', value: 'waktu', type: 'time'},
+            { name: 'Hari', value: 'hari', type: 'selection', selection: hariOpt },
+            { name: 'Waktu', value: 'waktu', type: 'time' },
         ];
 
         vm.getValue = getValue;
@@ -174,92 +180,76 @@ import authentication_html from "./html/modal/authentication.html";
         activate();
         $scope.$watch(() => vm.data.kursus_id, watchTempatKursus);
 
-        function activate()
-        {
-            if (vm.data.guru_id = session.getSession().guru)
-            {
+        function activate() {
+            if (vm.data.guru_id = session.getSession().guru) {
                 let guru = session.getSession().guru;
-                vm.data.guru_data = {id: guru.id, nama: guru.orang.nama};
+                vm.data.guru_data = { id: guru.id, nama: guru.orang.nama };
                 let getter = $parse('guru_id');
                 getter.assign(vm.data, vm.data.guru_data);
 
-                if (!vm.hideGuru)
-                {
+                if (!vm.hideGuru) {
                     vm.data.guru_id = guru.id;
                 }
             }
         }
 
-        function getValue(field)
-        {
-            if (!field)
-            {
+        function getValue(field) {
+            if (!field) {
                 return "-";
             }
 
             let result = $parse(field.value)(vm.data);
 
-                if (field.type == 'selection')
-                {
-                    result = getLabel(result, field.selection);
-                }
+            if (field.type == 'selection') {
+                result = getLabel(result, field.selection);
+            }
 
-                return result || "-";
+            return result || "-";
         }
-        function getLabel(val, arr)
-        {
+        function getLabel(val, arr) {
             for (let index = 0; index < arr.length; index++) {
-                if (arr[index].value == val)
-                {
+                if (arr[index].value == val) {
                     return arr[index].label;
                 }
             }
         }
-        function getHari(data)
-        {
+        function getHari(data) {
             for (let index = 0; index < hariOpt.length; index++) {
-                if (hariOpt[index].value == data.hari)
-                {
+                if (hariOpt[index].value == data.hari) {
                     return hariOpt[index].label;
                 }
             }
         }
 
-        function updateStatus()
-        {
+        function updateStatus() {
             let data = vm.data;
             data['status'] = 'p';
 
             req.put('siswa', data).then(response => state.reload());
         }
 
-        function updateAktif()
-        {
+        function updateAktif() {
             let data = vm.data;
             data['status'] = 'a';
 
             req.put('siswa', data).then(response => state.reload());
         }
 
-        function tambahIuran()
-        {
+        function tambahIuran() {
             vm.myModal = $compile(iuran)($scope);
         }
-        function fetchIuran()
-        {
+        function fetchIuran() {
             req.get('iurans').then(data => {
                 vm.modal.iuran = data;
             });
         }
-        function isAdded(iuran)
-        {
+        function isAdded(iuran) {
             let result = false;
 
             for (let index = 0; index < vm.data.iuran.length; index++) {
                 const s = vm.data.iuran[index];
-                
-                if (s.id == iuran.id && s.action != 'delete')
-                {
+
+                if (s.id == iuran.id && s.action != 'delete') {
                     result = true;
                     break;
                 }
@@ -267,46 +257,38 @@ import authentication_html from "./html/modal/authentication.html";
 
             return result;
         }
-        function addIuran(iuran)
-        {
+        function addIuran(iuran) {
             let isExist = false;
             for (let index = 0; index < vm.data.iuran.length; index++) {
                 const s = vm.data.iuran[index];
-                
-                if (s.id == iuran.id)
-                {
+
+                if (s.id == iuran.id) {
                     delete vm.data.iuran[index].action;
                     isExist = true;
                     break;
                 }
             }
-            
-            if (!isExist)
-            {
+
+            if (!isExist) {
                 let data = angular.copy(iuran);
                 data.action = 'add';
                 vm.data.iuran.push(data);
             }
         }
-        function removeIuran(idx)
-        {
-            if (!vm.data.iuran[idx].action)
-            {
+        function removeIuran(idx) {
+            if (!vm.data.iuran[idx].action) {
                 vm.data.iuran[idx].action = 'delete';
             }
-            else
-            {
+            else {
                 vm.data.iuran.splice(idx, 1);
             }
         }
 
-        function editIuran(idx)
-        {
+        function editIuran(idx) {
             vm.activeIndex = idx;
             vm.myModal = $compile(edit_iuran)($scope);
         }
-        function modifyIuran(iuran)
-        {
+        function modifyIuran(iuran) {
             let current_iuran = vm.data.iuran[vm.activeIndex];
             vm.data.iuran[vm.activeIndex].old_id = current_iuran.id;
             vm.data.iuran[vm.activeIndex].id = iuran.id;
@@ -321,13 +303,11 @@ import authentication_html from "./html/modal/authentication.html";
             });
         }
 
-        function formJadwal(idx)
-        {
+        function formJadwal(idx) {
             let data = {};
             vm.modal.action = "add";
 
-            if (idx !== undefined)
-            {
+            if (idx !== undefined) {
                 vm.modal.activeIdx = idx;
                 vm.modal.action = "edit";
                 data = vm.data.jadwal[idx];
@@ -338,17 +318,14 @@ import authentication_html from "./html/modal/authentication.html";
 
             vm.myModal = $compile(jadwal)($scope);
         }
-        function addJadwal()
-        {
-            if (vm.modal.action == 'add')
-            {
+        function addJadwal() {
+            if (vm.modal.action == 'add') {
                 vm.data.jadwal.push({
                     hari: vm.modal.hari,
                     waktu: vm.modal.waktu
                 });
             }
-            else
-            {
+            else {
                 let idx = vm.modal.activeIdx;
                 vm.data.jadwal[idx].hari = vm.modal.hari;
                 vm.data.jadwal[idx].waktu = vm.modal.waktu;
@@ -356,43 +333,37 @@ import authentication_html from "./html/modal/authentication.html";
 
             Modal.getInstance(vm.myModal[0]).hide();
         }
-        function removeJadwal(idx)
-        {
+        function removeJadwal(idx) {
             vm.data.jadwal.splice(idx, 1);
         }
 
-        function getReportSiswa()
-        {
+        function getReportSiswa() {
             req.get(`generate/report/siswa`).then(response => {
-                vm.activeExcel = {filename: "siswa.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data};
+                vm.activeExcel = { filename: "siswa.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data };
                 let element = `<app-download-preview value='vm.activeExcel'></app-download-preview>`;
                 element = $compile(element)($scope);
             });
         }
 
-        function getReportJadwal()
-        {
+        function getReportJadwal() {
             req.get(`generate/report/jadwal`).then(response => {
-                vm.activeExcel = {filename: "jadwal.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data};
+                vm.activeExcel = { filename: "jadwal.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data };
                 let element = `<app-download-preview value='vm.activeExcel'></app-download-preview>`;
                 element = $compile(element)($scope);
             });
         }
 
-        function resetTagihan()
-        {
+        function resetTagihan() {
             vm.reset = true;
             vm.modalTitle = "Reset Tagihan";
             vm.myModal = $compile(tagihan_modal)($scope);
         }
-        function buatTagihan()
-        {
+        function buatTagihan() {
             vm.reset = false;
             vm.modalTitle = "Buat Tagihan";
             vm.myModal = $compile(tagihan_modal)($scope);
         }
-        function generateTagihan()
-        {
+        function generateTagihan() {
             let data = {
                 tanggal: vm.modal.tanggal_tagihan,
                 reset: vm.reset,
@@ -404,14 +375,12 @@ import authentication_html from "./html/modal/authentication.html";
                 state.reload();
             });
         }
-        
-        function modalTagihan()
-        {
+
+        function modalTagihan() {
             vm.myModal = $compile(generate_tagihan_modal)($scope);
         }
 
-        function genTagihan()
-        {
+        function genTagihan() {
             let data = {
                 tanggal: vm.modal.tanggal_tagihan
             };
@@ -422,43 +391,35 @@ import authentication_html from "./html/modal/authentication.html";
             });
         }
 
-        function buatDeposit()
-        {
-            req.post('siswa/buat/deposit', {id: vm.dataId}).then(response => {
+        function buatDeposit() {
+            req.post('siswa/buat/deposit', { id: vm.dataId }).then(response => {
                 state.reload();
             });
         }
 
-        function openAuth()
-        {
+        function openAuth() {
             vm.modal.password = "";
             vm.myModal = $compile(authentication_html)($scope);
         }
-        function authenticate()
-        {
-            req.post('siswa/authenticate/reset/tagihan', {password: vm.modal.password}).then(response => {
-                if (response.authenticate)
-                {
+        function authenticate() {
+            req.post('siswa/authenticate/reset/tagihan', { password: vm.modal.password }).then(response => {
+                if (response.authenticate) {
                     Modal.getInstance(vm.myModal[0]).hide();
                     resetTagihan();
                 }
-                else
-                {
+                else {
                     logger.error("Password salah");
                 }
             });
         }
 
-        function watchTempatKursus()
-        {
+        function watchTempatKursus() {
             let el = $('[name="vm.data.kursus_id"]');
-            
-            if (el.length > 0)
-            {
+
+            if (el.length > 0) {
                 let el_data = el.select2('data');
 
-                if (el_data.length > 0 && el_data[0].kode)
-                {
+                if (el_data.length > 0 && el_data[0].kode) {
                     vm.data.no_formulir = el_data[0].kode + "-" + String(el_data[0].sequance_pendaftaran + 1).padStart(3, '0');
                 }
             }

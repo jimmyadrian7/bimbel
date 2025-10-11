@@ -85,28 +85,28 @@ class InvoiceController extends BaseReportController
                 $logo_bank = "";
             }
             
-            $terbilang = Terbilang::convert($tagihan->total);
+            $terbilang = Terbilang::convert($tagihan->total) . " rupiah";
             $untuk = [];
             $untuk_spp = [];
 
-            foreach ($tagihan->tagihan_detail as $key => $tagihan_detail) {
-                if ($tagihan_detail->kategori_pembiayaan == 's')
-                {
-                    if ($tagihan_detail->tanggal_iuran_mulai == $tagihan_detail->tanggal_iuran_berakhir)
-                    {
-                        $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai));
-                    }
-                    else
-                    {
-                        $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai)) . " - " . date('F Y', strtotime($tagihan_detail->tanggal_iuran_berakhir));
-                    }
-                    array_push($untuk_spp, "Iuran " . $tanggal_iuran);
-                }
-                else
-                {
-                    array_push($untuk, $tagihan_detail->nama);
-                }
-            }
+            // foreach ($tagihan->tagihan_detail as $key => $tagihan_detail) {
+            //     if ($tagihan_detail->kategori_pembiayaan == 's')
+            //     {
+            //         if ($tagihan_detail->tanggal_iuran_mulai == $tagihan_detail->tanggal_iuran_berakhir)
+            //         {
+            //             $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai));
+            //         }
+            //         else
+            //         {
+            //             $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai)) . " - " . date('F Y', strtotime($tagihan_detail->tanggal_iuran_berakhir));
+            //         }
+            //         array_push($untuk_spp, "Iuran " . $tanggal_iuran);
+            //     }
+            //     else
+            //     {
+            //         array_push($untuk, $tagihan_detail->nama);
+            //     }
+            // }
 
             $untuk = implode(", ", $untuk);
             $untuk_spp = implode(", ", $untuk_spp);

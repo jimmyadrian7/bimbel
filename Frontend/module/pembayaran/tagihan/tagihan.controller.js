@@ -150,6 +150,7 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
         vm.getNumber = getNumber;
 
         $scope.$watch(() => vm.data.siswa_id, watchSiswaId);
+        $scope.$watch(() => vm.data.terima_dari, watchTerimaDari);
 
         function getValue(field) {
             if (!field) {
@@ -491,6 +492,20 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
                     }
                     else {
                         vm.additionalData.komisi_siswa = el_data[0].komisi;
+                    }
+                }
+            }
+        }
+
+        function watchTerimaDari() {
+            let el = $('[name="vm.data.terima_dari"]');
+
+            if (el.length > 0) {
+                if (!isNaN(vm.data.terima_dari)) {
+                    let el_data = el.select2('data');
+
+                    if (el_data.length > 0) {
+                        vm.data.terima_dari = el_data[0].text;
                     }
                 }
             }

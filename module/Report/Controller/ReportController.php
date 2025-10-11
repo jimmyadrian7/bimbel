@@ -241,7 +241,15 @@ class ReportController extends BaseReportController
             }
         }
 
-        $gaji_guru = collect($this->queryGajiGuru($postData)->toArray());
+        if ($session->isSuperUser())
+        {
+            $gaji_guru = collect($this->queryGajiGuru($postData)->toArray());
+        }
+        else
+        {
+            $gaji_guru = collect([]);
+        }
+        
         $pengeluaran = collect($pengeluaran->get()->toArray());
         $deposit = collect($deposit->get()->toArray());
 
