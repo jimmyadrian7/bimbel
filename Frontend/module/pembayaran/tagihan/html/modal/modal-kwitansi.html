@@ -135,7 +135,18 @@
                         <td class="text-xs">Terima Dari</td>
                         <td class="px-3">:</td>
                         <td class="pt-2">
-                            <input type="text" class="form-control form-control-sm" ng-model="vm.data.terima_dari">
+                            <select class="form-select form-select-sm" ng-model-dynamic="vm.data.terima_dari"
+                                url="siswa/search/autocomplete" input-autocomplete="true" name="vm.data.terima_dari"
+                                enable-creation="{{ true }}">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-xs">Untuk Pembayaran</td>
+                        <td class="px-3">:</td>
+                        <td class="pt-2">
+                            <textarea ng-model="vm.data.untuk_pembayaran"
+                                class="form-control form-control-sm"></textarea>
                         </td>
                     </tr>
                     <tr>

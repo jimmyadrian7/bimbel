@@ -140,4 +140,28 @@ class Patch2Controller extends Controller
 
         return $result;
     }
+
+    public function patch4($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        $isColExist = DB::getSchemaBuilder()->getConnection()->getSchemaBuilder()->hasColumn('siswa','status_siswa');
+        if (!$isColExist)
+        {
+            DB::getSchemaBuilder()->getConnection()->getSchemaBuilder()->table("siswa", function($table) {
+                $table->enum('status_siswa', ['Pelajar', 'Mahasiswa', 'Pekerja'])->nullable();
+            });
+        }
+
+        $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+        $isColExist = $tagihan->getConnection()->getSchemaBuilder()->hasColumn('tagihan','untuk_pembayaran');
+        if (!$isColExist)
+        {
+            $tagihan->getConnection()->getSchemaBuilder()->table("tagihan", function($table) {
+                $table->string('untuk_pembayaran', 255)->nullable()->after('terima_dari');
+            });
+        }
+
+        return $result;
+    }
 }

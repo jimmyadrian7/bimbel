@@ -23,7 +23,7 @@ class Siswa extends BaseModel
         'iuran', 'jadwal', 'ref',
         'pinyin', 'dengar', 'bicara', 'membaca', 'menulis', 'kondisi', 'respon', 'tanggapan',
         'program', 'paket_belajar', 'referal_other',
-        'kursus_id', 'sekolah', 'kelas'
+        'kursus_id', 'sekolah', 'kelas', 'status_siswa'
     ];
     protected $table = 'siswa';
 
