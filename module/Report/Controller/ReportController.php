@@ -204,6 +204,7 @@ class ReportController extends BaseReportController
 
     public function queryPengeluaran($postData)
     {
+        $session = new \Bimbel\Master\Model\Session();
         $start_date = new \DateTime($postData['start_date'] . "-01");
         $month = $start_date->format('m');
         $year = $start_date->format('Y');
@@ -230,7 +231,6 @@ class ReportController extends BaseReportController
         }
         else
         {
-            $session = new \Bimbel\Master\Model\Session();
             if (!$session->isSuperUser())
             {
                 $kursus_ids = $session->getKursusIds();
