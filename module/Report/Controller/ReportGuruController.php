@@ -16,6 +16,7 @@ class ReportGuruController extends BaseReportController
         {
             $postData = $request->getParsedBody();
             $data_row = collect([]);
+            $telat_lunas = collect([]);
 
             $guru = new \Bimbel\Guru\Model\Guru();
             $gaji = new \Bimbel\Pengeluaran\Model\Gaji();
@@ -23,12 +24,13 @@ class ReportGuruController extends BaseReportController
             $tagihan_details = new \Bimbel\Pembayaran\Model\TagihanDetail();
             $transaksi = new \Bimbel\Pembayaran\Model\Transaksi();
             $potongan_gaji = new PotonganGaji();
-            $asisten_guru = new PotonganGaji();
+            // $asisten_guru = new PotonganGaji();
 
             $jenis_pembayaran_list = [];
             foreach ($transaksi->jenis_pembayaran_enum as $key => $value) {
                 $jenis_pembayaran_list[$value['value']] = $value['label'];
             }
+            $jenis_pembayaran_list['Telat Lunas'] = 'Telat Lunas';
 
             $tanggal = explode("-", $postData['start_date']);
             $year = $tanggal[0];
@@ -53,7 +55,21 @@ class ReportGuruController extends BaseReportController
             {
                 $tagihan_details->where('tagihan.kursus_id', $postData['tempat_kursus']);
             }
-            $data_row = $data_row->merge($tagihan_details->get());
+            $tagihan_telat = clone $tagihan_details;
+            $tagihan_telat = $tagihan_telat->whereDate('tanggal_iuran_mulai', '<', $postData['start_date'] . "-01")->where(function($q) use ($month, $year) {
+                $q->whereMonth('tanggal_lunas', '=', $month)
+                    ->whereYear('tanggal_lunas', '=', $year);
+            })->get();
+            $telat_lunas = $telat_lunas->merge($tagihan_telat);
+
+            $tagihan_details = $tagihan_details->where(function($q) use ($month, $year, $postData) {
+                $q->whereDate('tanggal_iuran_mulai', '>=', $postData['start_date'] . "-01")
+                    ->orWhere(function($q2) use ($month, $year) {
+                    $q2->whereMonth('tanggal_lunas', '<>', $month)
+                        ->orWhereYear('tanggal_lunas', '<>', $year);
+                });
+            })->get();
+            $data_row = $data_row->merge($tagihan_details);
 
             $jenis_pembayaran = "tf";
 
@@ -62,16 +78,25 @@ class ReportGuruController extends BaseReportController
                 $jenis_pembayaran = $data_row[0]->jenis_pembayaran;
             }
 
-            $tagihan_details = $gaji->getTunjangan($postData['guru_id']);
-            $tagihan_details = $tagihan_details->map->format($postData['start_date'] . "-01", $jenis_pembayaran);
-            $data_row = $data_row->merge($tagihan_details);
+            // $tagihan_details = $gaji->getTunjangan($postData['guru_id']);
+            // $tagihan_details = $tagihan_details->map->format($postData['start_date'] . "-01", $jenis_pembayaran);
+            // $data_row = $data_row->merge($tagihan_details);
+
+            $tunjangan_guru = $gaji->getTunjangan($postData['guru_id']);
+            $total_tunjangan = $tunjangan_guru->sum('nominal');
+            // $tagihan_details = $tagihan_details->map->format($postData['start_date'] . "-01", $jenis_pembayaran);
             
             // Sort by Komisi
             $data_row = $data_row->sortBy('persen_komisi');
-            $total_pendapatan = $data_row->sum('komisi');
+            $total_pendapatan = $data_row->sum('komisi') + $telat_lunas->sum('komisi');
 
             $data = $data_row->groupBy(['jenis_pembayaran']);
             // $data_row = $data_row->toArray();
+
+            if ($telat_lunas->count() > 0)
+            {
+                $data = $data->merge(collect(['Telat Lunas' => $telat_lunas]));
+            }
 
             $kursus_lists = [];
 
@@ -114,8 +139,11 @@ class ReportGuruController extends BaseReportController
                 "total_pendapatan" => $total_pendapatan,
                 "potongan_gaji" => $potongan_gaji,
                 "total_potongan_gaji" => $total_potongan_gaji,
+                'total_tunjangan' => $total_tunjangan,
                 // 'asisten_guru' => $asisten_guru,
-                'guru' => $guru
+                'guru' => $guru,
+                'telat_lunas' => $telat_lunas,
+                'tunjangan_guru' => $tunjangan_guru,
             ];
 
             $result = $this->toPdf("Report/View/pendapatan_guru.twig", $data);
