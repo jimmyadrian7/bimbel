@@ -128,17 +128,6 @@
                                         <td colspan="3" class="bg-red">Total Pendapatan</td>
                                         <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
                                     </tr>
-                                    {% for pg in potongan_gaji %}
-                                        <tr class="bold">
-                                            <td class="bg-transparent" colspan="6"></td>
-                                            {% if pg.asisten_guru|isMandarin %}
-                                            <td colspan="3" class="bg-red">Potong Gaji <span class="mandarin">{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
-                                            {% else %}
-                                            <td colspan="3" class="bg-red">Potong Gaji <span>{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
-                                            {% endif %}
-                                            <td class="bg-red">{{ pg.nominal|number_format(0, ',', '.') }}</td>
-                                        </tr>
-                                    {% endfor %}
                                 </table>
                             </div>
                         </div>
@@ -148,8 +137,37 @@
                         <footer>
                             <div class="border-black my-30"></div>
         
-                            <div class="report-footer">
-                                <span>Total Semua Pendapatan</span><span>{{ (total_pendapatan - total_potongan_gaji)|number_format(0, ',', '.') }}</span>
+                            <div class="report-table-footer">
+                                <table>
+                                    <tr>
+                                        <td>Total Semua Pendapatan</td>
+                                        <td>{{ (total_pendapatan)|number_format(0, ',', '.') }}</td>
+                                    </tr>
+
+                                    {% for tg in tunjangan_guru %}
+                                        {% set total = total + tg.nominal %}
+                                        <tr class="bold">
+                                            <td>{{ tg.nama }}</td>
+                                            <td>{{ tg.nominal|number_format(0, ',', '.') }}</td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    {% for pg in potongan_gaji %}
+                                        <tr class="bold">
+                                            {% if pg.asisten_guru|isMandarin %}
+                                            <td class="bg-red">Potong Gaji <span class="mandarin">{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
+                                            {% else %}
+                                            <td class="bg-red">Potong Gaji <span>{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
+                                            {% endif %}
+                                            <td class="bg-red">{{ pg.nominal|number_format(0, ',', '.') }}</td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    <tr>
+                                        <td>Total Pendapatan Akhir</td>
+                                        <td>{{ (total_pendapatan + total_tunjangan - total_potongan_gaji)|number_format(0, ',', '.') }}</td>
+                                    </tr>
+                                </table>
                             </div>
                         </footer>
                     {% endif %}
