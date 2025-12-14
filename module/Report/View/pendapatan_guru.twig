@@ -133,6 +133,7 @@
                         </div>
                     </main>
 
+                    {# --- Not in use ---
                     {% if loop.last %}
                         <footer>
                             <div class="border-black my-30"></div>
@@ -140,7 +141,7 @@
                             <div class="report-table-footer">
                                 <table>
                                     <tr>
-                                        <td>Total Semua Pendapatan</td>
+                                        <td>Total Pendapatan {{ guru.orang.nama }}</td>
                                         <td>{{ (total_pendapatan)|number_format(0, ',', '.') }}</td>
                                     </tr>
 
@@ -151,6 +152,11 @@
                                             <td>{{ tg.nominal|number_format(0, ',', '.') }}</td>
                                         </tr>
                                     {% endfor %}
+
+                                    <tr>
+                                        <td>Total Gaji {{ guru.orang.nama }}</td>
+                                        <td>{{ (total_pendapatan + total_tunjangan)|number_format(0, ',', '.') }}</td>
+                                    </tr>
 
                                     {% for pg in potongan_gaji %}
                                         <tr class="bold">
@@ -164,15 +170,67 @@
                                     {% endfor %}
 
                                     <tr>
-                                        <td>Total Pendapatan Akhir</td>
+                                        <td>Total Sisa Gaji {{ guru.orang.nama }}</td>
                                         <td>{{ (total_pendapatan + total_tunjangan - total_potongan_gaji)|number_format(0, ',', '.') }}</td>
                                     </tr>
                                 </table>
                             </div>
                         </footer>
                     {% endif %}
+                    #}
                 </div>
                 
             {% endfor %}
+
+
+            <div class="wrapper-page">
+                <header>
+                    <div class="container">
+                        {% include 
+                            "Report/View/partial/header.twig" 
+                        %}
+                    </div>
+                </header>
+
+                <footer>
+                    <div class="report-table-footer">
+                        <table>
+                            <tr class="bold">
+                                <td>Total Pendapatan {{ guru.orang.nama }}</td>
+                                <td>{{ (total_pendapatan)|number_format(0, ',', '.') }}</td>
+                            </tr>
+
+                            {% for tg in tunjangan_guru %}
+                                {% set total = total + tg.nominal %}
+                                <tr>
+                                    <td>{{ tg.nama }}</td>
+                                    <td>{{ tg.nominal|number_format(0, ',', '.') }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            <tr class="bold">
+                                <td>Total Gaji {{ guru.orang.nama }}</td>
+                                <td>{{ (total_pendapatan + total_tunjangan)|number_format(0, ',', '.') }}</td>
+                            </tr>
+
+                            {% for pg in potongan_gaji %}
+                                <tr>
+                                    {% if pg.asisten_guru|isMandarin %}
+                                    <td class="bg-red">Potong Gaji <span class="mandarin">{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
+                                    {% else %}
+                                    <td class="bg-red">Potong Gaji <span>{{ pg.asisten_guru }}</span> Bulan {{ periode }}</td>
+                                    {% endif %}
+                                    <td class="bg-red">{{ pg.nominal|number_format(0, ',', '.') }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            <tr class="bold">
+                                <td>Total Sisa Gaji {{ guru.orang.nama }}</td>
+                                <td>{{ (total_pendapatan + total_tunjangan - total_potongan_gaji)|number_format(0, ',', '.') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </footer>
+            </div>
     </body>
 </html>

@@ -59,6 +59,10 @@
             padding-left: 10px;
         }
 
+        .table-detail {
+            border-collapse: collapse;
+        }
+
         .table-detail tr td {
             padding: 5px;
         }
@@ -93,6 +97,10 @@
         .text-underscore {
             text-decoration: underline;
         }
+
+        .table-space {
+            width: 50px;
+        }
     </style>
 </head>
 
@@ -117,17 +125,34 @@
                             {% else %}
                             <td>{{ guru.orang.nama }}</td>
                             {% endif %}
-                        </tr>
-                        <tr>
+
+                            <td class="table-space">&nbsp;</td>
+
                             <td>Jabatan</td>
                             <td class="left-space">:</td>
                             <td>{{ guru.jabatan }}</td>
                         </tr>
+                        {#<tr>
+                            <td>Jabatan</td>
+                            <td class="left-space">:</td>
+                            <td>{{ guru.jabatan }}</td>
+                        </tr>#}
                         <tr>
                             <td>Cabang</td>
                             <td class="left-space">:</td>
                             <td>{{ cabang }}</td>
+
+                            <td class="table-space">&nbsp;</td>
+
+                            <td>Rekening</td>
+                            <td class="left-space">:</td>
+                            <td>{{ guru.nama_bank }} {{ guru.no_rek }}</td>
                         </tr>
+                        {#<tr>
+                            <td>Rekening</td>
+                            <td class="left-space">:</td>
+                            <td>{{ guru.nama_bank }} {{ guru.no_rek }}</td>
+                        </tr>#}
                     </table>
 
                     <table class="table-info" border="1" width="100%">
