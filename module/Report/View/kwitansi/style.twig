@@ -51,15 +51,25 @@
         padding: 5px;
     }
 
+    /* Top section spacing & readability */
+    .table-input-top {
+        font-size: 14px !important;
+    }
+
+    .table-input-top td {
+        padding-right: 30px !important;
+    }
+
     .left-table {
-        margin-top: 20px;
+        margin-top: 6px;
         border-collapse: collapse;
         border: 2px solid black;
+        width: 100%;
     }
 
     .table-paraf {
         margin-left: 5px;
-        margin-top: 20px;
+        margin-top: 10px;
         border: 2px solid black;
         padding: 0px;
         width: 190px;
@@ -67,16 +77,16 @@
     }
 
     .table-keterangan {
-        margin-left: 5px;
-        margin-top: 20px;
+        margin-left: 0;
+        margin-top: 6px;
         border: 2px solid black;
         padding: 0px;
-        width: 190px;
+        width: 100%;
         border-collapse: collapse;
     }
 
     .table-terima {
-        margin-top: 10px;
+        margin-top: 6px;
         padding: 5px;
     }
 
@@ -93,7 +103,7 @@
     .nominal-container {
         position: relative;
         height: 35px;
-        width: 200px;
+        width: 400px;
         text-align: center;
     }
 
@@ -104,7 +114,7 @@
 
     .nominal-place {
         height: 35px;
-        width: 200px;
+        width: 400px;
         background-color: #97989a;
         transform: skew(-25deg);
         position: absolute;
@@ -118,7 +128,7 @@
     }
 
     .table-bank td {
-        padding: 5px;
+        padding: 3px;
     }
 
     .logo-bank, .logo-bank img {
@@ -128,6 +138,7 @@
 
     .text-trimakasih {
         padding-left: 20px;
+        font-size: 16px;
     }
 
     .text-smile {
@@ -142,7 +153,7 @@
     }
 
     .stamp-text {
-        margin-top: 50px;
+        margin-top: 30px;
     }
 
     .table-paraf td {
@@ -187,20 +198,81 @@
     }
 
     .big-empty {
-        height: 90px;
+        height: 60px;
     }
 
     .full-height {
-        height: 480px;
+        height: 64.5%;
     }
 
     .border-dot-bottom {
         border-bottom: 1px dashed black;
-        width: 425px;
+        width: 650px;
         min-height: 20px;
     }
 
     .text-space {
         width: 50px;
     }
+
+    /* Center stamp */
+    .kwitansi-stamp {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-12deg);
+        font-size: 150px;
+        font-weight: bold;
+        letter-spacing: 6px;
+        padding: 12px 28px;
+        /* border: 3px solid #ffffff; */
+        color: #000;
+        background: transparent;
+        opacity: 0.6;
+        z-index: 2;
+        text-transform: uppercase;
+        text-align: center;
+        /* faux stroke for visibility */
+        text-shadow:
+            -1px -1px 0 #000,
+             1px -1px 0 #000,
+            -1px  1px 0 #000,
+             1px  1px 0 #000;
+    }
+
+    .kwitansi-stamp-proses {
+        background: transparent;
+    }
+
+    .kwitansi-stamp-lunas {
+        background: #d1b7c2;
+        border-color: #d1b7c2;
+        color: #ffffff;
+    }
+
+    .kwitansi-lunas {
+        background: #d1b7c2;
+    }
+
+    /* Override global report padding so kwitansi fills left/right */
+    .container {
+        padding: 10mm 10mm !important;
+        box-sizing: border-box;
+    }
+
+    .kwitansi-table {
+        width: 100%;
+        /* border-collapse: collapse; */
+        border-spacing: 5px;
+        table-layout: fixed;
+        page-break-inside: avoid;
+    }
+
+    .kwitansi-table tr,
+    .kwitansi-table td {
+        page-break-inside: avoid;
+    }
+
+
+
 </style>

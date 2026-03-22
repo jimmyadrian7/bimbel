@@ -5,14 +5,17 @@
         {% include "/Report/View/kwitansi/style.twig" %}
     </head>
 
-    <body>
+    <body class="{{ tagihan.status == 'l' ? 'kwitansi-lunas' : '' }}">
         <div class="container">
+            <div class="kwitansi-stamp">
+                {{ tagihan.status != 'l' ? 'PROSES' : 'LUNAS' }}
+            </div>
             {% include "/Report/View/kwitansi/header.twig" %}
 
             
-            <table class="fn-12">
+            <table class="fn-12 kwitansi-table" width="100%">
                 <tr>
-                    <td>
+                    <td class="kwitansi-left" width="80%" style="vertical-align: top;">
                         <table class="left-table">
                             <tr>
                                 <td class="border-btm-2">
@@ -40,7 +43,7 @@
                         </table>
                     </td>
 
-                    <td>
+                    <td class="kwitansi-right" width="20%" style="vertical-align: top;">
                         {% include "/Report/View/kwitansi/keterangan.twig" %}
                     </td>
                 </tr>
