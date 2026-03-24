@@ -84,6 +84,8 @@ class InvoiceController extends BaseReportController
             {
                 $logo_bank = "";
             }
+
+            $stamp_img = $this->getImage('stamp.png');
             
             $terbilang = Terbilang::convert($tagihan->total) . " rupiah";
             $untuk = [];
@@ -121,6 +123,7 @@ class InvoiceController extends BaseReportController
                 'untuk' => $untuk,
                 'untuk_spp' => $untuk_spp,
                 'terbilang' => $terbilang,
+                'stamp_img' => $stamp_img,
             ];
 
             $result = $this->toPdf("Report/View/kwitansi/kwitansi.twig", $data);
