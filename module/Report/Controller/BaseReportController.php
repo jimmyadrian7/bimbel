@@ -70,8 +70,8 @@ class BaseReportController extends CoreController
         $pdf->loadHtml($html);
         $pdf->render();
         $result = $pdf->output();
-        // $result = ["data" => base64_encode($result)];
-        // $result = json_encode($result);
+        $result = ["data" => base64_encode($result)];
+        $result = json_encode($result);
 
         return $result;
     }
