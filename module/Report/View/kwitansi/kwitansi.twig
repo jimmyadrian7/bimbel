@@ -10,13 +10,8 @@
 
             {% if tagihan.status == 'l'  %}
                 <div class="kwitansi-stamp">
-                    <img src="{{ stamp_img }}" alt="stamp">
-                </div>
-
-                <div class="kwitansi-stamp">
                     {{ tagihan.status != 'l' ? '' : 'LUNAS' }}
                 </div>
-
             {% endif %}
 
             {% include "/Report/View/kwitansi/header.twig" %}

@@ -153,7 +153,7 @@
     }
 
     .stamp-text {
-        margin-top: 30px;
+        margin-top: 0;
     }
 
     .table-paraf td {
@@ -202,7 +202,7 @@
     }
 
     .full-height {
-        height: 64.5%;
+        height: 67.7%;
     }
 
     .border-dot-bottom {
@@ -225,10 +225,10 @@
         font-weight: bold;
         letter-spacing: 6px;
         padding: 12px 28px;
-        /* border: 3px solid #ffffff; */
+        border: 3px solid #000;
         color: #000;
         background: transparent;
-        opacity: 0.6;
+        opacity: 0.4;
         z-index: 2;
         text-transform: uppercase;
         text-align: center;
@@ -271,6 +271,46 @@
     .kwitansi-table tr,
     .kwitansi-table td {
         page-break-inside: avoid;
+    }
+
+    /* Right-align the header's kwitansi section (line 12 onward) */
+    .kwitansi-header-right,
+    .kwitansi-header-right table,
+    .kwitansi-header-right td {
+        text-align: right;
+    }
+
+    .kwitansi-header-right table {
+        margin-left: auto;
+    }
+
+    /* Left-align the other header column container, keep inner text-center intact */
+    .kwitansi-header-left {
+        text-align: left;
+    }
+
+    /* Stamp image inside nominal section */
+    .stamp-block {
+        position: relative;
+    }
+
+    .stamp-gap {
+        height: 55px; /* keep space between top and bottom text */
+        position: relative;
+    }
+
+    .stamp-img {
+        max-width: 180px;
+        max-height: 90px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
     }
 
 

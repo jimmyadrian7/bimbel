@@ -10,8 +10,17 @@
             </div>
         </td>
         <td class="text-center fn-15 pl-10">
-            <span class="mandarin">学生一家（盖章有效）</span>
-            <div class="stamp-text">Stamp Students Of One Family</div>
+            <div class="stamp-block">
+                <div class="stamp-top">
+                    <span class="mandarin">学生一家（盖章有效）</span>
+                </div>
+                <div class="stamp-gap">
+                    {% if tagihan.status == 'l'  %}
+                        <img class="stamp-img" src="{{ stamp_img }}" alt="stamp">
+                    {% endif %}
+                </div>
+                <div class="stamp-text">Stamp Students Of One Family</div>
+            </div>
         </td>
     </tr>
 </table>
