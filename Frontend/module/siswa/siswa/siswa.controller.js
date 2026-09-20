@@ -49,7 +49,8 @@ import authentication_html from "./html/modal/authentication.html";
 
         vm.myModal = false;
         vm.reset = false;
-        vm.data = { iuran: [], jadwal: [], ref: {}, program_belajar_pilihan: {} };
+        vm.data = { iuran: [], jadwal: [], ref: {} };
+        // vm.data = { iuran: [], jadwal: [], ref: {}, program_belajar_pilihan: {} };
         vm.modal = {};
         vm.dataId = stateParams.dataId;
         vm.activeIndex = -1;

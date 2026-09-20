@@ -181,17 +181,17 @@ class Patch2Controller extends Controller
         }
 
         // Create Pivot Table Siswa <-> Program Belajar (many to many)
-        if (!DB::getSchemaBuilder()->hasTable('siswa_program_belajar'))
-        {
-            DB::getSchemaBuilder()->create('siswa_program_belajar', function ($table) {
-                $table->increments('id');
-                $table->integer('siswa_id')->nullable();
-                $table->integer('program_belajar_id')->nullable();
+        // if (!DB::getSchemaBuilder()->hasTable('siswa_program_belajar'))
+        // {
+        //     DB::getSchemaBuilder()->create('siswa_program_belajar', function ($table) {
+        //         $table->increments('id');
+        //         $table->integer('siswa_id')->nullable();
+        //         $table->integer('program_belajar_id')->nullable();
 
-                $table->foreign('siswa_id')->references('id')->on('siswa');
-                $table->foreign('program_belajar_id')->references('id')->on('program_belajar');
-            });
-        }
+        //         $table->foreign('siswa_id')->references('id')->on('siswa');
+        //         $table->foreign('program_belajar_id')->references('id')->on('program_belajar');
+        //     });
+        // }
 
         // Register Konfigurasi > Program Belajar menu
         $menu_id = Utils::addMenuReport('program_belajar', 'Program Belajar', 'konfigurasi');
@@ -204,9 +204,9 @@ class Patch2Controller extends Controller
         if ($existing == 0)
         {
             $defaults = [
-                ['kode' => 'MANDARIN', 'nama' => 'Mandarin', 'nama_mandarin' => '华文班'],
+                ['kode' => 'MANDARIN', 'nama' => 'Mandarin', 'nama_mandarin' => '中文班'],
                 ['kode' => 'INGGRIS', 'nama' => 'Inggris', 'nama_mandarin' => '英文班'],
-                ['kode' => 'BIMBEL', 'nama' => 'Bimbel', 'nama_mandarin' => '学校课程补习'],
+                ['kode' => 'BIMBEL', 'nama' => 'Bimbel', 'nama_mandarin' => '学校课程'],
                 ['kode' => 'CALISTUNG', 'nama' => 'Calistung', 'nama_mandarin' => '幼儿园课程'],
             ];
 

@@ -24,7 +24,8 @@ class Siswa extends BaseModel
         'iuran', 'jadwal', 'ref',
         'pinyin', 'dengar', 'bicara', 'membaca', 'menulis', 'kondisi', 'respon', 'tanggapan',
         'program', 'paket_belajar', 'referal_other',
-        'kursus_id', 'sekolah', 'kelas', 'status_siswa'
+        'kursus_id', 'sekolah', 'kelas', 'status_siswa', 
+        // 'program_belajar_pilihan'
     ];
     protected $table = 'siswa';
 
@@ -41,7 +42,8 @@ class Siswa extends BaseModel
         ["value" => "n", "label" => "Berhenti"]
     ];
 
-    protected $appends = ['guru_data', 'ref', 'kursus_data', 'program_belajar_pilihan'];
+    protected $appends = ['guru_data', 'ref', 'kursus_data'];
+    // protected $appends = ['guru_data', 'ref', 'kursus_data', 'program_belajar_pilihan'];
     public function getGuruDataAttribute()
     {
 		$guru_id = [
@@ -78,17 +80,17 @@ class Siswa extends BaseModel
         return $ref;
     }
 
-    public function getProgramBelajarPilihanAttribute()
-    {
-        $program_belajar_pilihan = [];
+    // public function getProgramBelajarPilihanAttribute()
+    // {
+    //     $program_belajar_pilihan = [];
 
-        foreach($this->program_belajar as $value)
-        {
-            $program_belajar_pilihan[$value->id] = true;
-        }
+    //     foreach($this->program_belajar as $value)
+    //     {
+    //         $program_belajar_pilihan[$value->id] = true;
+    //     }
 
-        return $program_belajar_pilihan;
-    }
+    //     return $program_belajar_pilihan;
+    // }
 
 
     public function orang()
@@ -315,39 +317,39 @@ class Siswa extends BaseModel
         $siswa->referal()->detach($ref_unids);
     }
 
-    public function handleProgramBelajarPilihan($program_belajar_pilihan)
-    {
-        $siswa = $this;
-        $program_belajar_ids = [];
-        $inst_ids = [];
+    // public function handleProgramBelajarPilihan($program_belajar_pilihan)
+    // {
+    //     $siswa = $this;
+    //     $program_belajar_ids = [];
+    //     $inst_ids = [];
 
-        if (empty($program_belajar_pilihan))
-        {
-            return;
-        }
+    //     if (empty($program_belajar_pilihan))
+    //     {
+    //         return;
+    //     }
 
-        foreach($program_belajar_pilihan as $key => $value)
-        {
-            if ($value)
-            {
-                $hasProgramBelajar = $siswa->program_belajar()->where('program_belajar.id', $key)->exists();
+    //     foreach($program_belajar_pilihan as $key => $value)
+    //     {
+    //         if ($value)
+    //         {
+    //             $hasProgramBelajar = $siswa->program_belajar()->where('program_belajar.id', $key)->exists();
 
-                if (!$hasProgramBelajar)
-                {
-                    array_push($inst_ids, $key);
-                }
-                array_push($program_belajar_ids, $key);
-            }
-        }
+    //             if (!$hasProgramBelajar)
+    //             {
+    //                 array_push($inst_ids, $key);
+    //             }
+    //             array_push($program_belajar_ids, $key);
+    //         }
+    //     }
 
-        if (count($inst_ids) > 0)
-        {
-            $siswa->program_belajar()->attach($inst_ids);
-        }
+    //     if (count($inst_ids) > 0)
+    //     {
+    //         $siswa->program_belajar()->attach($inst_ids);
+    //     }
 
-        $program_belajar_unids = $siswa->program_belajar()->whereNotIn('program_belajar.id', $program_belajar_ids)->get()->pluck('id');
-        $siswa->program_belajar()->detach($program_belajar_unids);
-    }
+    //     $program_belajar_unids = $siswa->program_belajar()->whereNotIn('program_belajar.id', $program_belajar_ids)->get()->pluck('id');
+    //     $siswa->program_belajar()->detach($program_belajar_unids);
+    // }
 
 
     public function createUser()
@@ -477,7 +479,7 @@ class Siswa extends BaseModel
         $iurans = self::getValue($attributes, 'iuran');
         $jadwals = self::getValue($attributes, 'jadwal');
         $refs = self::getValue($attributes, 'ref');
-        $program_belajar_pilihan = self::getValue($attributes, 'program_belajar_pilihan');
+        // $program_belajar_pilihan = self::getValue($attributes, 'program_belajar_pilihan');
 
         self::handleOrang($attributes);
         // self::getSequance($attributes);
@@ -487,7 +489,7 @@ class Siswa extends BaseModel
 		$siswa = parent::create($attributes);
         $siswa->handleJadwal($jadwals);
         $siswa->handleRef($refs);
-        $siswa->handleProgramBelajarPilihan($program_belajar_pilihan);
+        // $siswa->handleProgramBelajarPilihan($program_belajar_pilihan);
         $siswa->handleIuran($iurans);
         $siswa->triggerIuran(true);
 
@@ -499,7 +501,7 @@ class Siswa extends BaseModel
         $iurans = self::getValue($attributes, 'iuran');
         $jadwals = self::getValue($attributes, 'jadwal');
         $refs = self::getValue($attributes, 'ref');
-        $program_belajar_pilihan = self::getValue($attributes, 'program_belajar_pilihan');
+        // $program_belajar_pilihan = self::getValue($attributes, 'program_belajar_pilihan');
         
         $this->handleOrang($attributes);
         $this->handleStatus($attributes);
@@ -510,7 +512,7 @@ class Siswa extends BaseModel
 
         $this->handleJadwal($jadwals);
         $this->handleRef($refs);
-        $this->handleProgramBelajarPilihan($program_belajar_pilihan);
+        // $this->handleProgramBelajarPilihan($program_belajar_pilihan);
         $this->handleIuran($iurans);
 
         $this->handleTagihan($attributes);
