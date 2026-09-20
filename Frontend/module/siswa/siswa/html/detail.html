@@ -76,6 +76,9 @@
                 <a class="nav-link" data-bs-toggle="list" href="#referal">Referensi</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="list" href="#program_belajar">Program Belajar</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="list" href="#account">Account</a>
             </li>
         </ul>
@@ -262,6 +265,32 @@
                                 <td class="px-3">:</td>
                                 <td class="font-weight-bolder text-dark py-2">
                                     <app-form-preview type="" value="vm.data.referal_other"></app-form-input>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show" id="program_belajar">
+                <div class="row my-4">
+                    <div class="col-md-6">
+                        <table>
+                            <tr>
+                                <td class="text-xs">Program Belajar yang diikuti : </td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bolder text-dark py-2">
+                                    <div class="form-check" ng-repeat="opt in vm.programBelajarOptions">
+                                        <label class="custom-control-label">
+                                            <input
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            ng-model="vm.data.program_belajar_pilihan[opt.value]"
+                                            disabled="true">
+                                            {{opt.label}}
+                                        </label>
+                                    </div>
                                 </td>
                             </tr>
                         </table>

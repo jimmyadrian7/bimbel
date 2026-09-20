@@ -13,12 +13,12 @@ import authentication_html from "./html/modal/authentication.html";
 
     SiswaController.$inject = [
         '$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session',
-        'referalOptions', 'logger'
+        'referalOptions', 'programBelajarOptions', 'logger'
     ];
 
     function SiswaController(
         stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session,
-        referalOptions, logger
+        referalOptions, programBelajarOptions, logger
     ) {
         let vm = this;
         let jenisKelamin = [
@@ -49,13 +49,14 @@ import authentication_html from "./html/modal/authentication.html";
 
         vm.myModal = false;
         vm.reset = false;
-        vm.data = { iuran: [], jadwal: [], ref: {} };
+        vm.data = { iuran: [], jadwal: [], ref: {}, program_belajar_pilihan: {} };
         vm.modal = {};
         vm.dataId = stateParams.dataId;
         vm.activeIndex = -1;
         vm.hideGuru = session.isSuperUser() || session.isAdminCabang();
         vm.isSuperUser = session.isSuperUser() || session.isAdminCabang();
         vm.referalOptions = referalOptions;
+        vm.programBelajarOptions = programBelajarOptions;
 
         vm.status_field = { name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true };
         vm.fields = [
