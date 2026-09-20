@@ -1146,7 +1146,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<app-table table=\\\"program_belajars\\\" fields=\\\"vm.fields\\\" detail=\\\"konfigurasi.program_belajar_detail\\\" form=\\\"konfigurasi.program_belajar_form\\\"></app-table>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://bimbel/./Frontend/module/konfigurasi/program_belajar/html/table.html?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<app-table table=\\\"program_belajars\\\" fields=\\\"vm.fields\\\" detail=\\\"konfigurasi.program_belajar_detail\\\"\\r\\n    form=\\\"konfigurasi.program_belajar_form\\\" addable=\\\"false\\\"></app-table>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://bimbel/./Frontend/module/konfigurasi/program_belajar/html/table.html?");
 
 /***/ }),
 
