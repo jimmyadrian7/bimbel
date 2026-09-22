@@ -16,13 +16,13 @@ import form from './html/form.html';
 
     function getStates()
     {
-        let getAgaOptions = (req) => {
+        let getAgaOptions = ['req', (req) => {
             return req.get('agamas').then(response => {
                 return response.data.map((value) => {
                     return {value: value.id, label: value.nama}
                 });
             });
-        };
+        }];
 
         return [
             {

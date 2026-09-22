@@ -15,10 +15,63 @@
                 </table>
             </div>
         </div>
+
+        <div class="row mt-3">
+            <div class="col-12">
+                <button type="button" class="btn btn-link text-info text-gradient px-3 mb-2" ng-click="vm.previewTagihan()">
+                    <i class="fas fa-eye me-2"></i> Preview
+                </button>
+
+                <div ng-if="vm.tagihanPreview">
+                    <div class="alert alert-warning text-xs mb-2" ng-if="vm.tagihanPreview.tanggal !== vm.modal.tanggal_tagihan">
+                        Tanggal telah diubah, silakan preview ulang sebelum generate.
+                    </div>
+
+                    <div ng-if="vm.tagihanPreview.count === 0" class="text-xs font-weight-bold">
+                        Tidak ada tagihan yang akan dibuat untuk tanggal ini.
+                    </div>
+
+                    <div ng-if="vm.tagihanPreview.count > 0">
+                        <p class="text-xs font-weight-bold mb-1">
+                            <span ng-bind="vm.tagihanPreview.count"></span> siswa akan ditagihkan, total
+                            <span app-number-format="vm.tagihanPreview.grand_total"></span>
+                        </p>
+
+                        <div class="table-responsive p-0" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Siswa</th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rincian</th>
+                                        <th class="ps-2 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="row in vm.tagihanPreview.data">
+                                        <td class="text-xs font-weight-bold" ng-bind="row.nama"></td>
+                                        <td class="text-xs">
+                                            <div ng-repeat="item in row.items">
+                                                <span ng-bind="item.nama"></span>
+                                                <span ng-if="item.qty > 1">(x<span ng-bind="item.qty"></span>)</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-xs font-weight-bold" app-number-format="row.total"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </app-modal-body>
 
     <app-modal-footer>
-        <button type="button" class="btn btn-link text-primary text-gradient px-3" ng-click="vm.genTagihan()">
+        <button
+            type="button"
+            class="btn btn-link text-primary text-gradient px-3"
+            ng-disabled="!vm.tagihanPreview || vm.tagihanPreview.count === 0 || vm.tagihanPreview.tanggal !== vm.modal.tanggal_tagihan"
+            ng-click="vm.genTagihan()">
             <i class="fas fa-file me-2"></i> Generate
         </button>
         <button type="button" class="btn btn-link text-dark text-gradient px-3" data-bs-dismiss="modal">

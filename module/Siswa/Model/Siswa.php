@@ -474,6 +474,36 @@ class Siswa extends BaseModel
     }
 
 
+    /*
+        Read-only version of triggerIuran(): computes the tagihan_detail lines
+        that WOULD be billed for this siswa on the given tanggal, without
+        creating a Tagihan and without calling IuranTerbuat::updateDate(),
+        so it is safe to call repeatedly for a preview.
+    */
+    public function previewTagihan($tanggal = false)
+    {
+        $tagihan_detail = [];
+
+        if (count($this->iuran_terbuat) == 0)
+        {
+            return $tagihan_detail;
+        }
+
+        foreach ($this->iuran_terbuat as $iuran_terbuat)
+        {
+            if (!$iuran_terbuat->validateDate($tanggal))
+            {
+                continue;
+            }
+
+            $td = $iuran_terbuat->getTagihanDetail(false, $tanggal);
+            $tagihan_detail = array_merge($tagihan_detail, $td);
+        }
+
+        return $tagihan_detail;
+    }
+
+
     public function create(array $attributes = [])
     {
         $iurans = self::getValue($attributes, 'iuran');

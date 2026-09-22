@@ -173,6 +173,7 @@ import authentication_html from "./html/modal/authentication.html";
 
         vm.modalTagihan = modalTagihan;
         vm.genTagihan = genTagihan;
+        vm.previewTagihan = previewTagihan;
 
         vm.buatDeposit = buatDeposit;
 
@@ -379,7 +380,26 @@ import authentication_html from "./html/modal/authentication.html";
         }
 
         function modalTagihan() {
+            vm.tagihanPreview = null;
             vm.myModal = $compile(generate_tagihan_modal)($scope);
+        }
+
+        function previewTagihan() {
+            if (!vm.modal.tanggal_tagihan) {
+                logger.error("Pilih tanggal terlebih dahulu");
+                return;
+            }
+
+            let data = {
+                tanggal: vm.modal.tanggal_tagihan
+            };
+
+            vm.tagihanPreview = null;
+
+            req.post('siswa/mass/generate/tagihan/preview', data).then(response => {
+                response.tanggal = vm.modal.tanggal_tagihan;
+                vm.tagihanPreview = response;
+            });
         }
 
         function genTagihan() {

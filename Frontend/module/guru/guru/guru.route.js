@@ -15,21 +15,21 @@ import form from "./html/form.html";
     }
 
     function getStates() {
-        let getAgaOptions = (req) => {
+        let getAgaOptions = ['req', (req) => {
             return req.get('agamas').then(response => {
                 return response.data.map((value) => {
                     return { value: value.id, label: value.nama }
                 });
             });
-        };
+        }];
 
-        let getKursusOptions = (req) => {
+        let getKursusOptions = ['req', (req) => {
             return req.get('kursuss').then(response => {
                 return response.data.map((value) => {
                     return { value: value.id, label: value.nama }
                 });
             });
-        };
+        }];
 
         return [
             {
