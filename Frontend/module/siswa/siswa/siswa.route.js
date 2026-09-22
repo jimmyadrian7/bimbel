@@ -17,20 +17,27 @@ import form from "./html/form.html";
 
     function getStates()
     {
-        let getAgaOptions = (req) => {
+        let getAgaOptions = ['req', (req) => {
             return req.get('agamas').then(response => {
                 return response.data.map((value) => {
                     return {value: value.id, label: value.nama}
                 });
             });
-        };
-        let getRefOptions = (req) => {
+        }];
+        let getRefOptions = ['req', (req) => {
             return req.get('referals').then(response => {
                 return response.data.map((value) => {
                     return {value: value.id, label: value.nama}
                 });
             });
-        };
+        }];
+        let getProgramBelajarOptions = ['req', (req) => {
+            return req.get('program_belajars').then(response => {
+                return response.data.map((value) => {
+                    return {value: value.id, label: value.nama};
+                });
+            });
+        }];
         // let getKursusOptions = (req) => {
         //     return req.get('kursuss').then(response => {
         //         return response.data.map((value) => {
@@ -53,6 +60,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
+                        programBelajarOptions: getProgramBelajarOptions,
                         // kursusOptions: getKursusOptions
                     }
                 }
@@ -70,6 +78,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
+                        programBelajarOptions: getProgramBelajarOptions,
                         // kursusOptions: getKursusOptions
                     }
                 }
@@ -87,6 +96,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
+                        programBelajarOptions: getProgramBelajarOptions,
                         // kursusOptions: getKursusOptions
                     }
                 }

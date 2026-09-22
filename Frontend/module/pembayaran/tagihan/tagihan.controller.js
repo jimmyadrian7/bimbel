@@ -149,6 +149,9 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
 
         vm.getNumber = getNumber;
 
+        vm.programBelajarOptions = [];
+        fetchProgramBelajarOptions();
+
         $scope.$watch(() => vm.data.siswa_id, watchSiswaId);
         $scope.$watch(() => vm.data.terima_dari, watchTerimaDari);
 
@@ -369,9 +372,17 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
             }
         }
 
+        function fetchProgramBelajarOptions() {
+            req.get('program_belajars').then(response => {
+                vm.programBelajarOptions = (response.data || []).map(value => {
+                    return { value: value.id, label: value.nama };
+                });
+            });
+        }
+
         function changeProgramBelajar(selected) {
-            var ispogram = ['Mandarin', 'Inggris', 'Bimbel', 'Calistung'];
-            if (!ispogram.includes(selected)) {
+            var isProgram = vm.programBelajarOptions.map(opt => opt.label);
+            if (!isProgram.includes(selected)) {
                 vm.data.program_belajar = 'other';
             }
             else {

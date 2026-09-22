@@ -4,6 +4,7 @@ namespace Bimbel\Siswa\Controller;
 use \Bimbel\Master\Controller\Controller;
 use \Bimbel\Siswa\Model\Siswa;
 use \Bimbel\Master\Model\Kursus;
+// use \Bimbel\Master\Model\HistoryGeneratedTagihan;
 use Illuminate\Database\Capsule\Manager as DB;
 use \Bimbel\Pembayaran\Model\TagihanDetail;
 
@@ -148,19 +149,97 @@ class FetchController extends Controller
 
         try 
         {
-            $data = $request->getParsedBody();            
+            $data = $request->getParsedBody();
             $siswas = new Siswa();
             $siswas = $siswas->where('status', '=', 'a')->get();
+            $history_generated = [];
+            $success_generated = 0;
 
             foreach ($siswas as $siswa) {
+                $history_data = ['siswa_id' => $siswa->id, 'generated' => true, 'remark' => '', 'created_at' => date('Y-m-d')];
                 try {
                     $siswa->triggerIuran(false, $data['tanggal']);
+
+                    $history_generated[] = $history_data;
+                    $success_generated++;
                 }
                 catch(\Error $e)
                 {
+                    $history_data['generated'] = false;
+                    $history_data['remark'] = $e->getMessage();
+                    $history_generated[] = $history_data;
                     continue;
                 }
             }
+
+            // $history_generated_tagihan = new HistoryGeneratedTagihan();
+            // $history_generated_tagihan->insert($history_generated);
+
+            $result = ['success' => true, 'msg' => 'Berhasil membuat ' . $success_generated . ' tagihan'];
+        }
+        catch(\Error $e)
+        {
+            $result = $this->container->get('error')($e, $response);
+        }
+
+        return $result;
+    }
+
+    public function previewMassGenerateTagihan($request, $args, &$response)
+    {
+        $result = true;
+
+        try
+        {
+            $data = $request->getParsedBody();
+            $tanggal = !empty($data['tanggal']) ? $data['tanggal'] : false;
+
+            $siswas = new Siswa();
+            $siswas = $siswas->with('orang')->where('status', '=', 'a')->get();
+
+            $preview = [];
+            $grand_total = 0;
+
+            foreach ($siswas as $siswa)
+            {
+                try
+                {
+                    $tagihan_detail = $siswa->previewTagihan($tanggal);
+                }
+                catch (\Error $e)
+                {
+                    // Same as massGenerateTagihan: skip siswa that error out
+                    // instead of failing the whole preview.
+                    continue;
+                }
+
+                if (count($tagihan_detail) === 0)
+                {
+                    continue;
+                }
+
+                $total = 0;
+                foreach ($tagihan_detail as $detail)
+                {
+                    $total += $detail['nominal'] * $detail['qty'];
+                }
+
+                $preview[] = [
+                    'siswa_id' => $siswa->id,
+                    'nama' => $siswa->orang->nama,
+                    'items' => $tagihan_detail,
+                    'total' => $total
+                ];
+
+                $grand_total += $total;
+            }
+
+            $result = [
+                'success' => true,
+                'count' => count($preview),
+                'grand_total' => $grand_total,
+                'data' => $preview
+            ];
         }
         catch(\Error $e)
         {

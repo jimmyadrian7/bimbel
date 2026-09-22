@@ -9,6 +9,7 @@ import "./menu/menu";
 import "./sequance/sequance";
 import "./referal/referal";
 import "./kursus/kursus";
+import "./program_belajar/program_belajar";
 import "./role/role";
 import "./whatsapp/whatsapp";
 import "./account_configuration/account_configuration";

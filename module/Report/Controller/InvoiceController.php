@@ -91,6 +91,10 @@ class InvoiceController extends BaseReportController
             $untuk = [];
             $untuk_spp = [];
 
+            $program_belajar = new \Bimbel\Master\Model\ProgramBelajar();
+            $program_belajars = $program_belajar->orderBy('id', 'ASC')->get();
+            $program_belajar_is_other = !empty($tagihan->program_belajar) && !in_array($tagihan->program_belajar, $program_belajars->pluck('nama')->toArray());
+
             // foreach ($tagihan->tagihan_detail as $key => $tagihan_detail) {
             //     if ($tagihan_detail->kategori_pembiayaan == 's')
             //     {
@@ -124,6 +128,8 @@ class InvoiceController extends BaseReportController
                 'untuk_spp' => $untuk_spp,
                 'terbilang' => $terbilang,
                 'stamp_img' => $stamp_img,
+                'program_belajars' => $program_belajars,
+                'program_belajar_is_other' => $program_belajar_is_other,
             ];
 
             $result = $this->toPdf("Report/View/kwitansi/kwitansi.twig", $data);

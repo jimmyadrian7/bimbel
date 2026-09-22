@@ -5,6 +5,7 @@ use Bimbel\Core\Model\BaseModel;
 
 use Bimbel\Master\Model\Orang;
 use Bimbel\Master\Model\Kursus;
+use Bimbel\Master\Model\ProgramBelajar;
 use Bimbel\Guru\Model\Guru;
 
 use Bimbel\Siswa\Model\Deposit;
@@ -23,7 +24,8 @@ class Siswa extends BaseModel
         'iuran', 'jadwal', 'ref',
         'pinyin', 'dengar', 'bicara', 'membaca', 'menulis', 'kondisi', 'respon', 'tanggapan',
         'program', 'paket_belajar', 'referal_other',
-        'kursus_id', 'sekolah', 'kelas', 'status_siswa'
+        'kursus_id', 'sekolah', 'kelas', 'status_siswa', 
+        // 'program_belajar_pilihan'
     ];
     protected $table = 'siswa';
 
@@ -41,6 +43,7 @@ class Siswa extends BaseModel
     ];
 
     protected $appends = ['guru_data', 'ref', 'kursus_data'];
+    // protected $appends = ['guru_data', 'ref', 'kursus_data', 'program_belajar_pilihan'];
     public function getGuruDataAttribute()
     {
 		$guru_id = [
@@ -77,6 +80,18 @@ class Siswa extends BaseModel
         return $ref;
     }
 
+    // public function getProgramBelajarPilihanAttribute()
+    // {
+    //     $program_belajar_pilihan = [];
+
+    //     foreach($this->program_belajar as $value)
+    //     {
+    //         $program_belajar_pilihan[$value->id] = true;
+    //     }
+
+    //     return $program_belajar_pilihan;
+    // }
+
 
     public function orang()
     {
@@ -109,6 +124,10 @@ class Siswa extends BaseModel
     public function referal()
     {
         return $this->belongsToMany(Referal::class, 'siswa_referal', 'siswa_id', 'referal_id');
+    }
+    public function program_belajar()
+    {
+        return $this->belongsToMany(ProgramBelajar::class, 'siswa_program_belajar', 'siswa_id', 'program_belajar_id');
     }
     public function kursus()
     {
@@ -298,6 +317,40 @@ class Siswa extends BaseModel
         $siswa->referal()->detach($ref_unids);
     }
 
+    // public function handleProgramBelajarPilihan($program_belajar_pilihan)
+    // {
+    //     $siswa = $this;
+    //     $program_belajar_ids = [];
+    //     $inst_ids = [];
+
+    //     if (empty($program_belajar_pilihan))
+    //     {
+    //         return;
+    //     }
+
+    //     foreach($program_belajar_pilihan as $key => $value)
+    //     {
+    //         if ($value)
+    //         {
+    //             $hasProgramBelajar = $siswa->program_belajar()->where('program_belajar.id', $key)->exists();
+
+    //             if (!$hasProgramBelajar)
+    //             {
+    //                 array_push($inst_ids, $key);
+    //             }
+    //             array_push($program_belajar_ids, $key);
+    //         }
+    //     }
+
+    //     if (count($inst_ids) > 0)
+    //     {
+    //         $siswa->program_belajar()->attach($inst_ids);
+    //     }
+
+    //     $program_belajar_unids = $siswa->program_belajar()->whereNotIn('program_belajar.id', $program_belajar_ids)->get()->pluck('id');
+    //     $siswa->program_belajar()->detach($program_belajar_unids);
+    // }
+
 
     public function createUser()
     {
@@ -421,11 +474,42 @@ class Siswa extends BaseModel
     }
 
 
+    /*
+        Read-only version of triggerIuran(): computes the tagihan_detail lines
+        that WOULD be billed for this siswa on the given tanggal, without
+        creating a Tagihan and without calling IuranTerbuat::updateDate(),
+        so it is safe to call repeatedly for a preview.
+    */
+    public function previewTagihan($tanggal = false)
+    {
+        $tagihan_detail = [];
+
+        if (count($this->iuran_terbuat) == 0)
+        {
+            return $tagihan_detail;
+        }
+
+        foreach ($this->iuran_terbuat as $iuran_terbuat)
+        {
+            if (!$iuran_terbuat->validateDate($tanggal))
+            {
+                continue;
+            }
+
+            $td = $iuran_terbuat->getTagihanDetail(false, $tanggal);
+            $tagihan_detail = array_merge($tagihan_detail, $td);
+        }
+
+        return $tagihan_detail;
+    }
+
+
     public function create(array $attributes = [])
     {
         $iurans = self::getValue($attributes, 'iuran');
         $jadwals = self::getValue($attributes, 'jadwal');
         $refs = self::getValue($attributes, 'ref');
+        // $program_belajar_pilihan = self::getValue($attributes, 'program_belajar_pilihan');
 
         self::handleOrang($attributes);
         // self::getSequance($attributes);
@@ -435,6 +519,7 @@ class Siswa extends BaseModel
 		$siswa = parent::create($attributes);
         $siswa->handleJadwal($jadwals);
         $siswa->handleRef($refs);
+        // $siswa->handleProgramBelajarPilihan($program_belajar_pilihan);
         $siswa->handleIuran($iurans);
         $siswa->triggerIuran(true);
 
@@ -446,6 +531,7 @@ class Siswa extends BaseModel
         $iurans = self::getValue($attributes, 'iuran');
         $jadwals = self::getValue($attributes, 'jadwal');
         $refs = self::getValue($attributes, 'ref');
+        // $program_belajar_pilihan = self::getValue($attributes, 'program_belajar_pilihan');
         
         $this->handleOrang($attributes);
         $this->handleStatus($attributes);
@@ -456,6 +542,7 @@ class Siswa extends BaseModel
 
         $this->handleJadwal($jadwals);
         $this->handleRef($refs);
+        // $this->handleProgramBelajarPilihan($program_belajar_pilihan);
         $this->handleIuran($iurans);
 
         $this->handleTagihan($attributes);
@@ -474,6 +561,7 @@ class Siswa extends BaseModel
         $this->jadwal()->delete();
         $this->iuran()->detach();
         $this->referal()->detach();
+        $this->program_belajar()->detach();
         $this->deposit()->delete();
         
         $tagihan = new Tagihan();
@@ -522,7 +610,7 @@ class Siswa extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp');
+        $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp', 'referal', 'program_belajar');
         $data = parent::fetchDetail($id, $obj);
 
         // @need to uncoment

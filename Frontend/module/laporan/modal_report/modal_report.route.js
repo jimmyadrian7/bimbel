@@ -15,7 +15,7 @@ import laporan from "../html/laporan_template.html";
 
     function getStates()
     {
-        let getKursusOptions = (req) => {
+        let getKursusOptions = ['req', (req) => {
             return req.get('kursuss').then(response => {
                 let result = response.data.map((value) => {
                     return {value: value.id, label: value.nama}
@@ -25,7 +25,7 @@ import laporan from "../html/laporan_template.html";
 
                 return result;
             });
-        };
+        }];
 
         return [
             {

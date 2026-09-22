@@ -164,4 +164,73 @@ class Patch2Controller extends Controller
 
         return $result;
     }
+
+    public function patch5($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        // Create Table Program Belajar (Konfigurasi master data)
+        if (!DB::getSchemaBuilder()->hasTable('program_belajar'))
+        {
+            DB::getSchemaBuilder()->create('program_belajar', function ($table) {
+                $table->increments('id');
+                $table->string('kode', 255)->nullable();
+                $table->string('nama', 255)->nullable();
+                $table->string('nama_mandarin', 255)->nullable();
+            });
+        }
+
+        // Create Table History Generate Tagihan
+        // if (!DB::getSchemaBuilder()->hasTable('history_generated_tagihan'))
+        // {
+        //     DB::getSchemaBuilder()->create('history_generated_tagihan', function ($table) {
+        //         $table->increments('id');
+        //         $table->integer('siswa_id')->nullable();
+        //         $table->boolean('generated')->nullable();
+        //         $table->string('remark')->nullable();
+        //         $table->date('created_at')->nullable();
+
+        //         $table->foreign('siswa_id')->references('id')->on('siswa');
+        //     });
+        // }
+
+        // Create Pivot Table Siswa <-> Program Belajar (many to many)
+        // if (!DB::getSchemaBuilder()->hasTable('siswa_program_belajar'))
+        // {
+        //     DB::getSchemaBuilder()->create('siswa_program_belajar', function ($table) {
+        //         $table->increments('id');
+        //         $table->integer('siswa_id')->nullable();
+        //         $table->integer('program_belajar_id')->nullable();
+
+        //         $table->foreign('siswa_id')->references('id')->on('siswa');
+        //         $table->foreign('program_belajar_id')->references('id')->on('program_belajar');
+        //     });
+        // }
+
+        // Register Konfigurasi > Program Belajar menu
+        $menu_id = Utils::addMenuReport('program_belajar', 'Program Belajar', 'konfigurasi');
+        Utils::updateAccessRight('cud', $menu_id, [1, 4]);
+
+        // Seed the 4 programs that used to be hardcoded on the Kwitansi so existing data keeps working
+        $program_belajar = new \Bimbel\Master\Model\ProgramBelajar();
+        $existing = $program_belajar->count();
+
+        if ($existing == 0)
+        {
+            $defaults = [
+                ['kode' => 'MANDARIN', 'nama' => 'Mandarin', 'nama_mandarin' => '中文班'],
+                ['kode' => 'INGGRIS', 'nama' => 'Inggris', 'nama_mandarin' => '英文班'],
+                ['kode' => 'BIMBEL', 'nama' => 'Bimbel', 'nama_mandarin' => '学校课程'],
+                ['kode' => 'CALISTUNG', 'nama' => 'Calistung', 'nama_mandarin' => '幼儿园课程'],
+            ];
+
+            foreach ($defaults as $default)
+            {
+                $program_belajar = new \Bimbel\Master\Model\ProgramBelajar();
+                $program_belajar->create($default);
+            }
+        }
+
+        return $result;
+    }
 }

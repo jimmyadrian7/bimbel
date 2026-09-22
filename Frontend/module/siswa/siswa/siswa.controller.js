@@ -13,12 +13,12 @@ import authentication_html from "./html/modal/authentication.html";
 
     SiswaController.$inject = [
         '$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session',
-        'referalOptions', 'logger'
+        'referalOptions', 'programBelajarOptions', 'logger'
     ];
 
     function SiswaController(
         stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session,
-        referalOptions, logger
+        referalOptions, programBelajarOptions, logger
     ) {
         let vm = this;
         let jenisKelamin = [
@@ -50,12 +50,14 @@ import authentication_html from "./html/modal/authentication.html";
         vm.myModal = false;
         vm.reset = false;
         vm.data = { iuran: [], jadwal: [], ref: {} };
+        // vm.data = { iuran: [], jadwal: [], ref: {}, program_belajar_pilihan: {} };
         vm.modal = {};
         vm.dataId = stateParams.dataId;
         vm.activeIndex = -1;
         vm.hideGuru = session.isSuperUser() || session.isAdminCabang();
         vm.isSuperUser = session.isSuperUser() || session.isAdminCabang();
         vm.referalOptions = referalOptions;
+        vm.programBelajarOptions = programBelajarOptions;
 
         vm.status_field = { name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true };
         vm.fields = [
@@ -171,6 +173,7 @@ import authentication_html from "./html/modal/authentication.html";
 
         vm.modalTagihan = modalTagihan;
         vm.genTagihan = genTagihan;
+        vm.previewTagihan = previewTagihan;
 
         vm.buatDeposit = buatDeposit;
 
@@ -377,7 +380,26 @@ import authentication_html from "./html/modal/authentication.html";
         }
 
         function modalTagihan() {
+            vm.tagihanPreview = null;
             vm.myModal = $compile(generate_tagihan_modal)($scope);
+        }
+
+        function previewTagihan() {
+            if (!vm.modal.tanggal_tagihan) {
+                logger.error("Pilih tanggal terlebih dahulu");
+                return;
+            }
+
+            let data = {
+                tanggal: vm.modal.tanggal_tagihan
+            };
+
+            vm.tagihanPreview = null;
+
+            req.post('siswa/mass/generate/tagihan/preview', data).then(response => {
+                response.tanggal = vm.modal.tanggal_tagihan;
+                vm.tagihanPreview = response;
+            });
         }
 
         function genTagihan() {
@@ -386,8 +408,14 @@ import authentication_html from "./html/modal/authentication.html";
             };
 
             req.post('siswa/mass/generate/tagihan', data).then(response => {
-                Modal.getInstance(vm.myModal[0]).hide();
-                state.reload();
+                if (response.success) {
+                    logger.success(response.msg);
+
+                    Modal.getInstance(vm.myModal[0]).hide();
+                    state.reload();
+                }
+                // Modal.getInstance(vm.myModal[0]).hide();
+                // state.reload();
             });
         }
 

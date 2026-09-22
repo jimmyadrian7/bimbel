@@ -4,8 +4,10 @@
             <table>
                 <tr><td><div class="logo-container"></div></td></tr>
                 <tr><td class="small text-center font-weight-bold" style="white-space: pre-line">{{ report_info.alamat }}</td></tr>
-                <tr><td class="small text-center font-weight-bold">Hp : {{ report_info.no_hp }}</td></tr>
-                <tr><td class="small text-center font-weight-bold">Email : {{ report_info.email }}</td></tr>
+                <tr><td class="small text-center font-weight-bold" {{ report_info.email is empty ? 'style="font-size: 12px;"' : '' }}>Hp : {{ report_info.no_hp }}</td></tr>
+                {% if report_info.email %}
+                    <tr><td class="small text-center font-weight-bold">Email : {{ report_info.email }}</td></tr>
+                {% endif %}
             </table>
         </td>
 
