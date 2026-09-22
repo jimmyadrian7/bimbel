@@ -180,6 +180,20 @@ class Patch2Controller extends Controller
             });
         }
 
+        // Create Table History Generate Tagihan
+        // if (!DB::getSchemaBuilder()->hasTable('history_generated_tagihan'))
+        // {
+        //     DB::getSchemaBuilder()->create('history_generated_tagihan', function ($table) {
+        //         $table->increments('id');
+        //         $table->integer('siswa_id')->nullable();
+        //         $table->boolean('generated')->nullable();
+        //         $table->string('remark')->nullable();
+        //         $table->date('created_at')->nullable();
+
+        //         $table->foreign('siswa_id')->references('id')->on('siswa');
+        //     });
+        // }
+
         // Create Pivot Table Siswa <-> Program Belajar (many to many)
         // if (!DB::getSchemaBuilder()->hasTable('siswa_program_belajar'))
         // {

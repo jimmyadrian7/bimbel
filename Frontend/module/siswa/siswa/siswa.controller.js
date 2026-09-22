@@ -388,8 +388,14 @@ import authentication_html from "./html/modal/authentication.html";
             };
 
             req.post('siswa/mass/generate/tagihan', data).then(response => {
-                Modal.getInstance(vm.myModal[0]).hide();
-                state.reload();
+                if (response.success) {
+                    logger.success(response.msg);
+
+                    Modal.getInstance(vm.myModal[0]).hide();
+                    state.reload();
+                }
+                // Modal.getInstance(vm.myModal[0]).hide();
+                // state.reload();
             });
         }
 
