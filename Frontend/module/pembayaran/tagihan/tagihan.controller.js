@@ -355,7 +355,7 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
 
         function cetakKwitansi() {
             req.get(`generate/report/kwitansi/${vm.dataId}`).then(response => {
-                vm.activePdf = { filename: "invoice.pdf", filetype: 'application/pdf', base64: response.data };
+                vm.activePdf = { filename: "kwitansi.pdf", filetype: 'application/pdf', base64: response.data };
                 let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
                 element = $compile(element)($scope);
             });

@@ -126,7 +126,7 @@ class InvoiceController extends BaseReportController
                 'logo_bank' => $logo_bank,
                 'untuk' => $untuk,
                 'untuk_spp' => $untuk_spp,
-                'terbilang' => $terbilang,
+                'terbilang' => ucwords($terbilang),
                 'stamp_img' => $stamp_img,
                 'program_belajars' => $program_belajars,
                 'program_belajar_is_other' => $program_belajar_is_other,

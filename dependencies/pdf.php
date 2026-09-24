@@ -13,17 +13,24 @@ return [
         $options->set('DOMPDF_ENABLE_FONTS_SUBSETTING', true);
 
         $pdf = new Dompdf();
-        $pdf->getFontMetrics()->registerFont(
-            ['family' => 'SimSun', 'style' => 'normal', 'weight' => 'normal'],
-            // '/module/Report/View/font/SimSun.ttf'
-            __DIR__ . "/../module/Report/View/font/SimSun.ttf"
-        );
+        $fm = $pdf->getFontMetrics();
+        $dir = __DIR__ . "/../module/Report/View/font/";
 
-        $pdf->getFontMetrics()->registerFont(
-            ['family' => 'fireflysung', 'style' => 'normal', 'weight' => 'normal'],
-            // '/module/Report/View/font/SimSun.ttf'
-            __DIR__ . "/../module/Report/View/font/fireflysung.ttf"
-        );
+        $fm->registerFont(['family' => 'NotoSerifSC', 'style' => 'normal', 'weight' => 'normal'], $dir . 'NotoSerifSC-Regular.ttf');
+        $fm->registerFont(['family' => 'NotoSerifSC', 'style' => 'normal', 'weight' => 'bold'],   $dir . 'NotoSerifSC-Bold.ttf');
+
+
+        // $pdf->getFontMetrics()->registerFont(
+        //     ['family' => 'SimSun', 'style' => 'normal', 'weight' => 'normal'],
+        //     // '/module/Report/View/font/SimSun.ttf'
+        //     __DIR__ . "/../module/Report/View/font/SimSun.ttf"
+        // );
+
+        // $pdf->getFontMetrics()->registerFont(
+        //     ['family' => 'fireflysung', 'style' => 'normal', 'weight' => 'normal'],
+        //     // '/module/Report/View/font/SimSun.ttf'
+        //     __DIR__ . "/../module/Report/View/font/fireflysung.ttf"
+        // );
 
         $pdf->setOptions($options);
         $pdf->setPaper('A4', 'landscape');
