@@ -8,36 +8,34 @@ import form from "./html/form.html";
     angular.module('app.module.siswa.siswa')
         .run(appRun);
 
-    appRun.$inject =['routerHelper', 'req'];
+    appRun.$inject = ['routerHelper', 'req'];
 
-    function appRun(routerHelper, req)
-    {
+    function appRun(routerHelper, req) {
         routerHelper.configureStates(getStates());
     }
 
-    function getStates()
-    {
+    function getStates() {
         let getAgaOptions = ['req', (req) => {
             return req.get('agamas').then(response => {
                 return response.data.map((value) => {
-                    return {value: value.id, label: value.nama}
+                    return { value: value.id, label: value.nama }
                 });
             });
         }];
         let getRefOptions = ['req', (req) => {
             return req.get('referals').then(response => {
                 return response.data.map((value) => {
-                    return {value: value.id, label: value.nama}
+                    return { value: value.id, label: value.nama }
                 });
             });
         }];
-        let getProgramBelajarOptions = ['req', (req) => {
-            return req.get('program_belajars').then(response => {
-                return response.data.map((value) => {
-                    return {value: value.id, label: value.nama};
-                });
-            });
-        }];
+        // let getProgramBelajarOptions = ['req', (req) => {
+        //     return req.get('program_belajars').then(response => {
+        //         return response.data.map((value) => {
+        //             return {value: value.id, label: value.nama};
+        //         });
+        //     });
+        // }];
         // let getKursusOptions = (req) => {
         //     return req.get('kursuss').then(response => {
         //         return response.data.map((value) => {
@@ -60,7 +58,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
-                        programBelajarOptions: getProgramBelajarOptions,
+                        // programBelajarOptions: getProgramBelajarOptions,
                         // kursusOptions: getKursusOptions
                     }
                 }
@@ -78,7 +76,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
-                        programBelajarOptions: getProgramBelajarOptions,
+                        // programBelajarOptions: getProgramBelajarOptions,
                         // kursusOptions: getKursusOptions
                     }
                 }
@@ -96,7 +94,7 @@ import form from "./html/form.html";
                     resolve: {
                         agamaOptions: getAgaOptions,
                         referalOptions: getRefOptions,
-                        programBelajarOptions: getProgramBelajarOptions,
+                        // programBelajarOptions: getProgramBelajarOptions,
                         // kursusOptions: getKursusOptions
                     }
                 }
