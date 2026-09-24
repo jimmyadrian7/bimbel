@@ -125,10 +125,10 @@ class Siswa extends BaseModel
     {
         return $this->belongsToMany(Referal::class, 'siswa_referal', 'siswa_id', 'referal_id');
     }
-    public function program_belajar()
-    {
-        return $this->belongsToMany(ProgramBelajar::class, 'siswa_program_belajar', 'siswa_id', 'program_belajar_id');
-    }
+    // public function program_belajar()
+    // {
+    //     return $this->belongsToMany(ProgramBelajar::class, 'siswa_program_belajar', 'siswa_id', 'program_belajar_id');
+    // }
     public function kursus()
     {
         return $this->hasOne(Kursus::class, 'id', 'kursus_id');
@@ -561,7 +561,7 @@ class Siswa extends BaseModel
         $this->jadwal()->delete();
         $this->iuran()->detach();
         $this->referal()->detach();
-        $this->program_belajar()->detach();
+        // $this->program_belajar()->detach();
         $this->deposit()->delete();
         
         $tagihan = new Tagihan();
@@ -610,7 +610,8 @@ class Siswa extends BaseModel
 
     public function fetchDetail($id, $obj)
     {
-        $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp', 'referal', 'program_belajar');
+        $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp', 'referal');
+        // $obj = $obj->with('orang', 'iuran', 'jadwal', 'orang.pp', 'referal', 'program_belajar');
         $data = parent::fetchDetail($id, $obj);
 
         // @need to uncoment
