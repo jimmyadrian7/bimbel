@@ -24,7 +24,9 @@ import sortHtml from "./modal/sort.html";
                 detail: '@',
                 fields: '=',
                 addable: '=?',
-                nosearch: '=?'
+                nosearch: '=?',
+                quickFilters: '=?',
+                queryState: '=?'
             },
             transclude: {
                 button: '?appTableButton'
@@ -58,6 +60,13 @@ import sortHtml from "./modal/sort.html";
             vm.isFilter = false;
             vm.isSort = false;
             vm.myModal = false;
+            vm.activeQuickFilter = false;
+
+            // Exposed to the parent controller (e.g. via query-state="vm.queryState")
+            // so that things like export buttons, which live outside this
+            // directive's own scope (transcluded content), can reuse whatever
+            // filter/sort/search is currently applied to the table.
+            vm.queryState = vm.queryState || {};
 
             vm.tambahData = tambahData;
             vm.getValue = getValue;
@@ -78,11 +87,20 @@ import sortHtml from "./modal/sort.html";
             vm.clearSort = clearSort;
             vm.applySort = applySort;
 
+            vm.applyQuickFilter = applyQuickFilter;
+            vm.clearQuickFilter = clearQuickFilter;
+
             vm.currentPage = $location.search().page || 1;
             vm.currentPage = parseInt(vm.currentPage);
             vm.lastPage = 1;
             vm.page_array = [];
 
+            // Restore whatever filter/sort/search was applied last time this
+            // table was on screen, so that navigating to a detail page and
+            // back (see appDetail's back(), which now uses browser history)
+            // lands back on the same filtered/sorted/paged view instead of
+            // resetting to a blank table.
+            restoreQueryState();
 
             vm.sortOptions = [
                 { label: "Ascending (A-Z/1-10)", value: "ASC" },
@@ -149,6 +167,8 @@ import sortHtml from "./modal/sort.html";
                     url = `${url}&search=${vm.searchValue}`;
                 }
 
+                updateQueryState();
+
                 if (method == "get") {
                     req.get(url).then(response => {
                         vm.rawResponse = response;
@@ -164,6 +184,60 @@ import sortHtml from "./modal/sort.html";
                         vm.lastPage = response.last_page;
                         generatePage(response.last_page);
                     });
+                }
+            }
+
+            function updateQueryState() {
+                vm.queryState = vm.queryState || {};
+
+                vm.queryState.filter = vm.isFilter ? vm.appliedFilter : undefined;
+                vm.queryState.sort = vm.isSort ? vm.appliedSort : undefined;
+                vm.queryState.search = vm.searchValue || undefined;
+            }
+
+            function restoreQueryState() {
+                let params = $location.search();
+
+                // Note: this runs before the $scope.$watch on vm.searchValue
+                // is registered below, so setting it here does not trigger
+                // watchSearch's page-reset side effect.
+                if (params.search) {
+                    vm.searchValue = params.search;
+                }
+
+                let filter = safeParseJson(params.filter);
+                if (Array.isArray(filter) && filter.length > 0) {
+                    vm.appliedFilter = filter;
+                    vm.filterData = angular.copy(filter);
+                    vm.isFilter = true;
+
+                    let matchingQuick = (vm.quickFilters || []).filter((qf) => {
+                        return angular.toJson(qf.filter) === angular.toJson(filter);
+                    })[0];
+
+                    if (matchingQuick) {
+                        vm.activeQuickFilter = matchingQuick.label;
+                    }
+                }
+
+                let sort = safeParseJson(params.sort);
+                if (Array.isArray(sort) && sort.length > 0) {
+                    vm.appliedSort = sort;
+                    vm.sortData = angular.copy(sort);
+                    vm.isSort = true;
+                }
+            }
+
+            function safeParseJson(value) {
+                if (!value) {
+                    return null;
+                }
+
+                try {
+                    return JSON.parse(value);
+                }
+                catch (e) {
+                    return null;
                 }
             }
 
@@ -236,6 +310,8 @@ import sortHtml from "./modal/sort.html";
                 }
 
                 vm.currentPage = 1;
+                $location.search('search', newVal || null);
+                $location.search('page', null);
                 getData();
             }
 
@@ -262,7 +338,10 @@ import sortHtml from "./modal/sort.html";
 
 
                     if (opt.type == "selection" || opt.type == "boolean") {
-                        opt.operation = [{ value: "=", label: "=" }];
+                        opt.operation = [
+                            { value: "=", label: "=" },
+                            { value: "!=", label: "!=" }
+                        ];
                     }
 
                     if (opt.type == "number" || opt.type == "date") {
@@ -331,6 +410,8 @@ import sortHtml from "./modal/sort.html";
                     vm.isFilter = true;
                 }
 
+                $location.search('filter', vm.isFilter ? JSON.stringify(vm.appliedFilter) : null);
+
                 // $timeout(() => {getData();}, 500);
                 $timeout(() => changePage(1), 500);
             }
@@ -379,9 +460,33 @@ import sortHtml from "./modal/sort.html";
                     vm.isSort = true;
                 }
 
-
+                $location.search('sort', vm.isSort ? JSON.stringify(vm.appliedSort) : null);
 
                 $timeout(() => changePage(1), 500);
+            }
+
+            function applyQuickFilter(quickFilter) {
+                vm.appliedFilter = angular.copy(quickFilter.filter);
+                vm.filterData = angular.copy(quickFilter.filter);
+                vm.isFilter = true;
+                vm.activeQuickFilter = quickFilter.label;
+
+                $location.search('filter', JSON.stringify(vm.appliedFilter));
+
+                changePage(1);
+            }
+
+            function clearQuickFilter() {
+                vm.activeQuickFilter = false;
+                vm.appliedFilter = [
+                    { field: "", operation: "", value: "", selected: false }
+                ];
+                vm.filterData = angular.copy(vm.appliedFilter);
+                vm.isFilter = false;
+
+                $location.search('filter', null);
+
+                changePage(1);
             }
         }
     }

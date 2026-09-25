@@ -1,0 +1,85 @@
+<html>
+
+    <head>
+        {% include "/Report/View/partial/style.twig" %}
+
+        <style>
+            header {
+                position: fixed;
+                top: 0px;
+                left: 0;
+                right: 0;
+                height: 200px;
+            }
+
+            body {
+                margin-top: 210px;
+            }
+
+            #background {
+                background-image:url({{background}});
+                display: block;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: -1000;
+                background-repeat: repeat;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="background"></div>
+
+        <div class="container">
+            <header>
+                <div class="container">
+                    {% include "Report/View/partial/header.twig" %}
+                </div>
+            </header>
+
+            <div class="content">
+                <table class="table-content">
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Tanggal</th>
+                            <th>Siswa</th>
+                            <th>Guru</th>
+                            <th>Sub Total</th>
+                            <th>Potongan</th>
+                            <th>Total</th>
+                            <th>Hutang</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    {% for tagihan in tagihans %}
+                        <tr>
+                            <td>{{ tagihan.code }}</td>
+                            <td>{{ tagihan.tanggal|date("d/m/Y") }}</td>
+                            <td>{{ tagihan.siswa.orang.nama }}</td>
+                            <td>{{ tagihan.guru.orang.nama }}</td>
+                            <td>{{ tagihan.sub_total|number_format(0, ',', '.') }}</td>
+                            <td>{{ tagihan.potongan|number_format(0, ',', '.') }}</td>
+                            <td>{{ tagihan.total|number_format(0, ',', '.') }}</td>
+                            <td>{{ tagihan.hutang|number_format(0, ',', '.') }}</td>
+                            <td>{{ status_label[tagihan.status] }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    <tr class="bold">
+                        <td class="bg-transparent" colspan="4"></td>
+                        <td class="bg-red">{{ total_sub_total|number_format(0, ',', '.') }}</td>
+                        <td class="bg-red">{{ total_potongan|number_format(0, ',', '.') }}</td>
+                        <td class="bg-red">{{ total|number_format(0, ',', '.') }}</td>
+                        <td class="bg-red">{{ total_hutang|number_format(0, ',', '.') }}</td>
+                        <td class="bg-transparent"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

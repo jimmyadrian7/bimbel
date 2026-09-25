@@ -1,1 +1,10 @@
-<app-table table="tagihans" fields="vm.fields" detail="pembayaran.tagihan_detail" form="pembayaran.tagihan_form"></app-table>
+<app-table table="tagihans" fields="vm.fields" detail="pembayaran.tagihan_detail" form="pembayaran.tagihan_form" quick-filters="vm.quickFilters" query-state="vm.queryState">
+    <app-table-button>
+        <button type="button" class="btn btn-link text-gradient text-primary py-0 mb-0" ng-click="vm.exportPdf()">
+            <i class="fa fa-file-pdf-o me-2"></i> Export PDF
+        </button>
+        <button type="button" class="btn btn-link text-gradient text-primary py-0 mb-0" ng-click="vm.exportExcel()">
+            <i class="fa fa-file-excel-o me-2"></i> Export Excel
+        </button>
+    </app-table-button>
+</app-table>

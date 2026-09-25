@@ -7,9 +7,9 @@ import previewHtml from "./preview.html";
     angular.module('app.utils')
         .directive('appDetail', appDetail);
 
-    appDetail.$inject = ['req', '$state'];
+    appDetail.$inject = ['req', '$state', '$window'];
 
-    function appDetail(req, state)
+    function appDetail(req, state, $window)
     {
         let directive = {
             restrict: 'E',
@@ -113,7 +113,21 @@ import previewHtml from "./preview.html";
 
             function back()
             {
-                state.go(vm.list);
+                // Going back with real browser history (rather than
+                // $state.go(vm.list), which always rebuilds a fresh URL for
+                // the list state) restores the exact previous URL, including
+                // the filter/sort/search/page app-table writes to it - so
+                // the list looks the same as when the user left it.
+                // Falls back to $state.go when there's no in-app history to
+                // go back to (e.g. detail page opened directly via URL).
+                if ($window.history.length > 1)
+                {
+                    $window.history.back();
+                }
+                else
+                {
+                    state.go(vm.list);
+                }
             }
 
             function getValue(field)

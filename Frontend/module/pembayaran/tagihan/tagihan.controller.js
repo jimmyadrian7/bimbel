@@ -38,8 +38,23 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
         vm.additionalData = {};
 
         vm.data = { tagihan_detail: [] };
+        // Kept in sync with the table's current filter/sort/search (see
+        // query-state binding in html/table.html) so exports reflect it.
+        vm.queryState = {};
         vm.status_field = { name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true };
         vm.dataId = stateParams.dataId;
+
+        vm.quickFilters = [
+            {
+                label: "Belum Lunas Bulan Ini",
+                filter: [
+                    { field: "status", operation: "!=", value: "l" },
+                    { field: "tanggal", operation: ">=", value: moment().startOf('month').format("YYYY-MM-DD") },
+                    { field: "tanggal", operation: "<=", value: moment().endOf('month').format("YYYY-MM-DD") }
+                ]
+            }
+        ];
+
         vm.activeDetail = -1;
         vm.fields = [
             { name: "Tanggal", value: "tanggal", type: 'date', table: true },
@@ -148,6 +163,9 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
         vm.postPindahGuru = postPindahGuru;
 
         vm.getNumber = getNumber;
+
+        vm.exportPdf = exportPdf;
+        vm.exportExcel = exportExcel;
 
         vm.programBelajarOptions = [];
         fetchProgramBelajarOptions();
@@ -359,6 +377,41 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
                 let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
                 element = $compile(element)($scope);
             });
+        }
+
+        function exportPdf() {
+            req.post(`generate/report/tagihan_list`, getExportPayload()).then(response => {
+                vm.activePdf = { filename: "tagihan.pdf", filetype: 'application/pdf', base64: response.data };
+                let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
+                element = $compile(element)($scope);
+            });
+        }
+
+        function exportExcel() {
+            req.post(`generate/report/tagihan_list/excel`, getExportPayload()).then(response => {
+                vm.activeExcel = { filename: "tagihan.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data };
+                let element = `<app-download-preview value='vm.activeExcel'></app-download-preview>`;
+                element = $compile(element)($scope);
+            });
+        }
+
+        function getExportPayload() {
+            let queryState = vm.queryState || {};
+            let payload = {};
+
+            if (queryState.filter) {
+                payload.filter = queryState.filter;
+            }
+
+            if (queryState.sort) {
+                payload.sort = queryState.sort;
+            }
+
+            if (queryState.search) {
+                payload.search = queryState.search;
+            }
+
+            return payload;
         }
 
         function editInfoKwitansi() {

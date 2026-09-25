@@ -1,0 +1,80 @@
+<html>
+
+    <head>
+        {% include "/Report/View/partial/style.twig" %}
+
+        <style>
+            header {
+                position: fixed;
+                top: 0px;
+                left: 0;
+                right: 0;
+                height: 200px;
+            }
+
+            body {
+                margin-top: 210px;
+            }
+
+            #background {
+                background-image:url({{background}});
+                display: block;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: -1000;
+                background-repeat: repeat;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="background"></div>
+
+        <div class="container">
+            <header>
+                <div class="container">
+                    {% include "Report/View/partial/header.twig" %}
+                </div>
+            </header>
+
+            <div class="content">
+                <p><strong>Tanggal:</strong> {{ tanggal }}</p>
+
+                <table class="table-content">
+                    <thead>
+                        <tr>
+                            <th>Siswa</th>
+                            <th>Rincian</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    {% for row in preview %}
+                        <tr>
+                            <td>{{ row.nama }}</td>
+                            <td>
+                                {% for item in row.items %}
+                                    {{ item.nama }}{% if item.qty > 1 %} (x{{ item.qty }}){% endif %}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>{{ row.total|number_format(0, ',', '.') }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Tidak ada tagihan yang akan dibuat untuk tanggal ini.</td>
+                        </tr>
+                    {% endfor %}
+
+                    <tr class="bold">
+                        <td class="bg-transparent"></td>
+                        <td class="bg-red">Grand Total</td>
+                        <td class="bg-red">{{ grand_total|number_format(0, ',', '.') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

@@ -37,6 +37,23 @@
                             <span app-number-format="vm.tagihanPreview.grand_total"></span>
                         </p>
 
+                        <div class="mb-2">
+                            <button
+                                type="button"
+                                class="btn btn-link text-gradient text-primary py-0 mb-0 px-1"
+                                ng-disabled="vm.tagihanPreview.tanggal !== vm.modal.tanggal_tagihan"
+                                ng-click="vm.exportPreviewPdf()">
+                                <i class="fa fa-file-pdf-o me-2"></i> Export PDF
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-link text-gradient text-primary py-0 mb-0 px-1"
+                                ng-disabled="vm.tagihanPreview.tanggal !== vm.modal.tanggal_tagihan"
+                                ng-click="vm.exportPreviewExcel()">
+                                <i class="fa fa-file-excel-o me-2"></i> Export Excel
+                            </button>
+                        </div>
+
                         <div class="table-responsive p-0" style="max-height: 300px; overflow-y: auto;">
                             <table class="table align-items-center mb-0">
                                 <thead>

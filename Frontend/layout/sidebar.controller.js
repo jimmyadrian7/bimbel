@@ -14,7 +14,6 @@
         vm.title = config.appTitle;
         
         vm.isCurrent = isCurrent;
-        vm.go = go;
         vm.logout = logout;
         vm.navRoutes = [];
 
@@ -35,11 +34,6 @@
         function isCurrent(menu)
         {
             return $state.current.menu == menu.kode ? "active" : "";
-        }
-
-        function go(menu)
-        {
-            $state.go(menu.kode);
         }
 
         function logout()

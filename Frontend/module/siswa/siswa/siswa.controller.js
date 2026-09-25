@@ -13,12 +13,12 @@ import authentication_html from "./html/modal/authentication.html";
 
     SiswaController.$inject = [
         '$stateParams', 'agamaOptions', '$parse', 'req', '$state', '$compile', '$scope', 'Modal', 'session',
-        'referalOptions', 'programBelajarOptions', 'logger'
+        'referalOptions', 'logger'
     ];
 
     function SiswaController(
         stateParams, agamaOptions, $parse, req, state, $compile, $scope, Modal, session,
-        referalOptions, programBelajarOptions, logger
+        referalOptions, logger
     ) {
         let vm = this;
         let jenisKelamin = [
@@ -57,7 +57,7 @@ import authentication_html from "./html/modal/authentication.html";
         vm.hideGuru = session.isSuperUser() || session.isAdminCabang();
         vm.isSuperUser = session.isSuperUser() || session.isAdminCabang();
         vm.referalOptions = referalOptions;
-        vm.programBelajarOptions = programBelajarOptions;
+        // vm.programBelajarOptions = programBelajarOptions;
 
         vm.status_field = { name: "Status", value: "status", type: "selection", selection: statusOpt, table: true, hidden: true, hideDetail: true };
         vm.fields = [
@@ -174,6 +174,8 @@ import authentication_html from "./html/modal/authentication.html";
         vm.modalTagihan = modalTagihan;
         vm.genTagihan = genTagihan;
         vm.previewTagihan = previewTagihan;
+        vm.exportPreviewPdf = exportPreviewPdf;
+        vm.exportPreviewExcel = exportPreviewExcel;
 
         vm.buatDeposit = buatDeposit;
 
@@ -381,7 +383,18 @@ import authentication_html from "./html/modal/authentication.html";
 
         function modalTagihan() {
             vm.tagihanPreview = null;
+            // Default to the 1st of next month: this modal is normally used
+            // to preview/generate the upcoming month's tagihan.
+            vm.modal.tanggal_tagihan = getNextMonthDate();
             vm.myModal = $compile(generate_tagihan_modal)($scope);
+        }
+
+        function getNextMonthDate() {
+            let now = new Date();
+            let nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+            let pad = (n) => String(n).padStart(2, '0');
+
+            return `${nextMonth.getFullYear()}-${pad(nextMonth.getMonth() + 1)}-${pad(nextMonth.getDate())}`;
         }
 
         function previewTagihan() {
@@ -399,6 +412,30 @@ import authentication_html from "./html/modal/authentication.html";
             req.post('siswa/mass/generate/tagihan/preview', data).then(response => {
                 response.tanggal = vm.modal.tanggal_tagihan;
                 vm.tagihanPreview = response;
+            });
+        }
+
+        function exportPreviewPdf() {
+            let data = {
+                tanggal: vm.modal.tanggal_tagihan
+            };
+
+            req.post('generate/report/tagihan_preview', data).then(response => {
+                vm.activePdf = { filename: "preview_tagihan.pdf", filetype: 'application/pdf', base64: response.data };
+                let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
+                element = $compile(element)($scope);
+            });
+        }
+
+        function exportPreviewExcel() {
+            let data = {
+                tanggal: vm.modal.tanggal_tagihan
+            };
+
+            req.post('generate/report/tagihan_preview/excel', data).then(response => {
+                vm.activeExcel = { filename: "preview_tagihan.xlsx", filetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', base64: response.data };
+                let element = `<app-download-preview value='vm.activeExcel'></app-download-preview>`;
+                element = $compile(element)($scope);
             });
         }
 
