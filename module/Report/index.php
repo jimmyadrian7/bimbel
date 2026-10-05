@@ -7,3 +7,4 @@ require "_routes/fetch_guru.php";
 require "_routes/fetch_labarugi.php";
 require "_routes/fetch_asisten_guru.php";
 require "_routes/fetch_tagihan.php";
+require "_routes/fetch_template.php";

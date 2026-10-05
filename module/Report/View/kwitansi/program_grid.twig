@@ -1,0 +1,95 @@
+{# Program belajar in several rows. Used by layout.twig when "susun program" is on; the
+   numbers come from the validated `layout.program` settings. Do not add white-space: nowrap
+   to the cells: dompdf then misplaces the checkboxes. #}
+{% set per_baris = layout.program.per_baris %}
+<style>
+    .program-grid { padding: 5px; font-size: {{ layout.program.ukuran_huruf }}px; }
+    .program-grid td { padding-right: 10px; }
+    .program-grid .jarak { height: 4px; line-height: 4px; font-size: 1px; }
+</style>
+<table class="program-grid">
+    {% for baris in program_belajars|batch(per_baris) %}
+    <tr>
+        <td>{{ loop.first ? 'Program Belajar' : '' }}</td>
+        <td>{{ loop.first ? ':' : '' }}</td>
+        {% for program in baris %}
+        <td>
+            <div class="checkbox-pdf">
+                <input type="checkbox" {{ tagihan.program_belajar==program.nama ? 'checked' : '' }}>
+            </div> {{ program.nama }}
+        </td>
+        {% endfor %}
+        {% if loop.last and baris|length < per_baris %}
+        <td>
+            <div class="checkbox-pdf">
+                <input type="checkbox" {{ program_belajar_is_other ? 'checked' : '' }}>
+            </div>
+            <div class="other-options">{{ program_belajar_is_other ? tagihan.program_belajar : '' }}</div>
+        </td>
+        {% endif %}
+    </tr>
+    {% if layout.program.mandarin %}
+    <tr>
+        <td>
+            {% if loop.first %}<div class="checkbox-no-border"></div> <span class="mandarin">补习项目</span>{% endif %}
+        </td>
+        <td></td>
+        {% for program in baris %}
+        <td>
+            <div class="checkbox-no-border"></div>
+            <span class="mandarin">{{ program.nama_mandarin }}</span>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endif %}
+    {% endfor %}
+    {% if program_belajars|length % per_baris == 0 %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td colspan="3">
+            <div class="checkbox-pdf">
+                <input type="checkbox" {{ program_belajar_is_other ? 'checked' : '' }}>
+            </div>
+            <div class="other-options">{{ program_belajar_is_other ? tagihan.program_belajar : '' }}</div>
+        </td>
+    </tr>
+    {% endif %}
+
+    <tr><td class="jarak">&nbsp;</td></tr>
+
+    <tr>
+        <td>Jenis Pembayaran</td>
+        <td>:</td>
+        <td>
+            <div class="checkbox-pdf">
+                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Tunai' ? 'checked' : '' }}>
+            </div> Tunai
+        </td>
+        <td>
+            <div class="checkbox-pdf">
+                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Transfer' ? 'checked' : '' }}>
+            </div> Transfer
+        </td>
+        <td>
+            <div class="checkbox-pdf">
+                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Cek' ? 'checked' : '' }}>
+            </div> Cek
+        </td>
+        <td>
+            <div class="checkbox-pdf">
+                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Bilyet Giro' ? 'checked' : '' }}>
+            </div> Bilyet Giro
+        </td>
+    </tr>
+    {% if layout.program.mandarin %}
+    <tr>
+        <td><div class="checkbox-no-border"></div> <span class="mandarin">付款方式</span></td>
+        <td></td>
+        <td><div class="checkbox-no-border"></div> <span class="mandarin">现金</span></td>
+        <td><div class="checkbox-no-border"></div> <span class="mandarin">汇款</span></td>
+        <td><div class="checkbox-no-border"></div> <span class="mandarin">支票</span></td>
+        <td><div class="checkbox-no-border"></div> <span class="mandarin">转账支票</span></td>
+    </tr>
+    {% endif %}
+</table>

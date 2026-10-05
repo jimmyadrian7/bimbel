@@ -28,6 +28,7 @@ import "./model/ng-model-dynamic.directive";
 import "./modal/app-modal.directive";
 import "./preview/file-preview.directive";
 import "./preview/download-preview.directive";
+import "./preview/pdf-image.factory";
 
 import "./form/file-validation.directive";
 import "./form/number-validation.directive";

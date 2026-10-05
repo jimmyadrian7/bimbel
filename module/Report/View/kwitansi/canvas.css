@@ -1,0 +1,47 @@
+/* Canvas of Konfigurasi > Template Kwitansi: makes the receipt look like the A4 landscape page
+   it prints on, and styles the editor overlays. !important because the template's own CSS is
+   untrusted and may restyle html/body. */
+html { background: #dfe3e8 !important; margin: 0 !important; padding: 0 !important; }
+body {
+    position: relative !important;
+    width: __PAGE_W__px !important;
+    min-height: __PAGE_H__px !important;
+    margin: 0 !important;
+    box-shadow: 0 2px 14px rgba(15, 23, 42, .25);
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+body { z-index: 0 !important; } /* own stacking context: z-index:-1 shapes (nominal) paint above the page, not behind it */
+body:not(.kwitansi-lunas) { background-color: #fff; }
+/* dompdf scales the logo into its box and stretches the Keterangan column to the height of the
+   block; a browser needs a nudge to show the same (this is only an approximation of the PDF). */
+.logo-container { background-attachment: scroll !important; background-size: contain !important; background-position: left center !important; }
+[data-kw-part="tabel"] { height: 1px; }
+[data-kw-block="keterangan"] { height: 100%; }
+[data-kw-block="keterangan"] > .table-keterangan { height: 100%; }
+[data-kw-block="keterangan"] .full-height { height: 100%; }
+.kwitansi-stamp { pointer-events: none !important; }
+[data-kw-block] { cursor: pointer; }
+html.kw-dragging, html.kw-dragging * { cursor: grabbing !important; }
+html.kw-sizing, html.kw-sizing * { cursor: col-resize !important; }
+[data-kw-block="program"], [data-kw-block="terima"], [data-kw-block="nominal"], [data-kw-block="rekening"] { touch-action: none; }
+
+.kw-ui { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 2147483000; font: 600 11px/1 Arial, Helvetica, sans-serif; }
+.kw-ui * { box-sizing: border-box; }
+.kw-box { position: absolute; display: none; pointer-events: none; border: 2px solid transparent; }
+.kw-hover { border-color: rgba(59, 130, 246, .55); background: rgba(59, 130, 246, .06); }
+.kw-selected { border-color: #2563eb; background: rgba(37, 99, 235, .07); }
+.kw-chip { position: absolute; left: -2px; top: -20px; padding: 4px 8px; border-radius: 4px 4px 0 0; background: #2563eb; color: #fff; white-space: nowrap; }
+.kw-hover .kw-chip { background: rgba(59, 130, 246, .85); }
+.kw-ghost { position: absolute; display: none; pointer-events: none; background: rgba(37, 99, 235, .18); border: 2px dashed #2563eb; }
+.kw-drop { position: absolute; display: none; pointer-events: none; height: 4px; border-radius: 2px; background: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, .25); }
+.kw-divider { position: absolute; display: none; width: 14px; cursor: col-resize; touch-action: none; }
+.kw-divider::before { content: ""; position: absolute; left: 5px; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: rgba(37, 99, 235, 0); transition: background .12s; }
+.kw-divider::after { content: ""; position: absolute; left: 3px; top: 50%; width: 8px; height: 36px; margin-top: -18px; border-radius: 4px; background: #2563eb; opacity: 0; transition: opacity .12s; }
+.kw-divider:hover::before, html.kw-sizing .kw-divider::before { background: rgba(37, 99, 235, .55); }
+.kw-divider:hover::after, html.kw-sizing .kw-divider::after { opacity: 1; }
+.kw-badge { position: absolute; display: none; transform: translateX(-50%); padding: 5px 9px; border-radius: 4px; background: #111827; color: #fff; white-space: nowrap; pointer-events: none; }
+.kw-break { position: absolute; display: none; left: 0; width: __PAGE_W__px; height: 0; border-top: 2px dashed #e11d48; pointer-events: none; }
+.kw-break::after { content: attr(data-label); position: absolute; right: 8px; top: 4px; padding: 3px 8px; border-radius: 3px; background: #e11d48; color: #fff; }
+.kw-edge { position: absolute; display: none; top: 0; width: 0; border-left: 2px dashed #e11d48; pointer-events: none; }
+.kw-edge::after { content: attr(data-label); position: absolute; left: 8px; top: 8px; padding: 3px 8px; border-radius: 3px; background: #e11d48; color: #fff; white-space: nowrap; }

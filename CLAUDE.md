@@ -111,6 +111,73 @@ pass it from the controller as a variable, ideally sourced from a
 Konfigurasi-managed master-data model, the way `program_belajars` is now
 passed into `program.twig` instead of 4 hardcoded checkboxes.
 
+#### Kwitansi template is editable from the UI
+Konfigurasi > Template Kwitansi lets a Super Admin override individual kwitansi
+sections (the partials above plus `style.twig`). Overrides live in the
+`report_template` table (patch 2/6); the `.twig` files stay the default and are
+used for any section without an override. Logic is in
+`module/Report/Helper/KwitansiTemplate.php`, API in
+`KwitansiTemplateController`, rendering in `InvoiceController::renderKwitansi()`.
+Things to keep in mind when touching this:
+
+- Overrides run in a **Twig sandbox** (tags `if/for/set`, a filter allow-list,
+  no `include`, no method calls). Edited sections receive **plain arrays only** —
+  never pass an Eloquent model into the kwitansi data (`getKwitansiData()`),
+  Twig's `isset($obj->x)` probe can lazy-load relations before the sandbox
+  check. `toPdf()` injects `report_info` as a model, so the sandboxed wrapper
+  remaps it from `report_info_data`.
+- If you **rename/remove a variable or a partial's file**, saved overrides that
+  use it will break (printing then falls back to the default template and logs
+  `[kwitansi-template]`). Keep `KwitansiTemplate::variables()`/`sampleContext()`
+  and `getKwitansiData()` in sync.
+- The overrides table is deliberately accessed with the query builder, not a
+  model under `module/*/Model/`, because every model there is auto-exposed by
+  the generic REST API and raw template text must only be written through the
+  linting controller.
+- Editing/printing must never be blocked by a bad template: real printing
+  catches Twig errors and falls back; only the preview is strict.
+- The editor is a WYSIWYG canvas (like a report studio): the receipt itself is the
+  editing surface, a right-hand panel edits the selection, and "Edit kode" opens
+  a section's Twig in an overlay. State is a working copy `{layout, sections}`
+  with undo/redo; nothing is stored until Simpan.
+  - **Layout** (`report_template.bagian = 'layout'`: block order, column width,
+    program grid, page margins) is a small validated JSON that the trusted files
+    `layout.twig` / `program_grid.twig` turn into the page; no user code, no
+    sandbox. Everything reaching them goes through
+    `KwitansiTemplate::normalizeLayout()`; add new settings there (+ limits in
+    `LAYOUT_LIMITS`, + the default in `defaultLayout()`). With default settings
+    the original `kwitansi.twig` is used for printing and `layout.twig` renders
+    byte-identical HTML to it. If you change `kwitansi.twig`, mirror the change
+    in `layout.twig`. Hand-written `program` code wins over the grid setting
+    (`program_kustom`).
+  - **Canvas** = `POST .../kwitansi/html` (`KwitansiTemplateController::html()`):
+    the same HTML dompdf would get (`BaseReportController::buildHtml()` is shared
+    with `toPdf()`), always through `layout.twig` with `kw_editor` set, which adds
+    `data-kw-block/part` hooks. `KwitansiTemplate::canvasDocument()` wraps it
+    with a CSP `<meta>` as the very first bytes (`default-src 'none'`, data:
+    images/fonts, inline styles, one nonce'd script) and the trusted editor
+    script `View/kwitansi/canvas.js` (+ `canvas.css`). The Angular directive
+    `kwitansiCanvas` shows it in `<iframe sandbox="allow-scripts">` (NO
+    `allow-same-origin`) and only accepts `postMessage` from its own two frames
+    (swapped double-buffer, no flicker). Edited templates may contain `<script>`:
+    never loosen the CSP/sandbox, and keep `/html` Super-Admin-only.
+  - The canvas is an approximation (browser, not dompdf). The "Hasil PDF" tab
+    (`/preview`) is the truth and gives the exact page count.
+  - Background renders in the controller use `$http` directly, not `req` (which
+    flashes a full-page loader). Template errors come back as HTTP 200
+    `{error, errors}`; a code edit is only kept in the working copy if the server
+    renders it.
+- **Image export (PNG/JPG):** `Frontend/utils/preview/pdf-image.core.js` draws page 1
+  of the dompdf PDF onto a canvas with pdf.js (`pdfjs-dist@3`, legacy build; v4 is
+  ESM-only and does not fit this webpack setup). pdf.js is loaded lazily
+  (`import()` -> separate `pdfjs`/`674.bundle.js` chunks in `public/angular`, so
+  those files must be deployed together with `app.bundle.js`). Angular wrapper:
+  `pdfImage.download(base64, name, {format, dpi})`, used by the tagihan kwitansi
+  modal and the editor's "Hasil PDF" tab. The image is the PDF, so it shows exactly
+  what prints (including any missing-font "????" in the PDF itself).
+- Run `php tests/Unit/Helper/kwitansi_template_check.php` after changes. Canvas
+  interaction (select/drag/resize) can only be verified in a real browser.
+
 ## Frontend architecture (AngularJS, legacy syntax)
 
 Every feature module follows the same file layout under

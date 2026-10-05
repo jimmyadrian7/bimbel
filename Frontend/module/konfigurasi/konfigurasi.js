@@ -16,3 +16,4 @@ import "./account_configuration/account_configuration";
 import "./fix_data/fix_data";
 
 import "./report_profile/report_profile";
+import "./template_kwitansi/template_kwitansi";

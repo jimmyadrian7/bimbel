@@ -51,9 +51,13 @@ class BaseReportController extends CoreController
         return $result;
     }
 
-    public function toPdf($view, $data, $background = 'coba.jpg', $orientation = 'landscape')
+    /**
+     * The HTML that toPdf() hands to dompdf: the view rendered with the report
+     * profile, logo and background added to the data. Split out of toPdf() so the
+     * kwitansi template editor can show exactly this HTML in the browser.
+     */
+    protected function buildHtml($view, $data, $background = 'coba.jpg')
     {
-        $pdf = $this->container->get("pdf");
         $twig = $this->container->get("twig");
 
         // $data['logo'] = $this->getImage('logo.png');
@@ -63,7 +67,15 @@ class BaseReportController extends CoreController
         $data['report_info'] = $report_info;
 
         $data['background'] = $this->getBackground($background);
-        $html = $twig->fetch($view, $data);
+
+        return $twig->fetch($view, $data);
+    }
+
+    public function toPdf($view, $data, $background = 'coba.jpg', $orientation = 'landscape')
+    {
+        $pdf = $this->container->get("pdf");
+
+        $html = $this->buildHtml($view, $data, $background);
 
         $pdf->setPaper('A4', $orientation);
 

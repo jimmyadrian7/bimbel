@@ -11,10 +11,10 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
         .controller('TagihanController', TagihanController);
 
     TagihanController.$inject = [
-        '$stateParams', '$parse', '$compile', '$scope', 'req', 'Modal', '$state', 'session', 'logger', 'moment'
+        '$stateParams', '$parse', '$compile', '$scope', 'req', 'Modal', '$state', 'session', 'logger', 'moment', 'pdfImage'
     ];
 
-    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session, logger, moment) {
+    function TagihanController(stateParams, $parse, $compile, $scope, req, Modal, state, session, logger, moment, pdfImage) {
         let vm = this;
 
         let statusOpt = [
@@ -150,6 +150,8 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
         vm.generateInvoice = generateInvoice;
         vm.generateKwitansi = generateKwitansi;
         vm.cetakKwitansi = cetakKwitansi;
+        vm.unduhKwitansiGambar = unduhKwitansiGambar;
+        vm.exportingImage = false;
         vm.editInfoKwitansi = editInfoKwitansi;
         vm.changeProgramBelajar = changeProgramBelajar;
         vm.saveInfoKwitansi = saveInfoKwitansi;
@@ -377,6 +379,20 @@ import modalKwitansi from "./html/modal/modal-kwitansi.html";
                 let element = `<app-modal-preview value='vm.activePdf'></app-modal-preview>`;
                 element = $compile(element)($scope);
             });
+        }
+
+        // Same PDF as Cetak, saved as a PNG/JPG picture (handy for sending by WhatsApp).
+        function unduhKwitansiGambar(format) {
+            if (vm.exportingImage) {
+                return;
+            }
+
+            vm.exportingImage = true;
+
+            req.get(`generate/report/kwitansi/${vm.dataId}`)
+                .then(response => pdfImage.download(response.data, `kwitansi-${vm.data.code || vm.dataId}`, { format: format }))
+                .catch(angular.noop)
+                .finally(() => { vm.exportingImage = false; });
         }
 
         function exportPdf() {

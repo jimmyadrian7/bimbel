@@ -1,0 +1,1 @@
+(self.webpackChunkbimbel=self.webpackChunkbimbel||[]).push([[509],{4601:()=>{},2767:()=>{},8251:()=>{},7677:()=>{},1543:()=>{},7324:()=>{}}]);

@@ -14,5 +14,6 @@
         'app.module.konfigurasi.account_configuration',
         'app.module.konfigurasi.fix_data',
         'app.module.konfigurasi.report_profile',
+        'app.module.konfigurasi.template_kwitansi',
     ]);
 })()

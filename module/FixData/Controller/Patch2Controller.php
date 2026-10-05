@@ -233,4 +233,31 @@ class Patch2Controller extends Controller
 
         return $result;
     }
+
+    public function patch6($request, $args, &$response)
+    {
+        $result = ["data" => "success"];
+
+        // Create Table Report Template: admin edited sections of report PDF templates
+        // (currently only the Kwitansi). A section without a row uses the template file.
+        if (!DB::getSchemaBuilder()->hasTable('report_template'))
+        {
+            DB::getSchemaBuilder()->create('report_template', function ($table) {
+                $table->increments('id');
+                $table->string('report', 50);
+                $table->string('bagian', 50);
+                $table->longText('konten');
+                $table->integer('user_id')->nullable();
+                $table->dateTime('updated_at')->nullable();
+
+                $table->unique(['report', 'bagian']);
+            });
+        }
+
+        // Register Konfigurasi > Template Kwitansi menu
+        $menu_id = Utils::addMenuReport('template_kwitansi', 'Template Kwitansi', 'konfigurasi');
+        Utils::updateAccessRight('cud', $menu_id, [1, 4]);
+
+        return $result;
+    }
 }

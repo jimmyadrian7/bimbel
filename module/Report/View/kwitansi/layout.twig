@@ -1,0 +1,66 @@
+{# Visual layout version of kwitansi.twig, used only when an admin has saved layout settings
+   (see KwitansiTemplate::normalizeLayout()). `layout` is validated server side, so the
+   conditions below are the only place its values turn into markup. With the default
+   settings this renders the same page as kwitansi.twig.
+   `kw_editor` is only set by the template editor's canvas (InvoiceController::renderKwitansiHtml):
+   it adds data-kw-* attributes the canvas script uses to find the blocks; nothing else changes. #}
+<html>
+    
+    <head>
+        {% include "/Report/View/partial/style.twig" %}
+        {% include "/Report/View/kwitansi/style.twig" %}
+        {% if layout.halaman.vertikal != 10 or layout.halaman.horizontal != 10 %}
+        <style>
+            .container { padding: {{ layout.halaman.vertikal }}mm {{ layout.halaman.horizontal }}mm !important; }
+        </style>
+        {% endif %}
+    </head>
+
+    <body class="{{ tagihan.status == 'l' ? '' : 'kwitansi-lunas' }}">
+        <div class="container">
+
+            {% if tagihan.status == 'l'  %}
+                <div class="kwitansi-stamp">
+                    {{ tagihan.status != 'l' ? '' : 'LUNAS' }}
+                </div>
+            {% endif %}
+
+            {% if kw_editor|default(false) %}<div data-kw-block="header">{% endif %}{% include "/Report/View/kwitansi/header.twig" %}{% if kw_editor|default(false) %}</div>{% endif %}
+
+            <table class="fn-12 kwitansi-table" width="100%"{% if kw_editor|default(false) %} data-kw-part="tabel"{% endif %}>
+                <tr>
+                    <td class="kwitansi-left" width="{{ layout.keterangan ? layout.lebar_kiri : 100 }}%" style="vertical-align: top;"{% if kw_editor|default(false) %} data-kw-part="kiri"{% endif %}>
+                        <table class="left-table">
+                            {% for block in layout.urutan %}
+                            <tr>
+                                <td class="{{ loop.last ? '' : 'border-btm-2' }}"{% if kw_editor|default(false) %} data-kw-block="{{ block }}"{% endif %}>
+                                    {% if block == 'program' %}
+                                        {% if layout.program.susun and not layout.program_kustom %}
+                                            {% include "/Report/View/kwitansi/program_grid.twig" %}
+                                        {% else %}
+                                            {% include "/Report/View/kwitansi/program.twig" %}
+                                        {% endif %}
+                                    {% elseif block == 'terima' %}
+                                        {% include "/Report/View/kwitansi/terima.twig" %}
+                                    {% elseif block == 'nominal' %}
+                                        {% include "/Report/View/kwitansi/nominal.twig" %}
+                                    {% elseif block == 'rekening' %}
+                                        {% include "/Report/View/kwitansi/rekening.twig" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+
+                    {% if layout.keterangan %}
+                    <td class="kwitansi-right" width="{{ 100 - layout.lebar_kiri }}%" style="vertical-align: top;"{% if kw_editor|default(false) %} data-kw-block="keterangan"{% endif %}>
+                        {% include "/Report/View/kwitansi/keterangan.twig" %}
+                    </td>
+                    {% endif %}
+                </tr>
+            </table>
+        </div>
+
+    </body>
+</html>

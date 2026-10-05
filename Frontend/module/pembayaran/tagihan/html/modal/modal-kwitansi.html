@@ -147,6 +147,14 @@
         <button type="button" class="btn btn-link text-primary text-gradient px-3 editEl" ng-click="vm.cetakKwitansi()">
             <i class="fas fa-print me-2"></i> Cetak
         </button>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 editEl" id="kwitansiPng"
+            ng-click="vm.unduhKwitansiGambar('png')" ng-disabled="vm.exportingImage" title="Unduh kwitansi sebagai gambar PNG">
+            <i class="fas fa-image me-2"></i> PNG
+        </button>
+        <button type="button" class="btn btn-link text-primary text-gradient px-3 editEl" id="kwitansiJpg"
+            ng-click="vm.unduhKwitansiGambar('jpg')" ng-disabled="vm.exportingImage" title="Unduh kwitansi sebagai gambar JPG">
+            <i class="fas fa-image me-2"></i> JPG
+        </button>
         <button type="button" class="btn btn-link text-primary text-gradient px-3 editEl"
             ng-click="vm.editInfoKwitansi()">
             <i class="fas fa-pencil me-2"></i> Edit

@@ -1,0 +1,2582 @@
+diff --git a/CLAUDE.md b/CLAUDE.md
+index bf08f48..c136d23 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -111,6 +111,44 @@ pass it from the controller as a variable, ideally sourced from a
+ Konfigurasi-managed master-data model, the way `program_belajars` is now
+ passed into `program.twig` instead of 4 hardcoded checkboxes.
+ 
++#### Kwitansi template is editable from the UI
++Konfigurasi > Template Kwitansi lets a Super Admin override individual kwitansi
++sections (the partials above plus `style.twig`). Overrides live in the
++`report_template` table (patch 2/6); the `.twig` files stay the default and are
++used for any section without an override. Logic is in
++`module/Report/Helper/KwitansiTemplate.php`, API in
++`KwitansiTemplateController`, rendering in `InvoiceController::renderKwitansi()`.
++Things to keep in mind when touching this:
++
++- Overrides run in a **Twig sandbox** (tags `if/for/set`, a filter allow-list,
++  no `include`, no method calls). Edited sections receive **plain arrays only** —
++  never pass an Eloquent model into the kwitansi data (`getKwitansiData()`),
++  Twig's `isset($obj->x)` probe can lazy-load relations before the sandbox
++  check. `toPdf()` injects `report_info` as a model, so the sandboxed wrapper
++  remaps it from `report_info_data`.
++- If you **rename/remove a variable or a partial's file**, saved overrides that
++  use it will break (printing then falls back to the default template and logs
++  `[kwitansi-template]`). Keep `KwitansiTemplate::variables()`/`sampleContext()`
++  and `getKwitansiData()` in sync.
++- The overrides table is deliberately accessed with the query builder, not a
++  model under `module/*/Model/`, because every model there is auto-exposed by
++  the generic REST API and raw template text must only be written through the
++  linting controller.
++- Editing/printing must never be blocked by a bad template: real printing
++  catches Twig errors and falls back; only the preview is strict.
++- The editor has two modes. **Visual** (default) stores a small validated
++  settings JSON (`report_template.bagian = 'layout'`: block order, column width,
++  program grid, page margins) that the trusted files `layout.twig` and
++  `program_grid.twig` turn into the page; no user code is involved, so it needs
++  no sandbox. Everything reaching those files goes through
++  `KwitansiTemplate::normalizeLayout()`; add new settings there (+ limits in
++  `LAYOUT_LIMITS`, + the default in `defaultLayout()`). With default settings the
++  original `kwitansi.twig` is used, and `layout.twig` is pixel-identical to it.
++  **Lanjutan (kode)** edits section code as described above. If a section's code
++  is customised, it wins over the visual setting for that block (`program_kustom`).
++  If you change `kwitansi.twig`, mirror the change in `layout.twig`.
++- Run `php tests/Unit/Helper/kwitansi_template_check.php` after changes.
++
+ ## Frontend architecture (AngularJS, legacy syntax)
+ 
+ Every feature module follows the same file layout under
+diff --git a/Frontend/module/konfigurasi/fix_data/html/home.html b/Frontend/module/konfigurasi/fix_data/html/home.html
+index eb34dde..3a1391e 100644
+--- a/Frontend/module/konfigurasi/fix_data/html/home.html
++++ b/Frontend/module/konfigurasi/fix_data/html/home.html
+@@ -137,6 +137,12 @@
+                             <i class="fa fa-upload me-2"></i> Modification for 2.5
+                         </button>
+                     </div>
++                    <div class="col-2 p-2 d-flex">
++                        <button type="button" class="btn bg-gradient-primary flex-fill" ng-click="vm.patch('2/6')"
++                            title="Add table Report Template (editable Kwitansi template)">
++                            <i class="fa fa-upload me-2"></i> Modification for 2.6
++                        </button>
++                    </div>
+                 </div>
+             </div>
+         </div>
+diff --git a/Frontend/module/konfigurasi/konfigurasi.js b/Frontend/module/konfigurasi/konfigurasi.js
+index 7928201..fa4f6ee 100644
+--- a/Frontend/module/konfigurasi/konfigurasi.js
++++ b/Frontend/module/konfigurasi/konfigurasi.js
+@@ -15,4 +15,5 @@ import "./whatsapp/whatsapp";
+ import "./account_configuration/account_configuration";
+ import "./fix_data/fix_data";
+ 
+-import "./report_profile/report_profile";
+\ No newline at end of file
++import "./report_profile/report_profile";
++import "./template_kwitansi/template_kwitansi";
+\ No newline at end of file
+diff --git a/Frontend/module/konfigurasi/konfigurasi.module.js b/Frontend/module/konfigurasi/konfigurasi.module.js
+index fdf9ac0..76daefb 100644
+--- a/Frontend/module/konfigurasi/konfigurasi.module.js
++++ b/Frontend/module/konfigurasi/konfigurasi.module.js
+@@ -14,5 +14,6 @@
+         'app.module.konfigurasi.account_configuration',
+         'app.module.konfigurasi.fix_data',
+         'app.module.konfigurasi.report_profile',
++        'app.module.konfigurasi.template_kwitansi',
+     ]);
+ })()
+\ No newline at end of file
+diff --git a/b/Frontend/module/konfigurasi/template_kwitansi/html/editor.html b/Frontend/module/konfigurasi/template_kwitansi/html/editor.html
+new file mode 100644
+index 0000000..5618ea8
+--- /dev/null
++++ b/Frontend/module/konfigurasi/template_kwitansi/html/editor.html
+@@ -0,0 +1,283 @@
++<div class="container-fluid py-4">
++
++    <div class="alert alert-warning text-white" role="alert" ng-if="vm.loaded && !vm.installed">
++        Tabel template belum dibuat. Buka <b>Konfigurasi &rsaquo; Fix Data</b> lalu jalankan
++        <b>Modification for 2.6</b> sebelum mengubah template.
++    </div>
++
++    <div class="card mb-4">
++        <div class="card-header pb-0">
++            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
++                <div>
++                    <h6 class="mb-1">Template Kwitansi</h6>
++                    <p class="text-sm text-secondary mb-0">
++                        Pengaturan atau bagian yang tidak diubah tetap memakai template standar. Saat ini ada
++                        <b ng-bind="vm.programCount"></b> program belajar; jika jumlahnya berubah dan tampilan
++                        kwitansi melebar atau terpotong, sesuaikan bagian di bawah ini lalu cek hasilnya di Preview.
++                    </p>
++                </div>
++                <div class="d-flex align-items-center gap-2">
++                    <span class="badge bg-gradient-warning" ng-if="vm.hasUnsaved()">Belum disimpan</span>
++                    <button type="button" class="btn btn-outline-secondary btn-sm mb-0" ng-click="vm.discardAll()"
++                        ng-disabled="!vm.hasUnsaved() || vm.saving">
++                        Batalkan perubahan
++                    </button>
++                    <button type="button" class="btn bg-gradient-primary btn-sm mb-0" ng-click="vm.save()"
++                        ng-disabled="!vm.installed || !vm.hasUnsaved() || vm.saving">
++                        <i class="fa fa-save me-1"></i> Simpan
++                    </button>
++                </div>
++            </div>
++            <div class="alert alert-danger text-white text-sm mt-3 mb-0" role="alert" ng-if="vm.saveError"
++                ng-bind="vm.saveError"></div>
++        </div>
++
++        <div class="card-body">
++            <div class="row g-4">
++
++                <!-- Editor -->
++                <div class="col-xl-6">
++                    <ul class="nav nav-tabs mb-3">
++                        <li class="nav-item">
++                            <a class="nav-link" href="" ng-class="{active: vm.mode === 'visual'}" ng-click="vm.mode = 'visual'">
++                                <i class="fa fa-th-large me-1"></i> Visual
++                                <i class="fa fa-circle text-xs ms-1 text-warning" ng-if="vm.isLayoutCustom()"
++                                    title="Berbeda dari tata letak standar"></i>
++                            </a>
++                        </li>
++                        <li class="nav-item">
++                            <a class="nav-link" href="" ng-class="{active: vm.mode === 'kode'}" ng-click="vm.mode = 'kode'">
++                                <i class="fa fa-code me-1"></i> Lanjutan (kode)
++                                <i class="fa fa-circle text-xs ms-1 text-danger" ng-if="vm.hasSectionError()"
++                                    title="Ada kesalahan pada kode"></i>
++                            </a>
++                        </li>
++                    </ul>
++
++                    <!-- Visual mode: validated settings, no code involved -->
++                    <div ng-show="vm.mode === 'visual'">
++                        <p class="text-sm text-secondary mb-3">
++                            Atur tampilan tanpa menulis kode. Hasilnya langsung terlihat setelah menekan <b>Preview</b>.
++                        </p>
++
++                        <h6 class="text-sm mb-1">Urutan blok</h6>
++                        <p class="text-xs text-secondary mb-2">
++                            Seret untuk mengubah urutan, atau pakai tombol panah. Header selalu di atas dan Keterangan di sisi kanan.
++                        </p>
++                        <ul class="list-group mb-4">
++                            <li class="list-group-item d-flex align-items-center gap-2 py-2" style="cursor: grab;"
++                                ng-repeat="key in vm.layout.urutan track by key" kwitansi-drag-item="$index"
++                                on-drop="vm.moveBlock(from, to)">
++                                <i class="fa fa-grip-vertical text-secondary"></i>
++                                <span class="flex-fill text-sm" ng-bind="vm.blocks[key]"></span>
++                                <button type="button" class="btn btn-link btn-sm p-0 mb-0" title="Naik"
++                                    ng-click="vm.shiftBlock($index, -1)" ng-disabled="$first">
++                                    <i class="fa fa-chevron-up"></i>
++                                </button>
++                                <button type="button" class="btn btn-link btn-sm p-0 mb-0" title="Turun"
++                                    ng-click="vm.shiftBlock($index, 1)" ng-disabled="$last">
++                                    <i class="fa fa-chevron-down"></i>
++                                </button>
++                            </li>
++                        </ul>
++
++                        <h6 class="text-sm mb-2">Lebar kolom</h6>
++                        <div class="form-check mb-2">
++                            <input class="form-check-input" type="checkbox" id="kwitansiShowKeterangan"
++                                ng-model="vm.layout.keterangan">
++                            <label class="form-check-label text-sm" for="kwitansiShowKeterangan">
++                                Tampilkan kolom Keterangan
++                            </label>
++                        </div>
++                        <label class="form-label text-xs mb-0" for="kwitansiLebar">
++                            Kolom isi <b ng-bind="vm.layout.keterangan ? vm.layout.lebar_kiri : 100"></b>%
++                            <span ng-if="vm.layout.keterangan"> &middot; Keterangan <b ng-bind="100 - vm.layout.lebar_kiri"></b>%</span>
++                        </label>
++                        <input type="range" class="form-range mb-4" id="kwitansiLebar" ng-model="vm.layout.lebar_kiri"
++                            ng-attr-min="{{ vm.limits.lebar_kiri[0] }}" ng-attr-max="{{ vm.limits.lebar_kiri[1] }}"
++                            ng-disabled="!vm.layout.keterangan">
++
++                        <h6 class="text-sm mb-2">Program belajar</h6>
++                        <div class="form-check mb-1">
++                            <input class="form-check-input" type="checkbox" id="kwitansiSusun"
++                                ng-model="vm.layout.program.susun" ng-disabled="vm.programCustom()">
++                            <label class="form-check-label text-sm" for="kwitansiSusun">
++                                Susun dalam beberapa baris
++                                (<span ng-bind="vm.programCount"></span> program saat ini)
++                            </label>
++                        </div>
++                        <p class="text-xs text-warning mb-2" ng-if="vm.programCustom()">
++                            Bagian Program memakai kode kustom (tab Lanjutan), jadi pengaturan ini tidak dipakai.
++                            Kembalikan bagian itu ke standar untuk memakainya.
++                        </p>
++                        <div class="row g-2 mb-4" ng-if="vm.layout.program.susun && !vm.programCustom()">
++                            <div class="col-6">
++                                <label class="form-label text-xs mb-1" for="kwitansiPerBaris">Program per baris</label>
++                                <input type="number" class="form-control form-control-sm" id="kwitansiPerBaris"
++                                    ng-model="vm.layout.program.per_baris"
++                                    ng-attr-min="{{ vm.limits.per_baris[0] }}" ng-attr-max="{{ vm.limits.per_baris[1] }}">
++                            </div>
++                            <div class="col-6">
++                                <label class="form-label text-xs mb-1" for="kwitansiHuruf">Ukuran huruf (px)</label>
++                                <input type="number" class="form-control form-control-sm" id="kwitansiHuruf"
++                                    ng-model="vm.layout.program.ukuran_huruf"
++                                    ng-attr-min="{{ vm.limits.ukuran_huruf[0] }}" ng-attr-max="{{ vm.limits.ukuran_huruf[1] }}">
++                            </div>
++                            <div class="col-12">
++                                <div class="form-check">
++                                    <input class="form-check-input" type="checkbox" id="kwitansiMandarin"
++                                        ng-model="vm.layout.program.mandarin">
++                                    <label class="form-check-label text-sm" for="kwitansiMandarin">
++                                        Tampilkan tulisan Mandarin (mematikannya menghemat tinggi halaman)
++                                    </label>
++                                </div>
++                            </div>
++                        </div>
++
++                        <h6 class="text-sm mb-2">Jarak tepi halaman (mm)</h6>
++                        <div class="row g-2 mb-3">
++                            <div class="col-6">
++                                <label class="form-label text-xs mb-1" for="kwitansiVertikal">Atas dan bawah</label>
++                                <input type="number" class="form-control form-control-sm" id="kwitansiVertikal"
++                                    ng-model="vm.layout.halaman.vertikal"
++                                    ng-attr-min="{{ vm.limits.halaman[0] }}" ng-attr-max="{{ vm.limits.halaman[1] }}">
++                            </div>
++                            <div class="col-6">
++                                <label class="form-label text-xs mb-1" for="kwitansiHorizontal">Kiri dan kanan</label>
++                                <input type="number" class="form-control form-control-sm" id="kwitansiHorizontal"
++                                    ng-model="vm.layout.halaman.horizontal"
++                                    ng-attr-min="{{ vm.limits.halaman[0] }}" ng-attr-max="{{ vm.limits.halaman[1] }}">
++                            </div>
++                        </div>
++
++                        <button type="button" class="btn btn-outline-secondary btn-sm mb-0" ng-click="vm.resetLayout()"
++                            ng-disabled="!vm.isLayoutCustom()">
++                            <i class="fa fa-undo me-1"></i> Kembalikan tata letak ke standar
++                        </button>
++                    </div>
++
++                    <!-- Advanced mode: edit the template code of each section -->
++                    <div ng-show="vm.mode === 'kode'">
++                    <ul class="nav nav-pills flex-wrap gap-1 mb-3">
++                        <li class="nav-item" ng-repeat="section in vm.sections">
++                            <a class="nav-link py-1 px-3 text-sm" href="" ng-class="{active: vm.active === section.key}"
++                                ng-click="vm.select(section)">
++                                <span ng-bind="section.label"></span>
++                                <i class="fa fa-circle text-xs ms-1 text-danger" ng-if="section.error"
++                                    title="Ada kesalahan pada bagian ini"></i>
++                                <i class="fa fa-circle text-xs ms-1 text-warning"
++                                    ng-if="!section.error && vm.isCustom(section)" title="Berbeda dari template standar"></i>
++                            </a>
++                        </li>
++                    </ul>
++
++                    <div ng-repeat="section in vm.sections" ng-show="vm.active === section.key">
++                        <p class="text-sm text-secondary mb-2" ng-bind="section.keterangan"></p>
++
++                        <textarea class="form-control font-monospace text-xs" rows="24" id="kwitansi-editor-{{ section.key }}" spellcheck="false" wrap="off"
++                            ng-trim="false" ng-model="section.konten" ng-disabled="!vm.installed"
++                            style="white-space: pre; overflow: auto; tab-size: 4;"></textarea>
++
++                        <div class="alert alert-danger text-white text-sm mt-2 mb-0" role="alert" ng-if="section.error">
++                            <b>Kesalahan:</b> <span ng-bind="section.error"></span>
++                        </div>
++
++                        <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
++                            <button type="button" class="btn btn-outline-secondary btn-sm mb-0"
++                                ng-click="vm.resetSection(section)" ng-disabled="!vm.isCustom(section)">
++                                <i class="fa fa-undo me-1"></i> Kembalikan ke standar
++                            </button>
++                            <button type="button" class="btn btn-outline-primary btn-sm mb-0"
++                                ng-repeat="example in vm.examples[section.key]" ng-click="vm.applyExample(section, example)"
++                                title="{{ example.keterangan }}">
++                                <i class="fa fa-magic me-1"></i> Contoh: <span ng-bind="example.label"></span>
++                            </button>
++                            <span class="text-xs text-secondary ms-auto" ng-if="vm.isCustom(section)">
++                                Berbeda dari standar
++                            </span>
++                        </div>
++                    </div>
++
++                    <div class="mt-3">
++                        <a href="" class="text-sm" ng-click="vm.showHelp = !vm.showHelp">
++                            <i class="fa" ng-class="vm.showHelp ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
++                            Variabel dan perintah yang bisa dipakai
++                        </a>
++                        <div ng-if="vm.showHelp" class="mt-2">
++                            <p class="text-xs text-secondary mb-2">
++                                Seret variabel ke dalam teks, atau klik untuk menyisipkannya di posisi kursor.
++                                Template memakai Twig. Demi keamanan hanya perintah dasar yang diizinkan:
++                                tag <code ng-bind="vm.allowed.tag.join(', ')"></code>;
++                                filter <code ng-bind="vm.allowed.filter.join(', ')"></code>;
++                                fungsi <code ng-bind="vm.allowed.fungsi.join(', ')"></code>.
++                                Gambar harus berupa variabel data URI (logo, stamp_img, ...), alamat web luar tidak dimuat.
++                            </p>
++                            <div class="table-responsive" style="max-height: 260px; overflow: auto;">
++                                <table class="table table-sm align-items-center mb-0">
++                                    <tbody>
++                                        <tr ng-repeat="variable in vm.variables">
++                                            <td class="text-xs" style="white-space: nowrap;">
++                                                <span class="badge bg-gradient-secondary" style="cursor: grab;"
++                                                    kwitansi-drag-text="variable.sisip" ng-click="vm.insertVariable(variable)"
++                                                    ng-bind="variable.nama"></span>
++                                            </td>
++                                            <td class="text-xs" ng-bind="variable.keterangan"></td>
++                                        </tr>
++                                    </tbody>
++                                </table>
++                            </div>
++                        </div>
++                    </div>
++                    </div>
++                </div>
++
++                <!-- Preview -->
++                <div class="col-xl-6">
++                    <div class="d-flex flex-wrap align-items-end gap-2 mb-2">
++                        <div>
++                            <label class="form-label text-xs mb-1">Status contoh</label>
++                            <select class="form-select form-select-sm" ng-model="vm.preview.status"
++                                ng-disabled="vm.preview.tagihanId">
++                                <option value="l">Lunas</option>
++                                <option value="p">Belum lunas</option>
++                            </select>
++                        </div>
++                        <div>
++                            <label class="form-label text-xs mb-1">ID Tagihan (opsional)</label>
++                            <input type="number" min="1" class="form-control form-control-sm" style="width: 130px;"
++                                placeholder="data contoh" ng-model="vm.preview.tagihanId">
++                        </div>
++                        <button type="button" class="btn bg-gradient-primary btn-sm mb-0" ng-click="vm.refreshPreview()"
++                            ng-disabled="!vm.installed || vm.preview.loading">
++                            <i class="fa fa-eye me-1"></i> Preview
++                        </button>
++                        <span class="badge ms-auto" ng-if="vm.preview.pages && !vm.preview.error"
++                            ng-class="vm.preview.pages > 1 ? 'bg-gradient-danger' : 'bg-gradient-success'">
++                            <span ng-bind="vm.preview.pages"></span> halaman
++                        </span>
++                    </div>
++
++                    <div class="alert alert-danger text-white text-sm mb-2" role="alert" ng-if="vm.preview.error">
++                        Preview gagal: <span ng-bind="vm.preview.error"></span>
++                    </div>
++                    <div class="alert alert-warning text-white text-sm mb-2" role="alert"
++                        ng-if="vm.preview.pages > 1 && !vm.preview.error">
++                        Isi kwitansi melebihi satu halaman sehingga akan terpotong saat dicetak.
++                        <span ng-if="vm.mode === 'visual'">Coba kurangi jarak tepi halaman, tambah jumlah program per baris,
++                            atau matikan tulisan Mandarin.</span>
++                        <span ng-if="vm.mode === 'kode'">Kurangi jarak/ukuran huruf pada bagian <b>Gaya (CSS)</b>
++                            atau susun ulang bagian yang melebar.</span>
++                    </div>
++
++                    <iframe id="kwitansiPreviewFrame" title="Preview kwitansi"
++                        style="width: 100%; height: 560px; border: 1px solid #dee2e6; border-radius: 6px;"></iframe>
++                    <p class="text-xs text-secondary mt-1 mb-0">
++                        Preview memakai data contoh (atau tagihan yang dipilih) dan daftar program belajar yang
++                        sebenarnya, dengan teks yang sedang Anda edit, belum perlu disimpan.
++                    </p>
++                </div>
++
++            </div>
++        </div>
++    </div>
++</div>
+diff --git a/b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.controller.js b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.controller.js
+new file mode 100644
+index 0000000..8f04084
+--- /dev/null
++++ b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.controller.js
+@@ -0,0 +1,332 @@
++(() => {
++    "use strict";
++
++    angular.module('app.module.konfigurasi.template_kwitansi')
++        .controller('TemplateKwitansiController', TemplateKwitansiController);
++
++    TemplateKwitansiController.$inject = ['$scope', '$window', '$timeout', 'req', 'logger'];
++
++    function TemplateKwitansiController($scope, $window, $timeout, req, logger)
++    {
++        let vm = this;
++        const URL = 'report/template/kwitansi';
++        let previewUrl = null;
++
++        vm.loaded = false;
++        vm.installed = true;
++        vm.mode = 'visual'; // 'visual' (drag & drop settings) | 'kode' (edit the Twig text)
++        vm.layout = null;
++        vm.layoutSaved = null;
++        vm.layoutStandar = null;
++        vm.blocks = {};
++        vm.limits = {};
++        vm.sections = [];
++        vm.active = null;
++        vm.examples = {};
++        vm.variables = [];
++        vm.allowed = {};
++        vm.programCount = 0;
++        vm.showHelp = false;
++        vm.saving = false;
++        vm.saveError = null;
++        vm.preview = { tagihanId: '', status: 'l', loading: false, pages: null, error: null };
++
++        vm.select = select;
++        vm.moveBlock = moveBlock;
++        vm.shiftBlock = shiftBlock;
++        vm.isLayoutChanged = isLayoutChanged;
++        vm.isLayoutCustom = isLayoutCustom;
++        vm.resetLayout = resetLayout;
++        vm.programCustom = programCustom;
++        vm.insertVariable = insertVariable;
++        vm.hasSectionError = hasSectionError;
++        vm.isChanged = isChanged;
++        vm.isCustom = isCustom;
++        vm.hasUnsaved = hasUnsaved;
++        vm.resetSection = resetSection;
++        vm.discardAll = discardAll;
++        vm.applyExample = applyExample;
++        vm.refreshPreview = refreshPreview;
++        vm.save = save;
++
++        activate();
++
++        function activate()
++        {
++            req.get(URL).then(state => {
++                applyState(state, null);
++                vm.loaded = true;
++
++                // Show right away how the receipt looks with today's program list.
++                if (vm.installed)
++                {
++                    refreshPreview();
++                }
++            }).catch(angular.noop);
++        }
++
++        function applyState(state, keepActive)
++        {
++            vm.installed = state.terpasang;
++            vm.examples = state.contoh || {};
++            vm.variables = state.variabel || [];
++            vm.allowed = state.diizinkan || {};
++            vm.programCount = state.jumlah_program;
++            vm.layout = angular.copy(state.layout);
++            vm.layoutSaved = angular.copy(state.layout);
++            vm.layoutStandar = angular.copy(state.layout_standar);
++            vm.limits = state.batas || {};
++            vm.blocks = {};
++            (state.blok || []).forEach(b => vm.blocks[b.key] = b.label);
++            vm.sections = state.sections.map(s => ({
++                key: s.key,
++                label: s.label,
++                keterangan: s.keterangan,
++                default: s.default,
++                saved: s.konten,
++                konten: s.konten,
++                error: null
++            }));
++            vm.active = keepActive && vm.sections.some(s => s.key === keepActive) ? keepActive : vm.sections[0].key;
++        }
++
++        function select(section)
++        {
++            vm.active = section.key;
++        }
++
++        // Newlines/trailing whitespace are not a "change" (the server compares the same way).
++        function normalize(text)
++        {
++            return (text || '').replace(/\r\n?/g, '\n').replace(/\s+$/, '');
++        }
++
++        function isChanged(section)
++        {
++            return normalize(section.konten) !== normalize(section.saved);
++        }
++
++        function isCustom(section)
++        {
++            return normalize(section.konten) !== normalize(section.default);
++        }
++
++        function hasSectionError()
++        {
++            return vm.sections.some(s => !!s.error);
++        }
++
++        function isLayoutChanged()
++        {
++            return !angular.equals(vm.layout, vm.layoutSaved);
++        }
++
++        function isLayoutCustom()
++        {
++            return !angular.equals(vm.layout, vm.layoutStandar);
++        }
++
++        function hasUnsaved()
++        {
++            return vm.sections.some(isChanged) || isLayoutChanged();
++        }
++
++        // Hand-written program code wins over the "program in several rows" setting.
++        function programCustom()
++        {
++            let section = vm.sections.find(s => s.key === 'program');
++
++            return !!section && isCustom(section);
++        }
++
++        // Drag & drop target: put the dragged block where the other one is.
++        function moveBlock(from, to)
++        {
++            let order = vm.layout.urutan;
++
++            if (from === to || from < 0 || to < 0 || from >= order.length || to >= order.length)
++            {
++                return;
++            }
++
++            order.splice(to, 0, order.splice(from, 1)[0]);
++        }
++
++        // Same thing for keyboard / touch users, who cannot drag.
++        function shiftBlock(index, delta)
++        {
++            moveBlock(index, index + delta);
++        }
++
++        function resetLayout()
++        {
++            if (isLayoutCustom() && !$window.confirm('Kembalikan tata letak visual ke standar? (Belum tersimpan sampai Anda menekan Simpan.)'))
++            {
++                return;
++            }
++
++            vm.layout = angular.copy(vm.layoutStandar);
++        }
++
++        // Inserts a variable snippet into the code editor of the active section, at the cursor.
++        function insertVariable(variable)
++        {
++            let section = vm.sections.find(s => s.key === vm.active);
++            let textarea = $window.document.getElementById(`kwitansi-editor-${vm.active}`);
++
++            if (!section || !textarea || textarea.disabled)
++            {
++                return;
++            }
++
++            let start = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : section.konten.length;
++            let end = typeof textarea.selectionEnd === 'number' ? textarea.selectionEnd : start;
++
++            section.konten = section.konten.slice(0, start) + variable.sisip + section.konten.slice(end);
++
++            let caret = start + variable.sisip.length;
++            $timeout(() => {
++                textarea.focus();
++                textarea.setSelectionRange(caret, caret);
++            });
++        }
++
++        function resetSection(section)
++        {
++            if (isCustom(section) && !$window.confirm(`Kembalikan bagian "${section.label}" ke template standar? (Belum tersimpan sampai Anda menekan Simpan.)`))
++            {
++                return;
++            }
++
++            section.konten = section.default;
++            section.error = null;
++        }
++
++        function discardAll()
++        {
++            if (!$window.confirm('Batalkan semua perubahan yang belum disimpan?'))
++            {
++                return;
++            }
++
++            vm.sections.forEach(s => {
++                s.konten = s.saved;
++                s.error = null;
++            });
++            vm.layout = angular.copy(vm.layoutSaved);
++            vm.saveError = null;
++        }
++
++        function applyExample(section, example)
++        {
++            if (isCustom(section) && !$window.confirm(`Ganti isi bagian "${section.label}" dengan contoh ini?`))
++            {
++                return;
++            }
++
++            section.konten = example.konten;
++            section.error = null;
++        }
++
++        function payload()
++        {
++            let sections = {};
++            vm.sections.forEach(s => sections[s.key] = s.konten);
++
++            return sections;
++        }
++
++        function refreshPreview()
++        {
++            vm.preview.loading = true;
++            vm.preview.error = null;
++            vm.sections.forEach(s => s.error = null);
++
++            let body = {
++                sections: payload(),
++                layout: vm.layout,
++                status: vm.preview.status,
++                tagihan_id: parseInt(vm.preview.tagihanId, 10) || null
++            };
++
++            return req.post(`${URL}/preview`, body).then(result => {
++                if (result.error)
++                {
++                    // Template problems come back in the body so they show here, not as a toast.
++                    vm.preview.error = result.error;
++                    angular.forEach(result.errors || {}, (message, key) => {
++                        let section = vm.sections.find(s => s.key === key);
++                        if (section)
++                        {
++                            section.error = message;
++                            vm.active = key;
++                            vm.mode = 'kode'; // the message is shown under the code
++                        }
++                    });
++                    return;
++                }
++
++                vm.preview.pages = result.pages;
++                showPdf(result.data);
++            }).catch(angular.noop).finally(() => {
++                vm.preview.loading = false;
++            });
++        }
++
++        function showPdf(base64)
++        {
++            let binary = $window.atob(base64);
++            let bytes = new Uint8Array(binary.length);
++            for (let i = 0; i < binary.length; i++)
++            {
++                bytes[i] = binary.charCodeAt(i);
++            }
++
++            let url = $window.URL.createObjectURL(new $window.Blob([bytes], { type: 'application/pdf' }));
++            revokePreview();
++            previewUrl = url;
++
++            let frame = $window.document.getElementById('kwitansiPreviewFrame');
++            if (frame)
++            {
++                frame.setAttribute('src', url + '#toolbar=0&navpanes=0&view=Fit');
++            }
++        }
++
++        function revokePreview()
++        {
++            if (previewUrl)
++            {
++                $window.URL.revokeObjectURL(previewUrl);
++                previewUrl = null;
++            }
++        }
++
++        function save()
++        {
++            vm.saving = true;
++            vm.saveError = null;
++
++            return req.post(`${URL}/save`, { sections: payload(), layout: vm.layout }).then(state => {
++                applyState(state, vm.active);
++                logger.success('Template kwitansi disimpan');
++                return refreshPreview();
++            }).catch(message => {
++                // The server rejects invalid templates; keep the text and show why.
++                vm.saveError = message;
++            }).finally(() => {
++                vm.saving = false;
++            });
++        }
++
++        // Don't lose a long editing session by clicking a menu item.
++        $scope.$on('$stateChangeStart', event => {
++            if (hasUnsaved() && !$window.confirm('Ada perubahan template yang belum disimpan. Tinggalkan halaman ini?'))
++            {
++                event.preventDefault();
++            }
++        });
++
++        $scope.$on('$destroy', revokePreview);
++    }
++})()
+diff --git a/b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.directive.js b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.directive.js
+new file mode 100644
+index 0000000..4701b6d
+--- /dev/null
++++ b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.directive.js
+@@ -0,0 +1,92 @@
++(() => {
++    "use strict";
++
++    // Native HTML5 drag & drop (no library): reorder blocks, and drag text snippets into a textarea.
++    angular.module('app.module.konfigurasi.template_kwitansi')
++        .directive('kwitansiDragItem', kwitansiDragItem)
++        .directive('kwitansiDragText', kwitansiDragText);
++
++    kwitansiDragItem.$inject = ['$parse'];
++
++    /**
++     * Makes an element a sortable item: <li kwitansi-drag-item="$index" on-drop="vm.moveBlock(from, to)">.
++     * `from` is the index of the dragged item, `to` the index of the item it was dropped on.
++     */
++    function kwitansiDragItem($parse)
++    {
++        const TYPE = 'text/x-kwitansi-block';
++
++        return {
++            restrict: 'A',
++            link: (scope, element, attrs) => {
++                const el = element[0];
++                const onDrop = $parse(attrs.onDrop);
++                const index = () => scope.$eval(attrs.kwitansiDragItem);
++                const isBlockDrag = e => Array.prototype.indexOf.call(e.dataTransfer.types || [], TYPE) > -1;
++
++                el.setAttribute('draggable', 'true');
++
++                el.addEventListener('dragstart', e => {
++                    e.dataTransfer.effectAllowed = 'move';
++                    e.dataTransfer.setData(TYPE, String(index()));
++                    e.dataTransfer.setData('text/plain', String(index())); // Firefox only starts a drag with a standard type
++                    el.style.opacity = '0.5';
++                });
++
++                el.addEventListener('dragend', () => {
++                    el.style.opacity = '';
++                    el.style.outline = '';
++                });
++
++                el.addEventListener('dragover', e => {
++                    if (isBlockDrag(e))
++                    {
++                        e.preventDefault(); // allow dropping here
++                        e.dataTransfer.dropEffect = 'move';
++                        el.style.outline = '2px dashed #5e72e4';
++                    }
++                });
++
++                el.addEventListener('dragleave', () => {
++                    el.style.outline = '';
++                });
++
++                el.addEventListener('drop', e => {
++                    if (!isBlockDrag(e))
++                    {
++                        return;
++                    }
++
++                    e.preventDefault();
++                    el.style.outline = '';
++
++                    const from = parseInt(e.dataTransfer.getData(TYPE), 10);
++                    if (!isNaN(from))
++                    {
++                        scope.$apply(() => onDrop(scope, { from: from, to: index() }));
++                    }
++                });
++            }
++        };
++    }
++
++    /**
++     * <span kwitansi-drag-text="variable.sisip">: dragging it onto a textarea inserts the text where it is
++     * dropped (the browser does that natively and fires `input`, so ng-model stays in sync).
++     */
++    function kwitansiDragText()
++    {
++        return {
++            restrict: 'A',
++            link: (scope, element, attrs) => {
++                const el = element[0];
++
++                el.setAttribute('draggable', 'true');
++                el.addEventListener('dragstart', e => {
++                    e.dataTransfer.effectAllowed = 'copy';
++                    e.dataTransfer.setData('text/plain', scope.$eval(attrs.kwitansiDragText));
++                });
++            }
++        };
++    }
++})()
+diff --git a/b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.js b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.js
+new file mode 100644
+index 0000000..b3f9588
+--- /dev/null
++++ b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.js
+@@ -0,0 +1,4 @@
++import "./template_kwitansi.module";
++import "./template_kwitansi.route";
++import "./template_kwitansi.directive";
++import "./template_kwitansi.controller";
+diff --git a/b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.module.js b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.module.js
+new file mode 100644
+index 0000000..5e8e18b
+--- /dev/null
++++ b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.module.js
+@@ -0,0 +1,5 @@
++(() => {
++    "use strict";
++
++    angular.module('app.module.konfigurasi.template_kwitansi', []);
++})()
+diff --git a/b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.route.js b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.route.js
+new file mode 100644
+index 0000000..8139a78
+--- /dev/null
++++ b/Frontend/module/konfigurasi/template_kwitansi/template_kwitansi.route.js
+@@ -0,0 +1,33 @@
++import editor from "./html/editor.html";
++
++(() => {
++    "use strict";
++
++    angular.module('app.module.konfigurasi.template_kwitansi')
++        .run(appRun);
++
++    appRun.$inject =['routerHelper'];
++
++    function appRun(routerHelper)
++    {
++        routerHelper.configureStates(getStates());
++    }
++
++    function getStates()
++    {
++        return [
++            {
++                state: 'konfigurasi.template_kwitansi',
++                config: {
++                    url: '/TemplateKwitansi',
++                    template: editor,
++                    controller: 'TemplateKwitansiController',
++                    controllerAs: 'vm',
++                    title: 'Template Kwitansi',
++                    menu: 'konfigurasi',
++                    nav: 'template_kwitansi'
++                }
++            }
++        ];
++    }
++})()
+diff --git a/module/FixData/Controller/Patch2Controller.php b/module/FixData/Controller/Patch2Controller.php
+index 66ad8fc..9d2fadc 100644
+--- a/module/FixData/Controller/Patch2Controller.php
++++ b/module/FixData/Controller/Patch2Controller.php
+@@ -233,4 +233,31 @@ class Patch2Controller extends Controller
+ 
+         return $result;
+     }
++
++    public function patch6($request, $args, &$response)
++    {
++        $result = ["data" => "success"];
++
++        // Create Table Report Template: admin edited sections of report PDF templates
++        // (currently only the Kwitansi). A section without a row uses the template file.
++        if (!DB::getSchemaBuilder()->hasTable('report_template'))
++        {
++            DB::getSchemaBuilder()->create('report_template', function ($table) {
++                $table->increments('id');
++                $table->string('report', 50);
++                $table->string('bagian', 50);
++                $table->longText('konten');
++                $table->integer('user_id')->nullable();
++                $table->dateTime('updated_at')->nullable();
++
++                $table->unique(['report', 'bagian']);
++            });
++        }
++
++        // Register Konfigurasi > Template Kwitansi menu
++        $menu_id = Utils::addMenuReport('template_kwitansi', 'Template Kwitansi', 'konfigurasi');
++        Utils::updateAccessRight('cud', $menu_id, [1, 4]);
++
++        return $result;
++    }
+ }
+diff --git a/module/Report/Controller/InvoiceController.php b/module/Report/Controller/InvoiceController.php
+index d8367ce..0e0b01e 100644
+--- a/module/Report/Controller/InvoiceController.php
++++ b/module/Report/Controller/InvoiceController.php
+@@ -3,6 +3,7 @@ namespace Bimbel\Report\Controller;
+ 
+ use \Bimbel\Report\Controller\BaseReportController;
+ use Ngekoding\Terbilang\Terbilang;
++use Bimbel\Report\Helper\KwitansiTemplate;
+ 
+ class InvoiceController extends BaseReportController
+ {
+@@ -75,64 +76,7 @@ class InvoiceController extends BaseReportController
+             $tagihan = new \Bimbel\Pembayaran\Model\Tagihan();
+             $tagihan = $tagihan->find($args['tagihan_id']);
+ 
+-            $tmpt_kursus = $tagihan->kursus;
+-            if ($tmpt_kursus->logo_bank)
+-            {
+-                $logo_bank = 'data:' . $tmpt_kursus->logo_bank->filetype . ';base64, ' . $tmpt_kursus->logo_bank->base64;
+-            }
+-            else
+-            {
+-                $logo_bank = "";
+-            }
+-
+-            $stamp_img = $this->getImage('stamp.png');
+-            
+-            $terbilang = Terbilang::convert($tagihan->total) . " rupiah";
+-            $untuk = [];
+-            $untuk_spp = [];
+-
+-            $program_belajar = new \Bimbel\Master\Model\ProgramBelajar();
+-            $program_belajars = $program_belajar->orderBy('id', 'ASC')->get();
+-            $program_belajar_is_other = !empty($tagihan->program_belajar) && !in_array($tagihan->program_belajar, $program_belajars->pluck('nama')->toArray());
+-
+-            // foreach ($tagihan->tagihan_detail as $key => $tagihan_detail) {
+-            //     if ($tagihan_detail->kategori_pembiayaan == 's')
+-            //     {
+-            //         if ($tagihan_detail->tanggal_iuran_mulai == $tagihan_detail->tanggal_iuran_berakhir)
+-            //         {
+-            //             $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai));
+-            //         }
+-            //         else
+-            //         {
+-            //             $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai)) . " - " . date('F Y', strtotime($tagihan_detail->tanggal_iuran_berakhir));
+-            //         }
+-            //         array_push($untuk_spp, "Iuran " . $tanggal_iuran);
+-            //     }
+-            //     else
+-            //     {
+-            //         array_push($untuk, $tagihan_detail->nama);
+-            //     }
+-            // }
+-
+-            $untuk = implode(", ", $untuk);
+-            $untuk_spp = implode(", ", $untuk_spp);
+-
+-            $data = [
+-                'tagihan' => $tagihan,
+-                'kursus' => $tmpt_kursus,
+-                'siswa' => $tagihan->siswa->orang->nama,
+-                'nomor' => $tagihan->code,
+-                'smileimage' => $this->getImage('smile-icon.png'),
+-                'logo_bank' => $logo_bank,
+-                'untuk' => $untuk,
+-                'untuk_spp' => $untuk_spp,
+-                'terbilang' => ucwords($terbilang),
+-                'stamp_img' => $stamp_img,
+-                'program_belajars' => $program_belajars,
+-                'program_belajar_is_other' => $program_belajar_is_other,
+-            ];
+-
+-            $result = $this->toPdf("Report/View/kwitansi/kwitansi.twig", $data);
++            $result = $this->renderKwitansi($this->getKwitansiData($tagihan));
+         }
+         catch(\Error $e)
+         {
+@@ -141,4 +85,163 @@ class InvoiceController extends BaseReportController
+         
+         return $result;
+     }
++
++    /**
++     * Everything the kwitansi templates may use. Only plain arrays/strings are
++     * passed (no models): the sections an admin can edit run in a Twig sandbox
++     * and must not be able to reach relations or methods. Templates read these
++     * the same way as before (tagihan.status, program.nama ...).
++     * Keep in sync with KwitansiTemplate::sampleContext()/variables().
++     */
++    public function getKwitansiData($tagihan)
++    {
++        $tmpt_kursus = $tagihan->kursus;
++        if ($tmpt_kursus->logo_bank)
++        {
++            $logo_bank = 'data:' . $tmpt_kursus->logo_bank->filetype . ';base64, ' . $tmpt_kursus->logo_bank->base64;
++        }
++        else
++        {
++            $logo_bank = "";
++        }
++
++        $stamp_img = $this->getImage('stamp.png');
++        
++        $terbilang = Terbilang::convert($tagihan->total) . " rupiah";
++        $untuk = [];
++        $untuk_spp = [];
++
++        $program_belajars = $this->getProgramBelajars();
++        $program_belajar_is_other = !empty($tagihan->program_belajar) && !in_array($tagihan->program_belajar, array_column($program_belajars, 'nama'));
++
++        // foreach ($tagihan->tagihan_detail as $key => $tagihan_detail) {
++        //     if ($tagihan_detail->kategori_pembiayaan == 's')
++        //     {
++        //         if ($tagihan_detail->tanggal_iuran_mulai == $tagihan_detail->tanggal_iuran_berakhir)
++        //         {
++        //             $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai));
++        //         }
++        //         else
++        //         {
++        //             $tanggal_iuran = date('F Y', strtotime($tagihan_detail->tanggal_iuran_mulai)) . " - " . date('F Y', strtotime($tagihan_detail->tanggal_iuran_berakhir));
++        //         }
++        //         array_push($untuk_spp, "Iuran " . $tanggal_iuran);
++        //     }
++        //     else
++        //     {
++        //         array_push($untuk, $tagihan_detail->nama);
++        //     }
++        // }
++
++        $untuk = implode(", ", $untuk);
++        $untuk_spp = implode(", ", $untuk_spp);
++
++        return [
++            'tagihan' => KwitansiTemplate::only($tagihan->getAttributes(), KwitansiTemplate::TAGIHAN_KEYS),
++            'kursus' => KwitansiTemplate::only($tmpt_kursus->getAttributes(), KwitansiTemplate::KURSUS_KEYS),
++            'siswa' => $tagihan->siswa->orang->nama,
++            'nomor' => $tagihan->code,
++            'smileimage' => $this->getImage('smile-icon.png'),
++            'logo_bank' => $logo_bank,
++            'untuk' => $untuk,
++            'untuk_spp' => $untuk_spp,
++            'terbilang' => ucwords($terbilang),
++            'stamp_img' => $stamp_img,
++            'program_belajars' => $program_belajars,
++            'program_belajar_is_other' => $program_belajar_is_other,
++            'report_info_data' => $this->getReportInfoData(),
++        ];
++    }
++
++    /** Master program belajar as plain arrays (id, kode, nama, nama_mandarin). */
++    protected function getProgramBelajars()
++    {
++        $program_belajar = new \Bimbel\Master\Model\ProgramBelajar();
++        $rows = [];
++
++        foreach ($program_belajar->orderBy('id', 'ASC')->get() as $program)
++        {
++            $rows[] = KwitansiTemplate::only($program->getAttributes(), KwitansiTemplate::PROGRAM_KEYS);
++        }
++
++        return $rows;
++    }
++
++    /**
++     * Plain copy of the Report Profile for edited sections (toPdf() itself
++     * injects the model under `report_info`, which the default template uses).
++     */
++    protected function getReportInfoData()
++    {
++        $report_info = \Bimbel\Master\Model\ReportInfo::find(1);
++
++        return $report_info ? KwitansiTemplate::only($report_info->getAttributes(), ['alamat', 'no_hp', 'email']) : [];
++    }
++
++    /**
++     * Renders the kwitansi PDF with what admins have customised (see
++     * KwitansiTemplate): edited sections and/or the visual layout. With nothing
++     * customised this is exactly the old behaviour.
++     *
++     * @param array|null $overrides [section => text]; null loads the saved ones
++     * @param bool $strict true (preview) rethrows template errors; false (real
++     *                     printing) falls back to the default template instead,
++     *                     because a broken custom template must never stop anyone
++     *                     from printing a receipt.
++     * @param array|null|false $layout normalized visual layout; null = use the
++     *                     standard kwitansi.twig; false loads the saved one
++     */
++    protected function renderKwitansi($data, $overrides = null, $strict = false, $layout = false)
++    {
++        if ($overrides === null)
++        {
++            $overrides = KwitansiTemplate::loadOverrides();
++        }
++
++        if ($layout === false)
++        {
++            $layout = KwitansiTemplate::loadLayout();
++        }
++
++        if (!empty($overrides) || $layout !== null)
++        {
++            $options = $this->container->get("pdf")->getOptions();
++            $remote = $options->getIsRemoteEnabled();
++
++            $view = KwitansiTemplate::VIEW;
++            $custom = $data;
++            if ($layout !== null)
++            {
++                $view = KwitansiTemplate::VIEW_LAYOUT;
++                // program_kustom: hand-written program code wins over the program grid setting
++                $custom['layout'] = $layout + ['program_kustom' => array_key_exists('program', $overrides)];
++            }
++
++            try
++            {
++                // Edited HTML must not be able to make the server fetch anything:
++                // every image the kwitansi uses is an embedded data: URI.
++                $options->setIsRemoteEnabled(false);
++
++                return KwitansiTemplate::withOverrides($this->container->get("twig"), $overrides, function () use ($view, $custom) {
++                    return $this->toPdf($view, $custom);
++                });
++            }
++            catch (\Twig\Error\Error $e)
++            {
++                if ($strict)
++                {
++                    throw $e;
++                }
++
++                error_log('[kwitansi-template] custom template failed, default used: ' . KwitansiTemplate::describeError($e));
++            }
++            finally
++            {
++                $options->setIsRemoteEnabled($remote);
++            }
++        }
++
++        return $this->toPdf(KwitansiTemplate::VIEW, $data);
++    }
+ }
+\ No newline at end of file
+diff --git a/b/module/Report/Controller/KwitansiTemplateController.php b/module/Report/Controller/KwitansiTemplateController.php
+new file mode 100644
+index 0000000..ea8e094
+--- /dev/null
++++ b/module/Report/Controller/KwitansiTemplateController.php
+@@ -0,0 +1,301 @@
++<?php
++namespace Bimbel\Report\Controller;
++
++use Bimbel\Report\Helper\KwitansiTemplate;
++
++/**
++ * API behind Konfigurasi > Template Kwitansi.
++ *
++ * Extends InvoiceController so the preview goes through exactly the same data
++ * building and PDF rendering as a real receipt (what you preview is what prints).
++ * The template is global (all branches), so only a Super Admin may use it.
++ */
++class KwitansiTemplateController extends InvoiceController
++{
++    const JSON_FLAGS = JSON_INVALID_UTF8_SUBSTITUTE;
++
++    /** Sections with their current + default text, plus the help the editor shows. */
++    public function getState($request, $args, &$response)
++    {
++        try
++        {
++            $this->requireSuperUser();
++
++            $result = json_encode($this->buildState(), self::JSON_FLAGS);
++        }
++        catch(\Error $e)
++        {
++            $result = json_encode($this->container->get('error')($e, $response));
++        }
++
++        return $result;
++    }
++
++    /**
++     * Renders the PDF for the (unsaved) text in the editor.
++     *
++     * Problems in the template are returned in the body with HTTP 200
++     * ({error, errors: {section: message}}) instead of an HTTP error, so the
++     * editor can show them inline next to the text rather than as a toast.
++     */
++    public function preview($request, $args, &$response)
++    {
++        try
++        {
++            $this->requireSuperUser();
++
++            $body = $this->getBody($request);
++            $sources = $this->readSections($body);
++
++            $errors = $this->lintSections($sources);
++            if (!empty($errors))
++            {
++                return json_encode(['error' => 'Template belum valid.', 'errors' => $errors]);
++            }
++
++            $data = $this->getPreviewData($body);
++
++            // Layout absent from the request = what is saved; a layout equal to the default = standard file.
++            $layout = array_key_exists('layout', $body) ? $this->readLayout($body) : KwitansiTemplate::loadLayout();
++            if ($layout !== null && KwitansiTemplate::isDefaultLayout($layout))
++            {
++                $layout = null;
++            }
++
++            try
++            {
++                $pdf = json_decode($this->renderKwitansi($data, $this->changedSections($sources), true, $layout), true);
++            }
++            catch (\Twig\Error\Error $e)
++            {
++                return json_encode(['error' => KwitansiTemplate::describeError($e), 'errors' => []]);
++            }
++
++            $result = json_encode([
++                'data' => $pdf['data'],
++                'pages' => $this->container->get("pdf")->getCanvas()->get_page_count(),
++            ]);
++        }
++        catch(\Error $e)
++        {
++            $result = json_encode($this->container->get('error')($e, $response));
++        }
++
++        return $result;
++    }
++
++    /** Saves the given sections (those equal to the default are reset) and returns the new state. */
++    public function save($request, $args, &$response)
++    {
++        try
++        {
++            $session = $this->requireSuperUser();
++
++            if (!KwitansiTemplate::isInstalled())
++            {
++                throw new \Error('Tabel template belum dibuat. Jalankan Fix Data patch 2/6 terlebih dahulu.', 500);
++            }
++
++            $sources = $this->readSections($this->getBody($request));
++
++            $errors = $this->lintSections($sources);
++            if (!empty($errors))
++            {
++                $messages = [];
++                foreach ($errors as $key => $message)
++                {
++                    $messages[] = KwitansiTemplate::SECTIONS[$key]['label'] . ' - ' . $message;
++                }
++
++                throw new \Error('Template tidak disimpan. ' . implode(' | ', $messages), 422);
++            }
++
++            $body = $this->getBody($request);
++            $layout = array_key_exists('layout', $body) ? $this->readLayout($body) : null;
++
++            KwitansiTemplate::saveOverrides($sources, $session->get('user_id'), $layout);
++
++            $result = json_encode($this->buildState(), self::JSON_FLAGS);
++        }
++        catch(\Error $e)
++        {
++            $result = json_encode($this->container->get('error')($e, $response));
++        }
++
++        return $result;
++    }
++
++    // ------------------------------------------------------------------
++
++    protected function requireSuperUser()
++    {
++        // Throws (501) when nobody is logged in.
++        $session = new \Bimbel\Master\Model\Session();
++
++        if (!$session->isSuperUser())
++        {
++            throw new \Error('Hanya Super Admin yang dapat mengubah template kwitansi.', 403);
++        }
++
++        return $session;
++    }
++
++    protected function getBody($request)
++    {
++        $body = $request->getParsedBody();
++
++        return is_array($body) ? $body : [];
++    }
++
++    protected function buildState()
++    {
++        $overrides = KwitansiTemplate::loadOverrides();
++        $sections = [];
++
++        foreach (KwitansiTemplate::sections() as $key => $definition)
++        {
++            $default = KwitansiTemplate::defaultSource($key);
++            $custom = array_key_exists($key, $overrides);
++
++            $sections[] = [
++                'key' => $key,
++                'label' => $definition['label'],
++                'keterangan' => $definition['keterangan'],
++                'default' => $default,
++                'konten' => $custom ? KwitansiTemplate::normalize($overrides[$key]) : $default,
++                'diubah' => $custom,
++            ];
++        }
++
++        $saved = KwitansiTemplate::loadLayout();
++        $blocks = [];
++        foreach (KwitansiTemplate::BLOCKS as $key => $label)
++        {
++            $blocks[] = ['key' => $key, 'label' => $label];
++        }
++
++        return [
++            'terpasang' => KwitansiTemplate::isInstalled(),
++            'layout' => $saved === null ? KwitansiTemplate::defaultLayout() : $saved,
++            'layout_standar' => KwitansiTemplate::defaultLayout(),
++            'blok' => $blocks,
++            'batas' => KwitansiTemplate::LAYOUT_LIMITS,
++            'sections' => $sections,
++            'contoh' => KwitansiTemplate::examples(),
++            'variabel' => KwitansiTemplate::variables(),
++            'diizinkan' => [
++                'tag' => KwitansiTemplate::ALLOWED_TAGS,
++                'filter' => KwitansiTemplate::ALLOWED_FILTERS,
++                'fungsi' => KwitansiTemplate::ALLOWED_FUNCTIONS,
++            ],
++            'jumlah_program' => count($this->getProgramBelajars()),
++        ];
++    }
++
++    /** [known section key => normalized text] from the request; everything else is ignored. */
++    protected function readSections(array $body)
++    {
++        $sections = isset($body['sections']) ? $body['sections'] : [];
++
++        if (!is_array($sections))
++        {
++            throw new \Error('Data template tidak valid.', 400);
++        }
++
++        $sources = [];
++        foreach ($sections as $key => $source)
++        {
++            if (!KwitansiTemplate::isSection($key))
++            {
++                continue;
++            }
++
++            if (!is_string($source))
++            {
++                throw new \Error('Isi bagian "' . $key . '" harus berupa teks.', 400);
++            }
++
++            $sources[$key] = KwitansiTemplate::normalize($source);
++        }
++
++        return $sources;
++    }
++
++    /** The visual layout from the request, normalized (unknown keys dropped, numbers clamped). */
++    protected function readLayout(array $body)
++    {
++        if (!is_array($body['layout']))
++        {
++            throw new \Error('Data layout tidak valid.', 400);
++        }
++
++        return KwitansiTemplate::normalizeLayout($body['layout']);
++    }
++
++    /** Only sections that differ from the default need to be rendered as overrides. */
++    protected function changedSections(array $sources)
++    {
++        $changed = [];
++        foreach ($sources as $key => $source)
++        {
++            if (!KwitansiTemplate::sameAsDefault($key, $source))
++            {
++                $changed[$key] = $source;
++            }
++        }
++
++        return $changed;
++    }
++
++    /** [section key => message] for every changed section that does not pass the sandbox. */
++    protected function lintSections(array $sources)
++    {
++        $errors = [];
++        $twig = $this->container->get("twig");
++        $context = KwitansiTemplate::sampleContext($this->getProgramBelajars());
++
++        foreach ($this->changedSections($sources) as $key => $source)
++        {
++            $message = KwitansiTemplate::lint($twig, $key, $source, $context);
++
++            if ($message !== null)
++            {
++                $errors[$key] = $message;
++            }
++        }
++
++        return $errors;
++    }
++
++    /**
++     * Data for the preview: a real tagihan when an id is given, otherwise sample
++     * values. Program belajar is always the live master list, since a changing
++     * number of programs is exactly what makes the layout break.
++     */
++    protected function getPreviewData(array $body)
++    {
++        $tagihan_id = isset($body['tagihan_id']) ? (int) $body['tagihan_id'] : 0;
++
++        if ($tagihan_id > 0)
++        {
++            $tagihan = (new \Bimbel\Pembayaran\Model\Tagihan())->find($tagihan_id);
++
++            if (!$tagihan)
++            {
++                throw new \Error('Tagihan dengan ID ' . $tagihan_id . ' tidak ditemukan.', 404);
++            }
++
++            return $this->getKwitansiData($tagihan);
++        }
++
++        $status = (isset($body['status']) && $body['status'] === 'p') ? 'p' : 'l';
++        $data = KwitansiTemplate::sampleContext($this->getProgramBelajars(), $status);
++
++        $data['smileimage'] = $this->getImage('smile-icon.png');
++        $data['stamp_img'] = $this->getImage('stamp.png');
++        $data['logo_bank'] = $this->getImage('smile.png');
++        $data['report_info_data'] = $this->getReportInfoData();
++
++        return $data;
++    }
++}
+diff --git a/b/module/Report/Helper/KwitansiTemplate.php b/module/Report/Helper/KwitansiTemplate.php
+new file mode 100644
+index 0000000..f20b21e
+--- /dev/null
++++ b/module/Report/Helper/KwitansiTemplate.php
+@@ -0,0 +1,692 @@
++<?php
++namespace Bimbel\Report\Helper;
++
++use Illuminate\Database\Capsule\Manager as DB;
++use Slim\Views\Twig;
++use Twig\Error\Error as TwigError;
++use Twig\Error\RuntimeError;
++use Twig\Extension\SandboxExtension;
++use Twig\Loader\ArrayLoader;
++use Twig\Loader\ChainLoader;
++use Twig\Sandbox\SecurityError;
++use Twig\Sandbox\SecurityPolicy;
++
++/**
++ * Lets admins edit the Kwitansi (receipt) PDF template from the UI while the
++ * template files under module/Report/View/kwitansi/ stay the untouched default.
++ *
++ * How it works
++ * ------------
++ * - The kwitansi is assembled from partials (header, program, terima, ...).
++ *   Each partial is an editable "section" (see SECTIONS).
++ * - An edited section is stored in the `report_template` table. A section that
++ *   has no row there (or whose text equals the default) simply keeps using the
++ *   file, so the default template is always what you get until somebody saves a
++ *   change, and "reset to default" is just deleting the row.
++ * - At render time the overrides are made visible to Twig through an ArrayLoader
++ *   placed in front of the filesystem loader, under the same template names the
++ *   layout already includes (see withOverrides()). kwitansi.twig needs no change.
++ *
++ * Security
++ * --------
++ * An override is code that runs on the server, so it is ALWAYS executed inside a
++ * Twig sandbox with a small allow-list (see policy()): only if/for/set, a handful
++ * of formatting filters, no include/extends/macro and no method calls. Edited
++ * sections are also never handed an object: Twig probes `isset($obj->name)`
++ * before the sandbox checks the property, and on an Eloquent model that probe
++ * can lazy-load relations. So everything they see is plain arrays/strings (see
++ * InvoiceController::getKwitansiData); toPdf() injects `report_info` as a model,
++ * so the sandboxed wrapper swaps it for the array copy `report_info_data`.
++ *
++ * The overrides are intentionally read/written with the query builder instead of
++ * an Eloquent model under module/*\/Model/: any model there is automatically
++ * exposed by the generic REST API (/api/{model}s ...), and raw template text must
++ * only be writable through KwitansiTemplateController, which lints it first.
++ */
++class KwitansiTemplate
++{
++    const REPORT = 'kwitansi';
++    const TABLE = 'report_template';
++    const VIEW = 'Report/View/kwitansi/kwitansi.twig';
++    /** Same page, but arranged from the visual layout settings (see normalizeLayout()). */
++    const VIEW_LAYOUT = 'Report/View/kwitansi/layout.twig';
++    /** report_template.bagian that holds the visual layout JSON (not a section). */
++    const LAYOUT_ROW = 'layout';
++    const MAX_LENGTH = 100000;
++
++    /**
++     * key => label / description / file in module/Report/View/kwitansi/.
++     * The key is what is stored in report_template.bagian, so don't rename it.
++     */
++    const SECTIONS = [
++        'style' => [
++            'label' => 'Gaya (CSS)',
++            'file' => 'style.twig',
++            'keterangan' => 'Ukuran huruf, jarak, lebar kolom, dan tampilan umum kwitansi. Ubah di sini jika isi kwitansi melebihi satu halaman.',
++        ],
++        'header' => [
++            'label' => 'Header',
++            'file' => 'header.twig',
++            'keterangan' => 'Logo, alamat, judul, nomor dan tanggal kwitansi.',
++        ],
++        'program' => [
++            'label' => 'Program & Pembayaran',
++            'file' => 'program.twig',
++            'keterangan' => 'Daftar centang Program Belajar (mengikuti master Program Belajar, jumlahnya dinamis) dan Jenis Pembayaran.',
++        ],
++        'terima' => [
++            'label' => 'Terima Dari',
++            'file' => 'terima.twig',
++            'keterangan' => 'Sudah Terima Dari, Uang Sejumlah, dan Untuk Pembayaran.',
++        ],
++        'nominal' => [
++            'label' => 'Nominal & Stempel',
++            'file' => 'nominal.twig',
++            'keterangan' => 'Kotak nominal (Rp) dan stempel.',
++        ],
++        'rekening' => [
++            'label' => 'Rekening',
++            'file' => 'rekening.twig',
++            'keterangan' => 'Nomor rekening, nama penerima, dan ucapan terima kasih.',
++        ],
++        'keterangan' => [
++            'label' => 'Keterangan',
++            'file' => 'keterangan.twig',
++            'keterangan' => 'Kolom Keterangan di sisi kanan.',
++        ],
++    ];
++
++    /** Left-column blocks the visual editor can reorder, in the default order. */
++    const BLOCKS = [
++        'program' => 'Program & Pembayaran',
++        'terima' => 'Terima Dari',
++        'nominal' => 'Nominal & Stempel',
++        'rekening' => 'Rekening',
++    ];
++
++    /** [min, max] for every number of the visual layout; the editor uses the same limits. */
++    const LAYOUT_LIMITS = [
++        'lebar_kiri' => [60, 90],
++        'per_baris' => [1, 12],
++        'ukuran_huruf' => [9, 16],
++        'halaman' => [0, 20],
++    ];
++
++    /** What an edited section may use. Anything else is rejected by the sandbox. */
++    const ALLOWED_TAGS = ['if', 'for', 'set'];
++    const ALLOWED_FILTERS = [
++        'escape', 'e', 'number_format', 'date', 'isMandarin', 'default', 'length', 'upper', 'lower',
++        'capitalize', 'title', 'trim', 'nl2br', 'join', 'first', 'last', 'slice', 'batch', 'round', 'abs',
++    ];
++    const ALLOWED_FUNCTIONS = ['max', 'min'];
++
++    // ------------------------------------------------------------------
++    // Section definitions & sources
++    // ------------------------------------------------------------------
++
++    public static function sections()
++    {
++        return self::SECTIONS;
++    }
++
++    public static function isSection($key)
++    {
++        return is_string($key) && isset(self::SECTIONS[$key]);
++    }
++
++    /** The name the kwitansi layout uses to include this section. */
++    public static function templateName($key)
++    {
++        return '/Report/View/kwitansi/' . self::SECTIONS[$key]['file'];
++    }
++
++    /** Where the edited text is registered; only reachable through the sandboxed include. */
++    public static function customName($key)
++    {
++        return '__kwitansi_custom__/' . $key;
++    }
++
++    /** LF line endings and no BOM, so text from a browser compares equal to the files. */
++    public static function normalize($source)
++    {
++        $source = (string) $source;
++
++        if (substr($source, 0, 3) === "\xEF\xBB\xBF")
++        {
++            $source = substr($source, 3);
++        }
++
++        return str_replace(["\r\n", "\r"], "\n", $source);
++    }
++
++    public static function defaultSource($key)
++    {
++        $path = dirname(__DIR__) . '/View/kwitansi/' . self::SECTIONS[$key]['file'];
++
++        return self::normalize(file_get_contents($path));
++    }
++
++    /** Trailing whitespace is ignored so an untouched editor never counts as a change. */
++    public static function sameAsDefault($key, $source)
++    {
++        return rtrim(self::normalize($source)) === rtrim(self::defaultSource($key));
++    }
++
++    /** Ready-made starting points the editor can offer, keyed by section. */
++    public static function examples()
++    {
++        $dir = dirname(__DIR__) . '/View/kwitansi/examples/';
++        $file = $dir . 'program_beberapa_baris.twig';
++        $examples = [];
++
++        if (is_file($file))
++        {
++            $examples['program'][] = [
++                'label' => 'Program belajar dibagi ke beberapa baris',
++                'keterangan' => 'Cocok jika program belajar banyak. Ubah angka per_baris di baris pertama sesuai kebutuhan.',
++                'konten' => self::normalize(file_get_contents($file)),
++            ];
++        }
++
++        return $examples;
++    }
++
++    // ------------------------------------------------------------------
++    // Stored overrides (report_template)
++    // ------------------------------------------------------------------
++
++    /** False until the report_template table exists (Fix Data patch 2/6). */
++    public static function isInstalled()
++    {
++        try
++        {
++            return DB::schema()->hasTable(self::TABLE);
++        }
++        catch (\Exception $e)
++        {
++            return false;
++        }
++    }
++
++    /**
++     * [section key => text] for every section an admin has changed.
++     * Never throws: before the table exists (patch 2/6 not run yet) this simply
++     * returns nothing, so printing keeps using the default template.
++     */
++    public static function loadOverrides()
++    {
++        try
++        {
++            $rows = DB::table(self::TABLE)->where('report', self::REPORT)->get();
++        }
++        catch (\Exception $e)
++        {
++            return [];
++        }
++
++        $overrides = [];
++        foreach ($rows as $row)
++        {
++            if (self::isSection($row->bagian))
++            {
++                $overrides[$row->bagian] = (string) $row->konten;
++            }
++        }
++
++        return $overrides;
++    }
++
++    /**
++     * Stores the given sections (and optionally the visual layout) in one
++     * transaction. Anything equal to the default is deleted instead of stored,
++     * which is how "reset" works.
++     *
++     * @param array $sources [section key => text]; callers must lint() first.
++     * @param array|null $layout visual layout to store; null leaves it untouched
++     */
++    public static function saveOverrides(array $sources, $userId = null, $layout = null)
++    {
++        DB::connection()->transaction(function () use ($sources, $userId, $layout) {
++            foreach ($sources as $key => $source)
++            {
++                if (!self::isSection($key))
++                {
++                    continue;
++                }
++
++                if (self::sameAsDefault($key, $source))
++                {
++                    self::deleteRow($key);
++                    continue;
++                }
++
++                self::upsertRow($key, self::normalize($source), $userId);
++            }
++
++            if ($layout !== null)
++            {
++                $layout = self::normalizeLayout($layout);
++
++                if (self::isDefaultLayout($layout))
++                {
++                    self::deleteRow(self::LAYOUT_ROW);
++                }
++                else
++                {
++                    self::upsertRow(self::LAYOUT_ROW, json_encode($layout), $userId);
++                }
++            }
++        });
++    }
++
++    private static function deleteRow($bagian)
++    {
++        DB::table(self::TABLE)->where('report', self::REPORT)->where('bagian', $bagian)->delete();
++    }
++
++    private static function upsertRow($bagian, $konten, $userId)
++    {
++        $values = [
++            'konten' => $konten,
++            'user_id' => $userId ? $userId : null,
++            'updated_at' => date('Y-m-d H:i:s'),
++        ];
++
++        $exists = DB::table(self::TABLE)->where('report', self::REPORT)->where('bagian', $bagian)->exists();
++
++        if ($exists)
++        {
++            DB::table(self::TABLE)->where('report', self::REPORT)->where('bagian', $bagian)->update($values);
++        }
++        else
++        {
++            DB::table(self::TABLE)->insert(array_merge(['report' => self::REPORT, 'bagian' => $bagian], $values));
++        }
++    }
++
++    // ------------------------------------------------------------------
++    // Visual layout (drag & drop editor)
++    //
++    // Unlike sections, the layout is NOT template code: it is a small set of
++    // validated numbers/flags that the trusted file layout.twig turns into the
++    // page, so it needs no sandbox. Whatever reaches the template has been
++    // through normalizeLayout().
++    // ------------------------------------------------------------------
++
++    public static function defaultLayout()
++    {
++        return [
++            'urutan' => array_keys(self::BLOCKS),
++            'lebar_kiri' => 80,
++            'keterangan' => true,
++            'program' => ['susun' => false, 'per_baris' => 5, 'ukuran_huruf' => 12, 'mandarin' => true],
++            'halaman' => ['vertikal' => 10, 'horizontal' => 10],
++        ];
++    }
++
++    private static function intIn($value, $limits, $fallback)
++    {
++        if (!is_numeric($value))
++        {
++            return $fallback;
++        }
++
++        return (int) max($limits[0], min($limits[1], round($value)));
++    }
++
++    private static function boolIn($value, $fallback)
++    {
++        return is_bool($value) ? $value : $fallback;
++    }
++
++    /**
++     * Any input in, a complete valid layout out: unknown keys dropped, numbers
++     * clamped to LAYOUT_LIMITS, block order made a permutation of BLOCKS.
++     */
++    public static function normalizeLayout($input)
++    {
++        $layout = self::defaultLayout();
++
++        if (!is_array($input))
++        {
++            return $layout;
++        }
++
++        if (isset($input['urutan']) && is_array($input['urutan']))
++        {
++            $order = [];
++            foreach ($input['urutan'] as $key)
++            {
++                if (is_string($key) && isset(self::BLOCKS[$key]) && !in_array($key, $order, true))
++                {
++                    $order[] = $key;
++                }
++            }
++            foreach (array_keys(self::BLOCKS) as $key)
++            {
++                if (!in_array($key, $order, true))
++                {
++                    $order[] = $key;
++                }
++            }
++            $layout['urutan'] = $order;
++        }
++
++        if (array_key_exists('lebar_kiri', $input))
++        {
++            $layout['lebar_kiri'] = self::intIn($input['lebar_kiri'], self::LAYOUT_LIMITS['lebar_kiri'], $layout['lebar_kiri']);
++        }
++        if (array_key_exists('keterangan', $input))
++        {
++            $layout['keterangan'] = self::boolIn($input['keterangan'], $layout['keterangan']);
++        }
++
++        if (isset($input['program']) && is_array($input['program']))
++        {
++            $p = $input['program'];
++            $layout['program']['susun'] = array_key_exists('susun', $p) ? self::boolIn($p['susun'], false) : false;
++            $layout['program']['mandarin'] = array_key_exists('mandarin', $p) ? self::boolIn($p['mandarin'], true) : true;
++            if (array_key_exists('per_baris', $p))
++            {
++                $layout['program']['per_baris'] = self::intIn($p['per_baris'], self::LAYOUT_LIMITS['per_baris'], 5);
++            }
++            if (array_key_exists('ukuran_huruf', $p))
++            {
++                $layout['program']['ukuran_huruf'] = self::intIn($p['ukuran_huruf'], self::LAYOUT_LIMITS['ukuran_huruf'], 12);
++            }
++        }
++
++        if (isset($input['halaman']) && is_array($input['halaman']))
++        {
++            foreach (['vertikal', 'horizontal'] as $side)
++            {
++                if (array_key_exists($side, $input['halaman']))
++                {
++                    $layout['halaman'][$side] = self::intIn($input['halaman'][$side], self::LAYOUT_LIMITS['halaman'], 10);
++                }
++            }
++        }
++
++        return $layout;
++    }
++
++    public static function isDefaultLayout($layout)
++    {
++        return self::normalizeLayout($layout) === self::defaultLayout();
++    }
++
++    /**
++     * The saved layout, or null when none is saved / it equals the default, in
++     * which case the original kwitansi.twig is used. Never throws.
++     */
++    public static function loadLayout()
++    {
++        try
++        {
++            $row = DB::table(self::TABLE)->where('report', self::REPORT)->where('bagian', self::LAYOUT_ROW)->first();
++        }
++        catch (\Exception $e)
++        {
++            return null;
++        }
++
++        if (!$row)
++        {
++            return null;
++        }
++
++        $layout = self::normalizeLayout(json_decode($row->konten, true));
++
++        return self::isDefaultLayout($layout) ? null : $layout;
++    }
++
++    // ------------------------------------------------------------------
++    // Rendering with overrides (sandboxed)
++    // ------------------------------------------------------------------
++
++    public static function policy()
++    {
++        return new SecurityPolicy(
++            self::ALLOWED_TAGS,
++            self::ALLOWED_FILTERS,
++            [], // no method calls at all
++            [], // no property access on objects (none are provided)
++            self::ALLOWED_FUNCTIONS
++        );
++    }
++
++    /**
++     * Registers the sandbox extension (globally OFF: only the includes made by
++     * withOverrides() are sandboxed, every other report renders as before).
++     * Twig refuses new extensions once it has rendered something; in that case
++     * we cannot sandbox and must not apply overrides, hence the boolean.
++     */
++    public static function prepare(Twig $twig)
++    {
++        $env = $twig->getEnvironment();
++
++        if ($env->hasExtension(SandboxExtension::class))
++        {
++            return true;
++        }
++
++        try
++        {
++            $env->addExtension(new SandboxExtension(self::policy(), false));
++        }
++        catch (\LogicException $e)
++        {
++            return false;
++        }
++
++        return true;
++    }
++
++    /**
++     * Runs $callback while the given sections are served from $overrides instead
++     * of the files, and always restores the original loader afterwards.
++     *
++     * Each section is registered twice: under the name the layout includes (a
++     * tiny wrapper that includes the real text with sandboxed = true, handing it
++     * the array copy of report_info instead of the model) and under a private
++     * name holding the edited text.
++     *
++     * @throws TwigError when the overrides cannot be applied safely
++     */
++    public static function withOverrides(Twig $twig, array $overrides, callable $callback)
++    {
++        if (empty($overrides))
++        {
++            return $callback();
++        }
++
++        if (!self::prepare($twig))
++        {
++            throw new RuntimeError('Template kwitansi kustom tidak dapat diterapkan dengan aman.');
++        }
++
++        $templates = [];
++        foreach ($overrides as $key => $source)
++        {
++            if (!self::isSection($key))
++            {
++                continue;
++            }
++
++            $templates[self::templateName($key)] =
++                "{{ include('" . self::customName($key) . "', {report_info: report_info_data}, sandboxed = true) }}";
++            $templates[self::customName($key)] = self::normalize($source);
++        }
++
++        $env = $twig->getEnvironment();
++        $original = $env->getLoader();
++        $env->setLoader(new ChainLoader([new ArrayLoader($templates), $original]));
++
++        try
++        {
++            return $callback();
++        }
++        finally
++        {
++            $env->setLoader($original);
++        }
++    }
++
++    // ------------------------------------------------------------------
++    // Validation
++    // ------------------------------------------------------------------
++
++    /**
++     * Renders one section (HTML only, no PDF) with sample data inside the
++     * sandbox, which surfaces syntax errors, disallowed tags/filters/functions
++     * and runtime errors in milliseconds.
++     *
++     * @return string|null a message for the admin, or null when the text is fine
++     */
++    public static function lint(Twig $twig, $key, $source, array $context)
++    {
++        $source = self::normalize($source);
++
++        if (strlen($source) > self::MAX_LENGTH)
++        {
++            return 'Terlalu panjang (maksimal ' . number_format(self::MAX_LENGTH, 0, ',', '.') . ' karakter).';
++        }
++
++        try
++        {
++            self::withOverrides($twig, [$key => $source], function () use ($twig, $key, $context) {
++                $twig->fetch(self::templateName($key), $context);
++            });
++        }
++        catch (TwigError $e)
++        {
++            return self::describeError($e);
++        }
++
++        return null;
++    }
++
++    public static function describeError(TwigError $e)
++    {
++        $message = $e->getRawMessage();
++
++        if ($e instanceof SecurityError)
++        {
++            $message = 'Tidak diizinkan: ' . $message;
++        }
++
++        $line = $e->getTemplateLine();
++
++        return $line > 0 ? 'Baris ' . $line . ': ' . $message : $message;
++    }
++
++    // ------------------------------------------------------------------
++    // Data shared by the real receipt, the preview and lint
++    // ------------------------------------------------------------------
++
++    /** Picks $keys from $attributes so templates only ever see a documented set. */
++    public static function only(array $attributes, array $keys)
++    {
++        return array_intersect_key($attributes, array_flip($keys));
++    }
++
++    const TAGIHAN_KEYS = [
++        'id', 'code', 'sub_total', 'potongan', 'total', 'hutang', 'status', 'tanggal', 'tanggal_lunas',
++        'program_belajar', 'jenis_pembayaran', 'terima_dari', 'untuk_pembayaran', 'keterangan',
++    ];
++    const KURSUS_KEYS = ['id', 'kode', 'nama', 'no_rek', 'nama_rek'];
++    const PROGRAM_KEYS = ['id', 'kode', 'nama', 'nama_mandarin'];
++
++    /**
++     * Stand-in data for the preview (when no real tagihan is chosen) and for lint.
++     * Images are left empty here; the preview controller fills in real ones.
++     * Keep the keys in sync with InvoiceController::getKwitansiData().
++     */
++    public static function sampleContext(array $programs, $status = 'l')
++    {
++        $lunas = $status === 'l';
++
++        return [
++            'tagihan' => [
++                'id' => 0,
++                'code' => 'KW/2026/0001',
++                'sub_total' => 1500000,
++                'potongan' => 0,
++                'total' => 1500000,
++                'hutang' => 0,
++                'status' => $lunas ? 'l' : 'p',
++                'tanggal' => '2026-01-05',
++                'tanggal_lunas' => $lunas ? '2026-01-05' : null,
++                'program_belajar' => empty($programs) ? '' : $programs[0]['nama'],
++                'jenis_pembayaran' => 'Transfer',
++                'terima_dari' => 'Nama Orang Tua / Siswa',
++                'untuk_pembayaran' => 'Iuran Bulan Januari 2026',
++                'keterangan' => 'Contoh keterangan kwitansi',
++            ],
++            'kursus' => [
++                'id' => 0,
++                'kode' => 'CABANG',
++                'nama' => 'Cabang Contoh',
++                'no_rek' => '1234567890',
++                'nama_rek' => 'Nama Penerima',
++            ],
++            'siswa' => 'Nama Siswa',
++            'nomor' => 'KW/2026/0001',
++            'untuk' => '',
++            'untuk_spp' => '',
++            'terbilang' => 'Satu Juta Lima Ratus Ribu Rupiah',
++            'program_belajars' => $programs,
++            'program_belajar_is_other' => false,
++            'report_info_data' => [
++                'alamat' => "Jl. Contoh No. 1\nKota Contoh",
++                'no_hp' => '0812-0000-0000',
++                'email' => 'info@contoh.test',
++            ],
++            'logo' => '',
++            'logo_bank' => '',
++            'stamp_img' => '',
++            'smileimage' => '',
++        ];
++    }
++
++    /**
++     * Documentation + insert snippets for the variable palette next to the code
++     * editor ('sisip' is what a click/drag puts into the text). Keep in sync
++     * with sampleContext().
++     */
++    public static function variables()
++    {
++        $v = function ($nama, $keterangan, $sisip = null) {
++            return ['nama' => $nama, 'keterangan' => $keterangan, 'sisip' => $sisip === null ? '{{ ' . $nama . ' }}' : $sisip];
++        };
++
++        return [
++            $v('nomor', 'Nomor kwitansi (kode tagihan)'),
++            $v('siswa', 'Nama siswa'),
++            $v('terbilang', 'Total dalam huruf'),
++            $v('tagihan.total', 'Total dibayar (angka)', "{{ tagihan.total|number_format(0, ',', '.') }}"),
++            $v('tagihan.status', '"l" berarti lunas', "{% if tagihan.status == 'l' %}Lunas{% else %}Belum lunas{% endif %}"),
++            $v('tagihan.tanggal', 'Tanggal tagihan', "{{ tagihan.tanggal|date('d/m/Y') }}"),
++            $v('tagihan.tanggal_lunas', 'Tanggal pelunasan', "{{ tagihan.tanggal_lunas|date('d/m/Y') }}"),
++            $v('tagihan.program_belajar', 'Program belajar yang dipilih pada tagihan'),
++            $v('tagihan.jenis_pembayaran', 'Tunai / Transfer / Cek / Bilyet Giro'),
++            $v('tagihan.terima_dari', 'Sudah terima dari'),
++            $v('tagihan.untuk_pembayaran', 'Untuk pembayaran'),
++            $v('tagihan.keterangan', 'Keterangan'),
++            $v('program_belajars', 'Daftar program belajar dari master (nama, nama_mandarin, kode); jumlahnya dinamis',
++                "{% for program in program_belajars %}\n    {{ program.nama }}\n{% endfor %}"),
++            $v('program_belajar_is_other', 'true jika program pada tagihan tidak ada di master',
++                "{% if program_belajar_is_other %}{{ tagihan.program_belajar }}{% endif %}"),
++            $v('kursus.nama', 'Nama cabang/kursus'),
++            $v('kursus.no_rek', 'Nomor rekening'),
++            $v('kursus.nama_rek', 'Nama penerima rekening'),
++            $v('report_info.alamat', 'Alamat (Report Profile)'),
++            $v('report_info.no_hp', 'No. HP (Report Profile)'),
++            $v('report_info.email', 'Email (Report Profile)'),
++            $v('logo', 'Logo (data URI)', '<img src="{{ logo }}" style="height: 60px">'),
++            $v('logo_bank', 'Logo bank (data URI)', '<img src="{{ logo_bank }}" style="height: 30px">'),
++            $v('stamp_img', 'Gambar stempel (data URI)', '<img src="{{ stamp_img }}" style="height: 70px">'),
++            $v('smileimage', 'Gambar smile (data URI)', '<img src="{{ smileimage }}" style="height: 40px">'),
++        ];
++    }
++}
+diff --git a/b/module/Report/View/kwitansi/examples/program_beberapa_baris.twig b/module/Report/View/kwitansi/examples/program_beberapa_baris.twig
+new file mode 100644
+index 0000000..a3b96df
+--- /dev/null
++++ b/module/Report/View/kwitansi/examples/program_beberapa_baris.twig
+@@ -0,0 +1,92 @@
++{# Contoh: program belajar dibagi ke beberapa baris supaya tidak melebar ke samping.
++   Ubah angka per_baris di bawah (jumlah program per baris). Jenis Pembayaran sama seperti standar. #}
++{% set per_baris = 5 %}
++<style>
++    /* Baris tambahan butuh ruang: kurangi jarak tepi halaman (standar 10mm). Hapus baris ini jika tidak perlu. */
++    .container { padding: 5mm 10mm !important; }
++    .program-grid { padding: 5px; font-size: 12px; }
++    .program-grid td { padding-right: 10px; }
++    .program-grid .jarak { height: 4px; line-height: 4px; font-size: 1px; }
++</style>
++<table class="program-grid">
++    {% for baris in program_belajars|batch(per_baris) %}
++    <tr>
++        <td>{{ loop.first ? 'Program Belajar' : '' }}</td>
++        <td>{{ loop.first ? ':' : '' }}</td>
++        {% for program in baris %}
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.program_belajar==program.nama ? 'checked' : '' }}>
++            </div> {{ program.nama }}
++        </td>
++        {% endfor %}
++        {% if loop.last and baris|length < per_baris %}
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ program_belajar_is_other ? 'checked' : '' }}>
++            </div>
++            <div class="other-options">{{ program_belajar_is_other ? tagihan.program_belajar : '' }}</div>
++        </td>
++        {% endif %}
++    </tr>
++    <tr>
++        <td>
++            {% if loop.first %}<div class="checkbox-no-border"></div> <span class="mandarin">补习项目</span>{% endif %}
++        </td>
++        <td></td>
++        {% for program in baris %}
++        <td>
++            <div class="checkbox-no-border"></div>
++            <span class="mandarin">{{ program.nama_mandarin }}</span>
++        </td>
++        {% endfor %}
++    </tr>
++    {% endfor %}
++    {% if program_belajars|length % per_baris == 0 %}
++    <tr>
++        <td></td>
++        <td></td>
++        <td colspan="3">
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ program_belajar_is_other ? 'checked' : '' }}>
++            </div>
++            <div class="other-options">{{ program_belajar_is_other ? tagihan.program_belajar : '' }}</div>
++        </td>
++    </tr>
++    {% endif %}
++
++    <tr><td class="jarak">&nbsp;</td></tr>
++
++    <tr>
++        <td>Jenis Pembayaran</td>
++        <td>:</td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Tunai' ? 'checked' : '' }}>
++            </div> Tunai
++        </td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Transfer' ? 'checked' : '' }}>
++            </div> Transfer
++        </td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Cek' ? 'checked' : '' }}>
++            </div> Cek
++        </td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Bilyet Giro' ? 'checked' : '' }}>
++            </div> Bilyet Giro
++        </td>
++    </tr>
++    <tr>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">付款方式</span></td>
++        <td></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">现金</span></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">汇款</span></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">支票</span></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">转账支票</span></td>
++    </tr>
++</table>
+diff --git a/b/module/Report/View/kwitansi/layout.twig b/module/Report/View/kwitansi/layout.twig
+new file mode 100644
+index 0000000..861a5ab
+--- /dev/null
++++ b/module/Report/View/kwitansi/layout.twig
+@@ -0,0 +1,64 @@
++{# Visual layout version of kwitansi.twig, used only when an admin has saved layout settings
++   (see KwitansiTemplate::normalizeLayout()). `layout` is validated server side, so the
++   conditions below are the only place its values turn into markup. With the default
++   settings this renders the same page as kwitansi.twig. #}
++<html>
++    
++    <head>
++        {% include "/Report/View/partial/style.twig" %}
++        {% include "/Report/View/kwitansi/style.twig" %}
++        {% if layout.halaman.vertikal != 10 or layout.halaman.horizontal != 10 %}
++        <style>
++            .container { padding: {{ layout.halaman.vertikal }}mm {{ layout.halaman.horizontal }}mm !important; }
++        </style>
++        {% endif %}
++    </head>
++
++    <body class="{{ tagihan.status == 'l' ? '' : 'kwitansi-lunas' }}">
++        <div class="container">
++
++            {% if tagihan.status == 'l'  %}
++                <div class="kwitansi-stamp">
++                    {{ tagihan.status != 'l' ? '' : 'LUNAS' }}
++                </div>
++            {% endif %}
++
++            {% include "/Report/View/kwitansi/header.twig" %}
++
++            <table class="fn-12 kwitansi-table" width="100%">
++                <tr>
++                    <td class="kwitansi-left" width="{{ layout.keterangan ? layout.lebar_kiri : 100 }}%" style="vertical-align: top;">
++                        <table class="left-table">
++                            {% for block in layout.urutan %}
++                            <tr>
++                                <td class="{{ loop.last ? '' : 'border-btm-2' }}">
++                                    {% if block == 'program' %}
++                                        {% if layout.program.susun and not layout.program_kustom %}
++                                            {% include "/Report/View/kwitansi/program_grid.twig" %}
++                                        {% else %}
++                                            {% include "/Report/View/kwitansi/program.twig" %}
++                                        {% endif %}
++                                    {% elseif block == 'terima' %}
++                                        {% include "/Report/View/kwitansi/terima.twig" %}
++                                    {% elseif block == 'nominal' %}
++                                        {% include "/Report/View/kwitansi/nominal.twig" %}
++                                    {% elseif block == 'rekening' %}
++                                        {% include "/Report/View/kwitansi/rekening.twig" %}
++                                    {% endif %}
++                                </td>
++                            </tr>
++                            {% endfor %}
++                        </table>
++                    </td>
++
++                    {% if layout.keterangan %}
++                    <td class="kwitansi-right" width="{{ 100 - layout.lebar_kiri }}%" style="vertical-align: top;">
++                        {% include "/Report/View/kwitansi/keterangan.twig" %}
++                    </td>
++                    {% endif %}
++                </tr>
++            </table>
++        </div>
++
++    </body>
++</html>
+diff --git a/b/module/Report/View/kwitansi/program_grid.twig b/module/Report/View/kwitansi/program_grid.twig
+new file mode 100644
+index 0000000..dc2cf3a
+--- /dev/null
++++ b/module/Report/View/kwitansi/program_grid.twig
+@@ -0,0 +1,95 @@
++{# Program belajar in several rows. Used by layout.twig when "susun program" is on; the
++   numbers come from the validated `layout.program` settings. Do not add white-space: nowrap
++   to the cells: dompdf then misplaces the checkboxes. #}
++{% set per_baris = layout.program.per_baris %}
++<style>
++    .program-grid { padding: 5px; font-size: {{ layout.program.ukuran_huruf }}px; }
++    .program-grid td { padding-right: 10px; }
++    .program-grid .jarak { height: 4px; line-height: 4px; font-size: 1px; }
++</style>
++<table class="program-grid">
++    {% for baris in program_belajars|batch(per_baris) %}
++    <tr>
++        <td>{{ loop.first ? 'Program Belajar' : '' }}</td>
++        <td>{{ loop.first ? ':' : '' }}</td>
++        {% for program in baris %}
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.program_belajar==program.nama ? 'checked' : '' }}>
++            </div> {{ program.nama }}
++        </td>
++        {% endfor %}
++        {% if loop.last and baris|length < per_baris %}
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ program_belajar_is_other ? 'checked' : '' }}>
++            </div>
++            <div class="other-options">{{ program_belajar_is_other ? tagihan.program_belajar : '' }}</div>
++        </td>
++        {% endif %}
++    </tr>
++    {% if layout.program.mandarin %}
++    <tr>
++        <td>
++            {% if loop.first %}<div class="checkbox-no-border"></div> <span class="mandarin">补习项目</span>{% endif %}
++        </td>
++        <td></td>
++        {% for program in baris %}
++        <td>
++            <div class="checkbox-no-border"></div>
++            <span class="mandarin">{{ program.nama_mandarin }}</span>
++        </td>
++        {% endfor %}
++    </tr>
++    {% endif %}
++    {% endfor %}
++    {% if program_belajars|length % per_baris == 0 %}
++    <tr>
++        <td></td>
++        <td></td>
++        <td colspan="3">
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ program_belajar_is_other ? 'checked' : '' }}>
++            </div>
++            <div class="other-options">{{ program_belajar_is_other ? tagihan.program_belajar : '' }}</div>
++        </td>
++    </tr>
++    {% endif %}
++
++    <tr><td class="jarak">&nbsp;</td></tr>
++
++    <tr>
++        <td>Jenis Pembayaran</td>
++        <td>:</td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Tunai' ? 'checked' : '' }}>
++            </div> Tunai
++        </td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Transfer' ? 'checked' : '' }}>
++            </div> Transfer
++        </td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Cek' ? 'checked' : '' }}>
++            </div> Cek
++        </td>
++        <td>
++            <div class="checkbox-pdf">
++                <input type="checkbox" {{ tagihan.jenis_pembayaran=='Bilyet Giro' ? 'checked' : '' }}>
++            </div> Bilyet Giro
++        </td>
++    </tr>
++    {% if layout.program.mandarin %}
++    <tr>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">付款方式</span></td>
++        <td></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">现金</span></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">汇款</span></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">支票</span></td>
++        <td><div class="checkbox-no-border"></div> <span class="mandarin">转账支票</span></td>
++    </tr>
++    {% endif %}
++</table>
+diff --git a/b/module/Report/_routes/fetch_template.php b/module/Report/_routes/fetch_template.php
+new file mode 100644
+index 0000000..7a65bbb
+--- /dev/null
++++ b/module/Report/_routes/fetch_template.php
+@@ -0,0 +1,33 @@
++<?php
++
++// Editable kwitansi template (Konfigurasi > Template Kwitansi). Super Admin only.
++
++$app->get("/api/report/template/kwitansi", function ($request, $response, $args) {
++
++    $controller = $this->get("Bimbel\Report\Controller\KwitansiTemplateController");
++    $result = $controller->getState($request, $args, $response);
++
++    $response = $response->withHeader("Content-Type", "application/json");
++    $response->getBody()->write($result);
++    return $response;
++});
++
++$app->post("/api/report/template/kwitansi/preview", function ($request, $response, $args) {
++
++    $controller = $this->get("Bimbel\Report\Controller\KwitansiTemplateController");
++    $result = $controller->preview($request, $args, $response);
++
++    $response = $response->withHeader("Content-Type", "application/json");
++    $response->getBody()->write($result);
++    return $response;
++});
++
++$app->post("/api/report/template/kwitansi/save", function ($request, $response, $args) {
++
++    $controller = $this->get("Bimbel\Report\Controller\KwitansiTemplateController");
++    $result = $controller->save($request, $args, $response);
++
++    $response = $response->withHeader("Content-Type", "application/json");
++    $response->getBody()->write($result);
++    return $response;
++});
+diff --git a/module/Report/index.php b/module/Report/index.php
+index fbfe190..34490d4 100644
+--- a/module/Report/index.php
++++ b/module/Report/index.php
+@@ -6,4 +6,5 @@ require "_routes/fetch_siswa.php";
+ require "_routes/fetch_guru.php";
+ require "_routes/fetch_labarugi.php";
+ require "_routes/fetch_asisten_guru.php";
+-require "_routes/fetch_tagihan.php";
+\ No newline at end of file
++require "_routes/fetch_tagihan.php";
++require "_routes/fetch_template.php";
+\ No newline at end of file
+diff --git a/b/tests/Unit/Helper/kwitansi_template_check.php b/tests/Unit/Helper/kwitansi_template_check.php
+new file mode 100644
+index 0000000..c28764a
+--- /dev/null
++++ b/tests/Unit/Helper/kwitansi_template_check.php
+@@ -0,0 +1,95 @@
++<?php
++/**
++ * Standalone check for the editable Kwitansi template (no DB, no PHPUnit needed):
++ *
++ *     php tests/Unit/Helper/kwitansi_template_check.php
++ *
++ * Verifies that the default partials pass the Twig sandbox, that dangerous
++ * constructs are rejected, and that overrides apply without leaking into other
++ * renders. Exit code is non-zero on failure.
++ */
++$root = dirname(__DIR__, 3);
++chdir($root);
++require $root . '/vendor/autoload.php';
++error_reporting(E_ALL & ~E_DEPRECATED);
++use Slim\Views\Twig; use Twig\Extension\AbstractExtension; use Twig\TwigFilter;
++use Bimbel\Report\Helper\KwitansiTemplate as K;
++if (!class_exists('MandarinDetectorExtension')) { class MandarinDetectorExtension extends AbstractExtension {
++    public function getFilters() { return [ new TwigFilter('isMandarin', function ($t) { return preg_match('/\p{Han}/u', $t); }) ]; }
++} }
++function mk() { $t = Twig::create('module'); $t->addExtension(new MandarinDetectorExtension()); return $t; }
++$programs = [['id'=>1,'kode'=>'A','nama'=>'Mandarin','nama_mandarin'=>'中文班'],['id'=>2,'kode'=>'B','nama'=>'Inggris','nama_mandarin'=>'英文班']];
++$ctx = K::sampleContext($programs);
++$fail = 0;
++function check($name, $ok) { global $fail; echo ($ok ? "PASS" : "FAIL") . "  $name\n"; if (!$ok) $fail++; }
++
++// 1. every default file must be valid inside the sandbox
++foreach (K::sections() as $key => $def) {
++    $err = K::lint(mk(), $key, K::defaultSource($key), $ctx);
++    check("default '$key' passes sandbox" . ($err ? " [$err]" : ''), $err === null);
++}
++// 2. blocked payloads (put in 'terima' section)
++$bad = [
++  "map filter"      => "{{ ['id']|map('system') }}",
++  "filter filter"   => "{{ ['id']|filter('system') }}",
++  "raw filter"      => "{{ siswa|raw }}",
++  "include tag"     => "{% include '/Master/Model/User.php' %}",
++  "include func"    => "{{ include('/Master/Model/User.php') }}",
++  "source func"     => "{{ source('/Master/Model/User.php') }}",
++  "constant func"   => "{{ constant('PHP_VERSION') }}",
++  "apply tag"       => "{% apply upper %}x{% endapply %}",
++  "macro tag"       => "{% macro a() %}x{% endmacro %}",
++  "sort filter"     => "{{ ['a']|sort('system') }}",
++  "syntax error"    => "{% if %}",
++  "unclosed"        => "{% for x in program_belajars %}",
++];
++foreach ($bad as $n => $src) { $e = K::lint(mk(), 'terima', $src, $ctx); check("blocked: $n" . ($e ? "  -> $e" : ''), $e !== null); }
++// 3. allowed payloads
++$good = [
++  "set/if/for"   => "{% set n = 2 %}{% for p in program_belajars|batch(n) %}{% if loop.first %}{{ p|length }}{% endif %}{% endfor %}",
++  "report_info"  => "{{ report_info.alamat }} {{ report_info.no_hp }} {{ report_info.email is empty ? 'x' : 'y' }}",
++  "mandarin"     => "{{ tagihan.terima_dari|isMandarin ? 'a' : 'b' }}",
++  "number_format"=> "{{ tagihan.total|number_format(0, ',', '.') }} {{ 'now'|date('d/m/Y') }}",
++  "empty"        => "",
++];
++foreach ($good as $n => $src) { $e = K::lint(mk(), 'terima', $src, $ctx); check("allowed: $n" . ($e ? "  -> $e" : ''), $e === null); }
++
++// 3b. no object reachable: model-ish access just yields nothing (and no DB touch)
++$t = mk();
++$o = K::withOverrides($t, ['terima'=>"[{{ report_info.logo }}|{{ report_info.delete }}|{{ report_info.alamat }}]"], function() use ($t,$ctx){ return $t->fetch(K::templateName('terima'), $ctx); });
++check("report_info is array copy, no objects: $o", strpos($o, '[|||') === false && strpos($o, 'Jl. Contoh') !== false && strpos($o,'[||') !== false);
++$o = K::withOverrides($t, ['terima'=>"[{{ attribute(report_info, 'delete') }}]"], function() use ($t,$ctx){ return $t->fetch(K::templateName('terima'), $ctx); });
++check("attribute() is inert on arrays: $o", trim($o) === '[]');
++// 4. override is applied, sandbox is off elsewhere, loader restored
++$t = mk();
++$out = K::withOverrides($t, ['nominal' => 'CUSTOM-{{ tagihan.status }}'], function () use ($t, $ctx) { return $t->fetch('Report/View/kwitansi/kwitansi.twig', $ctx); });
++check("override rendered in full layout", strpos($out, 'CUSTOM-l') !== false);
++check("other sections still default", strpos($out, 'Sudah Terima Dari') !== false);
++$out2 = $t->fetch('Report/View/kwitansi/kwitansi.twig', $ctx);
++check("loader restored (default again)", strpos($out2, 'CUSTOM-') === false && strpos($out2, 'Stamp Students') !== false);
++// 5. fail-closed when extension can't be added after Twig initialised
++$t = mk(); $t->fetch('Report/View/kwitansi/kwitansi.twig', $ctx);
++try { K::withOverrides($t, ['nominal'=>'x'], function(){}); check("fail closed after init", false); } catch (\Twig\Error\Error $e) { check("fail closed after init", true); }
++// 6. sameAsDefault ignores CRLF + trailing ws
++check("sameAsDefault CRLF", K::sameAsDefault('header', str_replace("\n","\r\n",K::defaultSource('header'))."\n\n"));
++check("differs when edited", !K::sameAsDefault('header', K::defaultSource('header')."x"));
++// 7. visual layout validation: anything in, a complete valid layout out
++$d = K::defaultLayout();
++check("layout: non-array input -> default", K::normalizeLayout('x') === $d && K::normalizeLayout(null) === $d && K::normalizeLayout([]) === $d);
++check("layout: default is recognised", K::isDefaultLayout($d) && K::isDefaultLayout([]));
++$n = K::normalizeLayout(['urutan'=>['rekening','x','rekening','program',123,['a']], 'lebar_kiri'=>9999, 'keterangan'=>'no',
++    'program'=>['susun'=>'yes','per_baris'=>-5,'ukuran_huruf'=>'abc','mandarin'=>0], 'halaman'=>['vertikal'=>-3,'horizontal'=>'7.6'], 'evil'=>'{{ x }}']);
++check("layout: order is a permutation of the known blocks", $n['urutan'] === ['rekening','program','terima','nominal'], $n['urutan']);
++check("layout: numbers clamped to limits", $n['lebar_kiri'] === 90 && $n['program']['per_baris'] === 1 && $n['halaman']['vertikal'] === 0 && $n['halaman']['horizontal'] === 8, $n);
++check("layout: non-numeric falls back to default", $n['program']['ukuran_huruf'] === 12);
++check("layout: non-bool flags fall back to default", $n['keterangan'] === true && $n['program']['susun'] === false && $n['program']['mandarin'] === true);
++check("layout: unknown keys dropped", !isset($n['evil']) && array_keys($n) === array_keys($d));
++check("layout: normalize is idempotent", K::normalizeLayout($n) === $n);
++check("layout: real change is not default", !K::isDefaultLayout(['halaman'=>['vertikal'=>5]]) && !K::isDefaultLayout(['urutan'=>['nominal']]));
++check("layout: every block key maps to a section file", !array_diff(array_keys(K::BLOCKS), array_keys(K::sections())));
++foreach (K::variables() as $v) { if (!isset($v['sisip']) || $v['sisip'] === '') { check("variable '{$v['nama']}' has insert snippet", false); } }
++foreach (K::variables() as $v) {
++    $e = K::lint(mk(), 'terima', $v['sisip'], $ctx);
++    check("palette snippet is valid in the sandbox: {$v['nama']}", $e === null, $e);
++}
++echo $fail ? "\n$fail FAILED\n" : "\nALL PASSED\n"; exit($fail ? 1 : 0);

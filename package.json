@@ -24,6 +24,7 @@
     "json-format-highlight": "^1.0.4",
     "mdr-angular-select2": "^1.0.6",
     "moment": "^2.29.4",
+    "pdfjs-dist": "^3.11.174",
     "select2": "^4.1.0-rc.0",
     "select2-bootstrap-5-theme": "^1.3.0",
     "toastr": "^2.1.4"
